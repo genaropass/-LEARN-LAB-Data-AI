@@ -145,8 +145,8 @@ export const WorldMap: React.FC = () => {
       {/* Fondo de Cielo con Nubes */}
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#1d4ed8]/30 via-[#0f284e]/20 to-[#0a192f] opacity-80" />
 
-      {/* Selector de Mundos Estilo Mario Bros */}
-      <div className="sticky top-18 z-30 border-b-4 border-amber-500/30 bg-[#0f213d]/95 backdrop-blur-md px-3 py-3 shadow-xl">
+      {/* Selector de Mundos (En flujo natural con z-index limpio para evitar cualquier superposición) */}
+      <div className="relative z-30 border-b-4 border-amber-500/30 bg-[#0f213d] px-3 py-3.5 shadow-xl">
         <div className="mx-auto flex max-w-6xl flex-col sm:flex-row items-center justify-between gap-3">
           
           {/* Botones de Mundos 1 a 5 */}
@@ -206,11 +206,11 @@ export const WorldMap: React.FC = () => {
         </div>
       </div>
 
-      {/* Contenedor del Mapa Principal */}
-      <div className="mx-auto max-w-4xl px-3 sm:px-6 pt-6">
+      {/* Contenedor del Mapa en Pantalla Completa */}
+      <div className="w-full px-2 sm:px-6 pt-4">
         
-        {/* Cabecera del Reino Actual */}
-        <div className="mb-6 rounded-3xl border-4 border-amber-400/50 bg-[#0e1d38]/90 p-5 shadow-2xl backdrop-blur-md flex flex-col md:flex-row items-center justify-between gap-4">
+        {/* Cabecera del Reino / Era Actual */}
+        <div className="mb-4 w-full rounded-2xl border-3 border-amber-400/50 bg-[#0e1d38]/95 p-4 shadow-xl backdrop-blur-md flex flex-col md:flex-row items-center justify-between gap-3">
           <div>
             <div className="flex items-center space-x-2">
               <span className="rounded-full bg-emerald-500 px-3 py-0.5 font-mono text-xs font-black text-slate-950 uppercase tracking-wide">
@@ -219,40 +219,37 @@ export const WorldMap: React.FC = () => {
               <span className="text-slate-400">•</span>
               <span className="font-mono text-xs text-amber-400 font-bold">Niveles {currentWorld.levelsRange[0]} a {currentWorld.levelsRange[1]}</span>
             </div>
-            <h1 className="mt-1 text-2xl sm:text-3xl font-black text-white tracking-tight">
+            <h1 className="mt-0.5 text-xl sm:text-2xl font-black text-white tracking-tight">
               {worldInfoEs.name}
             </h1>
-            <p className="text-xs sm:text-sm text-slate-200 mt-0.5 font-medium">
+            <p className="text-xs text-slate-200 mt-0.5 font-medium">
               {worldInfoEs.subtitle}
             </p>
           </div>
 
-          <div className="flex items-center space-x-4">
-            <div className="rounded-2xl border-3 border-amber-400/40 bg-slate-900/90 px-4 py-2.5 text-center shadow-lg">
+          <div className="flex items-center space-x-3">
+            <div className="rounded-2xl border-2 border-amber-400/40 bg-slate-900/90 px-4 py-2 text-center shadow-md">
               <span className="block text-[10px] font-bold text-amber-300 uppercase tracking-widest">
                 PROGRESO TOTAL
               </span>
-              <span className="font-mono font-black text-emerald-400 text-lg">
+              <span className="font-mono font-black text-emerald-400 text-base">
                 {completedLevels.size} / 100
-              </span>
-              <span className="text-[10px] text-slate-300 block font-semibold">
-                Niveles Conquistados
               </span>
             </div>
           </div>
         </div>
 
-        {/* TABLERO DE AVENTURA VÍVIDO (Opacidad al 95% para colores vivos del paisaje) */}
-        <div className="relative w-full rounded-3xl border-4 border-amber-400/60 overflow-hidden shadow-[0_15px_40px_rgba(0,0,0,0.6)]">
+        {/* TABLERO DE AVENTURA EN PANTALLA COMPLETA */}
+        <div className="relative w-full rounded-3xl border-4 border-amber-400/60 overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.7)]">
           
-          {/* Imagen de fondo viva y brillante (100% opacidad y máxima nitidez) */}
+          {/* Imagen de fondo viva y brillante a pantalla completa */}
           <div 
             className="absolute inset-0 bg-cover bg-center transition-all duration-700 opacity-100"
             style={{ backgroundImage: `url(${currentWorld.bgImage})` }}
           />
 
-          {/* Lienzo del Camino Serpenteante (1850px) */}
-          <div className="relative w-full h-[1850px]">
+          {/* Lienzo del Camino Serpenteante a lo ancho de toda la pantalla */}
+          <div className="relative w-full h-[1800px]">
             
             {/* SVG del Camino de Adoquines conectando los niveles */}
             <svg className="absolute inset-0 h-full w-full pointer-events-none" xmlns="http://www.w3.org/2000/svg">

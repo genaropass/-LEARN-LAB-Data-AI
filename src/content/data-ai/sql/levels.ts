@@ -106,7 +106,7 @@ export function build100Levels(): GameLevel[] {
       },
       prompt: "Inspecciona la tabla 'cuevas'. Usa el asterisco (*) para seleccionar todas las columnas de la tabla 'cuevas'.",
       expected: 'SELECT * FROM cuevas;',
-      initial: "-- Nivel 1: Selecciona todas las columnas de la tabla 'cuevas'\nSELECT * FROM cuevas;",
+      initial: "-- Nivel 1: Escribe el asterisco (*) para traer todas las columnas\nSELECT \nFROM cuevas;",
       tbls: ['cuevas'], hint: "En SQL usamos el asterisco (*) para traer todas las columnas: SELECT * FROM cuevas;",
       pos: { x: 10.5, y: 72.5 }, prereqs: []
     },
@@ -119,20 +119,20 @@ export function build100Levels(): GameLevel[] {
       },
       prompt: "Selecciona únicamente las columnas 'apodo' y 'manada' de la tabla 'mamuts'.",
       expected: 'SELECT apodo, manada FROM mamuts;',
-      initial: "-- Nivel 2: Selecciona apodo y manada\nSELECT apodo, manada \nFROM mamuts;",
+      initial: "-- Nivel 2: Escribe 'apodo, manada' después de SELECT\nSELECT \nFROM mamuts;",
       tbls: ['mamuts'], hint: "Separa los nombres de las columnas con una coma: SELECT apodo, manada FROM mamuts;",
       pos: { x: 10.5, y: 53.0 }, prereqs: [1]
     },
     {
       lvl: 3, title: 'El Filtro de la Supervivencia',
-      storyContext: "El frío arrecian. Solo las cuevas que actualmente estén habitadas (habitada = 1) cuentan con fuego encendido y abrigo para los exploradores agotados.",
+      storyContext: "El frío arreciará pronto. Solo las cuevas que actualmente estén habitadas (habitada = 1) cuentan con fuego encendido y abrigo para los exploradores agotados.",
       characterDialogue: {
         speaker: 'Kael',
         text: '¡Rápido! Si enviamos a las familias a cavernas vacías perecerán de frío. Filtra solo las cuevas donde habitada sea igual a 1.'
       },
       prompt: "Selecciona 'nombre' y 'region' de la tabla 'cuevas' donde habitada = 1.",
       expected: 'SELECT nombre, region FROM cuevas WHERE habitada = 1;',
-      initial: "-- Nivel 3: Filtra las cuevas habitadas (habitada = 1)\nSELECT nombre, region \nFROM cuevas \nWHERE habitada = 1;",
+      initial: "-- Nivel 3: Completa la condición WHERE habitada = 1\nSELECT nombre, region \nFROM cuevas \nWHERE ;",
       tbls: ['cuevas'], hint: "Usa la cláusula WHERE: SELECT nombre, region FROM cuevas WHERE habitada = 1;",
       pos: { x: 23.5, y: 47.0 }, prereqs: [2]
     },
@@ -145,7 +145,7 @@ export function build100Levels(): GameLevel[] {
       },
       prompt: "Selecciona 'apodo' y 'peso_toneladas' de la tabla 'mamuts' donde peso_toneladas > 4.0.",
       expected: 'SELECT apodo, peso_toneladas FROM mamuts WHERE peso_toneladas > 4.0;',
-      initial: "-- Nivel 4: Filtra mamuts con peso_toneladas > 4.0\nSELECT apodo, peso_toneladas \nFROM mamuts \nWHERE peso_toneladas > 4.0;",
+      initial: "-- Nivel 4: Filtra mamuts con peso_toneladas > 4.0\nSELECT apodo, peso_toneladas \nFROM mamuts \nWHERE peso_toneladas > ;",
       tbls: ['mamuts'], hint: "Escribe: SELECT apodo, peso_toneladas FROM mamuts WHERE peso_toneladas > 4.0;",
       pos: { x: 37.0, y: 56.0 }, prereqs: [3]
     },
@@ -158,7 +158,7 @@ export function build100Levels(): GameLevel[] {
       },
       prompt: "Selecciona 'recurso' y 'cantidad' de 'recursos_tribu' donde cantidad < 15.",
       expected: 'SELECT recurso, cantidad FROM recursos_tribu WHERE cantidad < 15;',
-      initial: "-- Nivel 5: Filtra los recursos con cantidad < 15\nSELECT recurso, cantidad \nFROM recursos_tribu \nWHERE cantidad < 15;",
+      initial: "-- Nivel 5: Filtra los recursos con cantidad < 15\nSELECT recurso, cantidad \nFROM recursos_tribu \nWHERE cantidad < ;",
       tbls: ['recursos_tribu'], hint: "Usa el operador menor que (<): WHERE cantidad < 15;",
       pos: { x: 46.5, y: 55.0 }, prereqs: [4]
     },
@@ -171,7 +171,7 @@ export function build100Levels(): GameLevel[] {
       },
       prompt: "Selecciona 'nombre' y 'presas_cobradas' de 'cazadores' donde rango = 'Veterano'.",
       expected: "SELECT nombre, presas_cobradas FROM cazadores WHERE rango = 'Veterano';",
-      initial: "-- Nivel 6: Filtra cazadores donde rango = 'Veterano'\nSELECT nombre, presas_cobradas \nFROM cazadores \nWHERE rango = 'Veterano';",
+      initial: "-- Nivel 6: Filtra cazadores con rango 'Veterano'\nSELECT nombre, presas_cobradas \nFROM cazadores \nWHERE rango = ;",
       tbls: ['cazadores'], hint: "Los textos van entre comillas simples: WHERE rango = 'Veterano';",
       pos: { x: 52.0, y: 48.0 }, prereqs: [5]
     },
@@ -184,7 +184,7 @@ export function build100Levels(): GameLevel[] {
       },
       prompt: "Selecciona 'nombre' y 'capacidad' de 'cuevas' ordenando por 'capacidad' de forma descendente (DESC).",
       expected: 'SELECT nombre, capacidad FROM cuevas ORDER BY capacidad DESC;',
-      initial: "-- Nivel 7: Ordena por capacidad DESC\nSELECT nombre, capacidad \nFROM cuevas \nORDER BY capacidad DESC;",
+      initial: "-- Nivel 7: Ordena por capacidad en orden descendente\nSELECT nombre, capacidad \nFROM cuevas \nORDER BY ;",
       tbls: ['cuevas'], hint: "Usa ORDER BY columna DESC: SELECT nombre, capacidad FROM cuevas ORDER BY capacidad DESC;",
       pos: { x: 60.5, y: 48.0 }, prereqs: [6]
     },
@@ -197,7 +197,7 @@ export function build100Levels(): GameLevel[] {
       },
       prompt: "Selecciona 'nombre' y 'presas_cobradas' de 'cazadores' ordenados por presas_cobradas DESC y limitados a 3.",
       expected: 'SELECT nombre, presas_cobradas FROM cazadores ORDER BY presas_cobradas DESC LIMIT 3;',
-      initial: "-- Nivel 8: Top 3 cazadores con ORDER BY y LIMIT 3\nSELECT nombre, presas_cobradas \nFROM cazadores \nORDER BY presas_cobradas DESC \nLIMIT 3;",
+      initial: "-- Nivel 8: Top 3 cazadores con ORDER BY y LIMIT 3\nSELECT nombre, presas_cobradas \nFROM cazadores \nORDER BY presas_cobradas DESC \nLIMIT ;",
       tbls: ['cazadores'], hint: "Escribe: SELECT nombre, presas_cobradas FROM cazadores ORDER BY presas_cobradas DESC LIMIT 3;",
       pos: { x: 68.5, y: 79.0 }, prereqs: [7]
     },
@@ -210,7 +210,7 @@ export function build100Levels(): GameLevel[] {
       },
       prompt: "Selecciona 'apodo' y 'peso_toneladas' de 'mamuts' donde manada = 'Valle Norte' AND peligrosidad = 'Alta'.",
       expected: "SELECT apodo, peso_toneladas FROM mamuts WHERE manada = 'Valle Norte' AND peligrosidad = 'Alta';",
-      initial: "-- Nivel 9: Combina filtros con AND\nSELECT apodo, peso_toneladas \nFROM mamuts \nWHERE manada = 'Valle Norte' AND peligrosidad = 'Alta';",
+      initial: "-- Nivel 9: Combina filtros con AND\nSELECT apodo, peso_toneladas \nFROM mamuts \nWHERE manada = 'Valle Norte'  peligrosidad = 'Alta';",
       tbls: ['mamuts'], hint: "Usa el operador AND: WHERE manada = 'Valle Norte' AND peligrosidad = 'Alta';",
       pos: { x: 82.5, y: 77.0 }, prereqs: [8]
     },
@@ -223,7 +223,7 @@ export function build100Levels(): GameLevel[] {
       },
       prompt: "Selecciona 'recurso', 'tipo' y 'cantidad' de 'recursos_tribu' donde cantidad > 10 AND tipo = 'Combustible' ORDER BY cantidad DESC.",
       expected: "SELECT recurso, tipo, cantidad FROM recursos_tribu WHERE cantidad > 10 AND tipo = 'Combustible' ORDER BY cantidad DESC;",
-      initial: "-- Nivel 10: Derrota al Glitch y funda la Primera Aldea\nSELECT recurso, tipo, cantidad \nFROM recursos_tribu \nWHERE cantidad > 10 AND tipo = 'Combustible' \nORDER BY cantidad DESC;",
+      initial: "-- Nivel 10: Derrota al Glitch completando el filtro y el orden\nSELECT recurso, tipo, cantidad \nFROM recursos_tribu \nWHERE cantidad > 10 AND tipo = \nORDER BY ;",
       tbls: ['recursos_tribu'], hint: "Combina WHERE con AND y finaliza con ORDER BY cantidad DESC.",
       pos: { x: 86.5, y: 57.0 }, prereqs: [9]
     },
