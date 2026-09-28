@@ -2,336 +2,336 @@
 
 import React, { useState, useMemo } from 'react';
 import { useGameState } from '@/context/GameStateContext';
-import { SQL_LEARNING_NODES } from '@/content/data-ai/sql/nodes';
-import { SQL_REGIONS } from '@/content/data-ai/sql/regions';
-import { LearningNode, NodeStatus } from '@/types/curriculum';
-import { MapNode } from './MapNode';
-import { NodeDetailModal } from './NodeDetailModal';
-import { ExerciseLab } from '../learning/ExerciseLab';
-import { BossArena } from '../learning/BossArena';
-import { ProjectWorkspace } from '../learning/ProjectWorkspace';
-import { getSmartNextStep } from '@/lib/progression/recommender';
+import { ALL_100_LEVELS, GAME_WORLDS, GameLevel } from '@/content/data-ai/sql/levels';
+import { LevelGameLab } from '../learning/LevelGameLab';
+import { PowerUpShopModal } from '../gamification/PowerUpShopModal';
 import { 
-  Compass, 
-  MapPin, 
-  Sparkles, 
-  ChevronRight, 
-  ShieldCheck, 
+  Star, 
+  Lock, 
+  Check, 
+  Coins, 
+  ShoppingBag, 
   Trophy, 
-  Flame,
-  Award
+  Compass, 
+  ChevronRight, 
+  Flame, 
+  Castle, 
+  Sparkles,
+  Play
 } from 'lucide-react';
 import { sfx } from '@/lib/audio/sfx';
 
 export const WorldMap: React.FC = () => {
   const { 
-    completedNodes, 
-    unlockedNodes, 
-    masteries, 
-    activeNodeId, 
-    setActiveNodeId 
+    profile, 
+    completedLevels, 
+    unlockedLevelMax, 
+    stars, 
+    selectedWorldNumber, 
+    setSelectedWorldNumber 
   } = useGameState();
 
-  const [selectedNode, setSelectedNode] = useState<LearningNode | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [activeInteractiveNode, setActiveInteractiveNode] = useState<LearningNode | null>(null);
+  const [activeLevel, setActiveLevel] = useState<GameLevel | null>(null);
+  const [isShopOpen, setIsShopOpen] = useState(false);
 
-  // Compute Smart Next Step
-  const nextStep = useMemo(() => {
-    return getSmartNextStep(SQL_LEARNING_NODES, completedNodes, masteries);
-  }, [completedNodes, masteries]);
+  const currentWorld = useMemo(() => {
+    return GAME_WORLDS.find(w => w.number === selectedWorldNumber) || GAME_WORLDS[0];
+  }, [selectedWorldNumber]);
 
-  // Overall Completion stats
-  const completedCount = completedNodes.size;
-  const totalCount = SQL_LEARNING_NODES.length;
-  const completionPercentage = Math.round((completedCount / totalCount) * 100);
+  const worldLevels = useMemo(() => {
+    return ALL_100_LEVELS.filter(l => l.worldNumber === selectedWorldNumber);
+  }, [selectedWorldNumber]);
 
-  const handleNodeClick = (node: LearningNode) => {
+  // Total Stars
+  const totalStarsEarned = useMemo(() => {
+    return Object.values(stars).reduce((acc, curr) => acc + curr, 0);
+  }, [stars]);
+
+  const handleLevelClick = (level: GameLevel) => {
+    if (level.levelNumber > unlockedLevelMax) {
+      sfx.playError();
+      return;
+    }
     sfx.playClick();
-    setSelectedNode(node);
-    setIsModalOpen(true);
+    setActiveLevel(level);
   };
 
-  const handleLaunchNode = (node: LearningNode) => {
-    setIsModalOpen(false);
-    setActiveInteractiveNode(node);
+  const handleNextLevel = () => {
+    if (!activeLevel) return;
+    const nextNum = activeLevel.levelNumber + 1;
+    const nextLvl = ALL_100_LEVELS.find(l => l.levelNumber === nextNum);
+    if (nextLvl) {
+      // Check if world change is needed
+      if (nextLvl.worldNumber !== selectedWorldNumber) {
+        setSelectedWorldNumber(nextLvl.worldNumber);
+      }
+      setActiveLevel(nextLvl);
+    } else {
+      setActiveLevel(null);
+    }
   };
-
-  // Generate SVG Path Connections between nodes
-  const pathConnections = useMemo(() => {
-    const nodeMap = new Map<string, LearningNode>();
-    SQL_LEARNING_NODES.forEach(n => nodeMap.set(n.id, n));
-
-    const connections: {
-      fromId: string;
-      toId: string;
-      x1: number;
-      y1: number;
-      x2: number;
-      y2: number;
-      isCompleted: boolean;
-      isAvailable: boolean;
-    }[] = [];
-
-    SQL_LEARNING_NODES.forEach(toNode => {
-      toNode.prerequisites.forEach(fromId => {
-        const fromNode = nodeMap.get(fromId);
-        if (fromNode) {
-          const isCompleted = completedNodes.has(fromNode.id) && completedNodes.has(toNode.id);
-          const isAvailable = completedNodes.has(fromNode.id) && unlockedNodes.has(toNode.id);
-          connections.push({
-            fromId: fromNode.id,
-            toId: toNode.id,
-            x1: fromNode.position.x,
-            y1: fromNode.position.y,
-            x2: toNode.position.x,
-            y2: toNode.position.y,
-            isCompleted,
-            isAvailable
-          });
-        }
-      });
-    });
-
-    return connections;
-  }, [completedNodes, unlockedNodes]);
 
   return (
-    <div className="relative min-h-[calc(100vh-4rem)] w-full bg-[#070A0F] text-slate-100 overflow-x-hidden pb-24">
+    <div className="relative min-h-[calc(100vh-4rem)] w-full bg-[#080C14] text-slate-100 overflow-x-hidden pb-32">
       
-      {/* Background Cartographic Grid / Depth Texture */}
-      <div 
-        className="pointer-events-none absolute inset-0 opacity-[0.035]"
-        style={{
-          backgroundImage: `radial-gradient(#F59E0B 1px, transparent 1px), radial-gradient(#06B6D4 1px, transparent 1px)`,
-          backgroundSize: '40px 40px',
-          backgroundPosition: '0 0, 20px 20px'
-        }}
-      />
-
-      {/* Sticky Journey Overview Banner */}
-      <div className="sticky top-16 z-20 border-b border-slate-800/80 bg-[#090D14]/90 backdrop-blur-md px-4 py-3 sm:px-8">
+      {/* Top Mario HUD Bar */}
+      <div className="sticky top-16 z-30 border-b-4 border-slate-800 bg-[#0B101D]/95 backdrop-blur-md px-4 py-3 shadow-xl">
         <div className="mx-auto flex max-w-7xl flex-col sm:flex-row items-center justify-between gap-3">
           
-          {/* Progress Metrics */}
-          <div className="flex items-center space-x-4 w-full sm:w-auto">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-amber-500/30 bg-amber-500/10 text-amber-400">
-              <Compass className="h-5 w-5" />
+          {/* World Selector Tabs */}
+          <div className="flex items-center space-x-1.5 overflow-x-auto max-w-full pb-1 sm:pb-0">
+            {GAME_WORLDS.map((world) => {
+              const isSelected = world.number === selectedWorldNumber;
+              const isUnlocked = unlockedLevelMax >= world.levelsRange[0];
+
+              return (
+                <button
+                  key={world.number}
+                  onClick={() => {
+                    sfx.playClick();
+                    setSelectedWorldNumber(world.number);
+                  }}
+                  className={`flex items-center space-x-2 rounded-2xl px-3.5 py-2 font-black text-xs transition-all whitespace-nowrap border-2 shadow-sm ${
+                    isSelected
+                      ? 'border-amber-400 bg-amber-500 text-slate-950 scale-105 shadow-[0_0_15px_rgba(245,158,11,0.4)]'
+                      : isUnlocked
+                      ? 'border-slate-700 bg-slate-900 text-slate-300 hover:border-slate-500 hover:bg-slate-800'
+                      : 'border-slate-800/80 bg-slate-950 text-slate-600 opacity-60'
+                  }`}
+                >
+                  <span>WORLD {world.number}</span>
+                  {!isUnlocked && <Lock className="h-3 w-3" />}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Right Game Metrics: Stars, Coins, Shop */}
+          <div className="flex items-center space-x-3">
+            {/* Stars Counter */}
+            <div className="flex items-center space-x-1.5 rounded-2xl border-2 border-amber-400/40 bg-amber-500/10 px-3 py-1 font-mono text-xs font-black text-amber-300">
+              <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
+              <span>{totalStarsEarned}</span>
+              <span className="text-[10px] text-amber-500 font-sans">/ 300</span>
             </div>
+
+            {/* Coins Counter */}
+            <div 
+              onClick={() => setIsShopOpen(true)}
+              className="cursor-pointer flex items-center space-x-1.5 rounded-2xl border-2 border-yellow-400/40 bg-yellow-500/10 px-3 py-1 font-mono text-xs font-black text-yellow-300 hover:border-yellow-400 transition-all"
+            >
+              <Coins className="h-4 w-4 fill-yellow-400 text-yellow-400 animate-pulse" />
+              <span>{profile.coins}</span>
+              <span className="text-[10px] text-yellow-500 font-sans">COINS</span>
+            </div>
+
+            {/* Shop Button */}
+            <button
+              onClick={() => setIsShopOpen(true)}
+              className="flex items-center space-x-1.5 rounded-2xl border-2 border-amber-400 bg-gradient-to-r from-amber-400 to-amber-500 px-3.5 py-1.5 text-xs font-black text-slate-950 hover:from-amber-300 hover:to-amber-400 shadow-md active:scale-95 transition-all"
+            >
+              <ShoppingBag className="h-4 w-4" />
+              <span className="hidden sm:inline">ITEM SHOP</span>
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+      {/* World Board Container with Thematic Background Art */}
+      <div className="mx-auto max-w-4xl px-3 sm:px-6 pt-6">
+        
+        {/* World Header Card */}
+        <div className="relative mb-6 overflow-hidden rounded-3xl border-4 border-slate-800 bg-[#0E1526] p-6 shadow-2xl">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <div className="flex items-center space-x-2">
-                <span className="font-mono text-xs font-bold uppercase tracking-wider text-amber-400">
-                  SQL WORLD CAMPAIGN
-                </span>
-                <span className="text-slate-600">•</span>
-                <span className="font-mono text-xs text-slate-400">
-                  {completedCount} / {totalCount} Nodes Conquered
-                </span>
-              </div>
-              <div className="mt-1 flex items-center space-x-2">
-                <div className="h-2 w-36 sm:w-48 rounded-full bg-slate-800 overflow-hidden border border-slate-700/50">
-                  <div
-                    className="h-full bg-gradient-to-r from-amber-500 to-emerald-400 transition-all duration-500"
-                    style={{ width: `${completionPercentage}%` }}
-                  />
-                </div>
-                <span className="font-mono text-xs font-bold text-emerald-400">
-                  {completionPercentage}%
+              <span className="font-mono text-xs font-black uppercase tracking-widest text-amber-400">
+                WORLD {currentWorld.number} • {currentWorld.biome.toUpperCase()} BIOME
+              </span>
+              <h1 className="mt-1 text-2xl sm:text-3xl font-black text-white tracking-tight">
+                {currentWorld.name}
+              </h1>
+              <p className="mt-1 text-xs text-slate-300">
+                {currentWorld.subtitle} (Levels {currentWorld.levelsRange[0]}–{currentWorld.levelsRange[1]})
+              </p>
+            </div>
+
+            <div className="flex items-center space-x-3">
+              <div className="rounded-2xl border-2 border-slate-700 bg-slate-900/80 px-4 py-2 font-mono text-xs text-slate-300 text-center">
+                <span className="block text-[10px] text-slate-500 uppercase">Progress</span>
+                <span className="font-black text-amber-400 text-sm">
+                  {completedLevels.size} / 100 Cleared
                 </span>
               </div>
             </div>
           </div>
-
-          {/* Smart Next Step Action Button */}
-          {nextStep.targetNodeId && (
-            <div className="flex items-center space-x-3 w-full sm:w-auto justify-end">
-              <div className="hidden lg:block text-right">
-                <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider block">
-                  RECOMMENDED NEXT OBJECTIVE:
-                </span>
-                <span className="text-xs font-semibold text-slate-200">
-                  {nextStep.title}
-                </span>
-              </div>
-              <button
-                onClick={() => {
-                  const target = SQL_LEARNING_NODES.find(n => n.id === nextStep.targetNodeId);
-                  if (target) {
-                    handleNodeClick(target);
-                  }
-                }}
-                className="flex items-center space-x-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 px-4 py-2 text-xs font-bold text-slate-950 hover:from-amber-400 hover:to-amber-500 transition-all shadow-[0_0_15px_rgba(245,158,11,0.25)] active:scale-95"
-              >
-                <span>{nextStep.actionLabel}</span>
-                <ChevronRight className="h-4 w-4" />
-              </button>
-            </div>
-          )}
-
         </div>
-      </div>
 
-      {/* Main Adventure Route Canvas */}
-      <div className="relative mx-auto max-w-4xl px-4 py-8">
-        
-        {/* Route Container with defined height for 100% relative coordinates */}
-        <div className="relative w-full h-[2200px]">
+        {/* MARIO ADVENTURE BOARD with Real Background Landscape! */}
+        <div className="relative w-full rounded-3xl border-4 border-slate-800 overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.8)]">
           
-          {/* SVG Connection Paths Overlay */}
-          <svg className="absolute inset-0 h-full w-full pointer-events-none" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <linearGradient id="grad-completed" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stopColor="#10B981" stopOpacity="0.8" />
-                <stop offset="100%" stopColor="#10B981" stopOpacity="0.8" />
-              </linearGradient>
-              <linearGradient id="grad-available" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stopColor="#F59E0B" stopOpacity="0.9" />
-                <stop offset="100%" stopColor="#F59E0B" stopOpacity="0.9" />
-              </linearGradient>
-            </defs>
+          {/* Background Map Art Image */}
+          <div 
+            className="absolute inset-0 bg-cover bg-center opacity-45 pointer-events-none transition-all duration-700"
+            style={{ backgroundImage: `url(${currentWorld.bgImage})` }}
+          />
+          {/* Dark Overlay Tint for contrast */}
+          <div className="absolute inset-0 bg-slate-950/45 pointer-events-none" />
 
-            {pathConnections.map((conn, idx) => {
-              // Convert percentage coordinates to viewBox percentage curves
-              const x1 = conn.x1;
-              const y1 = conn.y1;
-              const x2 = conn.x2;
-              const y2 = conn.y2;
-              const midY = (y1 + y2) / 2;
+          {/* Stepping-Stone Road Canvas */}
+          <div className="relative w-full h-[1800px]">
+            
+            {/* SVG Stepping Cobblestone Path connecting all 20 levels in the world */}
+            <svg className="absolute inset-0 h-full w-full pointer-events-none" xmlns="http://www.w3.org/2000/svg">
+              {worldLevels.map((lvl, idx) => {
+                if (idx === worldLevels.length - 1) return null;
+                const nextLvl = worldLevels[idx + 1];
+                const x1 = lvl.position.x;
+                const y1 = lvl.position.y;
+                const x2 = nextLvl.position.x;
+                const y2 = nextLvl.position.y;
+                const midY = (y1 + y2) / 2;
+                const pathData = `M ${x1}% ${y1}% C ${x1}% ${midY}%, ${x2}% ${midY}%, ${x2}% ${y2}%`;
 
-              // Cubic Bezier curve path string in SVG
-              const pathData = `M ${x1}% ${y1}% C ${x1}% ${midY}%, ${x2}% ${midY}%, ${x2}% ${y2}%`;
+                const isCompleted = completedLevels.has(lvl.levelNumber) && completedLevels.has(nextLvl.levelNumber);
+                const isUnlocked = completedLevels.has(lvl.levelNumber) || lvl.levelNumber < unlockedLevelMax;
 
-              return (
-                <g key={idx}>
-                  {/* Subtle shadow glow for active path */}
-                  {conn.isAvailable && (
+                return (
+                  <g key={lvl.levelNumber}>
+                    {/* Shadow road */}
                     <path
                       d={pathData}
                       fill="none"
-                      stroke="#F59E0B"
-                      strokeWidth="6"
-                      strokeOpacity="0.2"
+                      stroke="#000000"
+                      strokeWidth="14"
+                      strokeOpacity="0.5"
                       strokeLinecap="round"
                     />
-                  )}
-                  <path
-                    d={pathData}
-                    fill="none"
-                    stroke={
-                      conn.isCompleted
-                        ? '#10B981'
-                        : conn.isAvailable
-                        ? '#F59E0B'
-                        : '#1E293B'
-                    }
-                    strokeWidth={conn.isCompleted || conn.isAvailable ? '3' : '2'}
-                    strokeDasharray={conn.isAvailable && !conn.isCompleted ? '6,6' : 'none'}
-                    strokeLinecap="round"
-                    className={conn.isAvailable && !conn.isCompleted ? 'animate-pulse' : ''}
-                  />
-                </g>
+                    {/* Cobblestone path */}
+                    <path
+                      d={pathData}
+                      fill="none"
+                      stroke={isCompleted ? '#10B981' : isUnlocked ? '#F59E0B' : '#475569'}
+                      strokeWidth="8"
+                      strokeDasharray="6,6"
+                      strokeLinecap="round"
+                    />
+                  </g>
+                );
+              })}
+            </svg>
+
+            {/* Stepping-Stone Nodes */}
+            {worldLevels.map((lvl) => {
+              const isCompleted = completedLevels.has(lvl.levelNumber);
+              const isCurrent = lvl.levelNumber === unlockedLevelMax;
+              const isLocked = lvl.levelNumber > unlockedLevelMax;
+              const starCount = stars[lvl.levelNumber] || 0;
+
+              return (
+                <div
+                  key={lvl.levelNumber}
+                  onClick={() => handleLevelClick(lvl)}
+                  style={{ left: `${lvl.position.x}%`, top: `${lvl.position.y}%` }}
+                  className={`absolute -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ${
+                    isLocked
+                      ? 'cursor-not-allowed opacity-60'
+                      : 'cursor-pointer hover:scale-125 active:scale-95 z-20'
+                  }`}
+                >
+                  <div className="relative flex flex-col items-center">
+                    
+                    {/* Current Player Token (Mario Character Pin) */}
+                    {isCurrent && (
+                      <div className="absolute -top-10 flex flex-col items-center animate-bounce z-30">
+                        <div className="rounded-full bg-red-600 border-2 border-white px-2 py-0.5 text-[9px] font-black text-white uppercase shadow-lg">
+                          YOU
+                        </div>
+                        <div className="w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-red-600" />
+                      </div>
+                    )}
+
+                    {/* Stepping Stone Disk */}
+                    <div
+                      className={`relative flex items-center justify-center transition-all ${
+                        lvl.type === 'boss_fortress'
+                          ? 'h-18 w-18 rounded-3xl border-4'
+                          : lvl.type === 'mystery_block'
+                          ? 'h-14 w-14 rounded-2xl border-3 rotate-6'
+                          : 'h-14 w-14 rounded-full border-4'
+                      } ${
+                        isCompleted
+                          ? 'border-emerald-400 bg-emerald-600 text-white shadow-[0_6px_0_#065F46,0_10px_20px_rgba(16,185,129,0.5)]'
+                          : isCurrent
+                          ? 'border-amber-300 bg-amber-500 text-slate-950 shadow-[0_6px_0_#B45309,0_10px_25px_rgba(245,158,11,0.6)] animate-pulse'
+                          : 'border-slate-700 bg-slate-800 text-slate-500 shadow-[0_4px_0_#1E293B]'
+                      }`}
+                    >
+                      {isCompleted ? (
+                        <Check className="h-7 w-7 stroke-[3]" />
+                      ) : isLocked ? (
+                        <Lock className="h-5 w-5" />
+                      ) : lvl.type === 'boss_fortress' ? (
+                        <Castle className="h-8 w-8 text-red-950" />
+                      ) : lvl.type === 'mystery_block' ? (
+                        <span className="font-mono text-xl font-black text-slate-950">?</span>
+                      ) : (
+                        <span className="font-mono text-lg font-black">{lvl.levelNumber}</span>
+                      )}
+                    </div>
+
+                    {/* Stars Earned Under Stone */}
+                    {isCompleted && (
+                      <div className="mt-1 flex items-center space-x-0.5">
+                        {[1, 2, 3].map(st => (
+                          <Star
+                            key={st}
+                            className={`h-3 w-3 ${
+                              st <= starCount
+                                ? 'fill-yellow-400 text-yellow-400'
+                                : 'text-slate-600'
+                            }`}
+                          />
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Level Name Capsule */}
+                    <div className="mt-1 max-w-[120px] text-center pointer-events-none">
+                      <span className={`inline-block truncate rounded-lg px-2 py-0.5 font-bold text-[9px] border backdrop-blur-md ${
+                        isCompleted
+                          ? 'border-emerald-500/40 bg-emerald-950/80 text-emerald-200'
+                          : isCurrent
+                          ? 'border-amber-400 bg-amber-950/90 text-amber-300 font-black'
+                          : 'border-slate-800 bg-slate-950/80 text-slate-500'
+                      }`}>
+                        {lvl.title}
+                      </span>
+                    </div>
+
+                  </div>
+                </div>
               );
             })}
-          </svg>
 
-          {/* Regional Banners & Milestones along the canvas */}
-          {SQL_REGIONS.map((region) => {
-            let topPosition = 0;
-            if (region.number === 1) topPosition = 0.5;
-            else if (region.number === 2) topPosition = 29.5;
-            else if (region.number === 3) topPosition = 53.0;
-            else if (region.number === 4) topPosition = 62.5;
-            else if (region.number === 5) topPosition = 78.5;
-
-            return (
-              <div
-                key={region.id}
-                style={{ top: `${topPosition}%` }}
-                className="absolute left-1/2 -translate-x-1/2 w-full max-w-md pointer-events-none px-4"
-              >
-                <div className="flex items-center justify-center space-x-3 rounded-xl border border-slate-800/80 bg-[#090D14]/90 px-4 py-2 backdrop-blur-md shadow-lg">
-                  <div 
-                    className="h-2 w-2 rounded-full"
-                    style={{ backgroundColor: region.accentColor }}
-                  />
-                  <div className="text-center">
-                    <span className="font-mono text-[9px] font-bold uppercase tracking-widest text-slate-400">
-                      REGION 0{region.number}
-                    </span>
-                    <h3 className="font-bold text-xs text-white tracking-tight">
-                      {region.title} — {region.subtitle}
-                    </h3>
-                  </div>
-                  <div 
-                    className="h-2 w-2 rounded-full"
-                    style={{ backgroundColor: region.accentColor }}
-                  />
-                </div>
-              </div>
-            );
-          })}
-
-          {/* Render All Adventure Map Nodes */}
-          {SQL_LEARNING_NODES.map((node) => {
-            const isCompleted = completedNodes.has(node.id);
-            const isUnlocked = unlockedNodes.has(node.id);
-            const isCurrent = node.id === nextStep.targetNodeId;
-
-            let status: NodeStatus = 'locked';
-            if (isCompleted) status = 'completed';
-            else if (isUnlocked) status = 'available';
-
-            return (
-              <MapNode
-                key={node.id}
-                node={node}
-                status={status}
-                isCurrentTarget={isCurrent}
-                onClick={() => handleNodeClick(node)}
-              />
-            );
-          })}
+          </div>
 
         </div>
 
       </div>
 
-      {/* Node Preview Modal */}
-      {isModalOpen && selectedNode && (
-        <NodeDetailModal
-          node={selectedNode}
-          status={
-            completedNodes.has(selectedNode.id)
-              ? 'completed'
-              : unlockedNodes.has(selectedNode.id)
-              ? 'available'
-              : 'locked'
-          }
-          onClose={() => setIsModalOpen(false)}
-          onLaunch={() => handleLaunchNode(selectedNode)}
+      {/* Active Level Player */}
+      {activeLevel && (
+        <LevelGameLab
+          level={activeLevel}
+          onClose={() => setActiveLevel(null)}
+          onNextLevel={handleNextLevel}
         />
       )}
 
-      {/* Active Interactive Mode (Exercise Lab, Boss Arena, or Project Workspace) */}
-      {activeInteractiveNode && (
-        <>
-          {activeInteractiveNode.type === 'boss' ? (
-            <BossArena
-              node={activeInteractiveNode}
-              onClose={() => setActiveInteractiveNode(null)}
-            />
-          ) : activeInteractiveNode.type === 'project' ? (
-            <ProjectWorkspace
-              node={activeInteractiveNode}
-              onClose={() => setActiveInteractiveNode(null)}
-            />
-          ) : (
-            <ExerciseLab
-              node={activeInteractiveNode}
-              onClose={() => setActiveInteractiveNode(null)}
-            />
-          )}
-        </>
+      {/* Item & Help Shop Modal */}
+      {isShopOpen && (
+        <PowerUpShopModal onClose={() => setIsShopOpen(false)} />
       )}
 
     </div>

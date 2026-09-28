@@ -12,10 +12,13 @@ import {
   Layers, 
   Sparkles,
   Shield,
-  ChevronDown
+  ChevronDown,
+  Coins,
+  ShoppingBag
 } from 'lucide-react';
 import { RealmSelector } from './RealmSelector';
 import { AuthModal } from '../views/AuthModal';
+import { PowerUpShopModal } from '../gamification/PowerUpShopModal';
 
 export const TopNav: React.FC = () => {
   const { 
@@ -28,6 +31,7 @@ export const TopNav: React.FC = () => {
 
   const [isRealmOpen, setIsRealmOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [isShopOpen, setIsShopOpen] = useState(false);
 
   return (
     <>
@@ -133,6 +137,25 @@ export const TopNav: React.FC = () => {
               </div>
             </div>
 
+            {/* Coins Balance */}
+            <div 
+              onClick={() => setIsShopOpen(true)}
+              className="cursor-pointer flex items-center space-x-1.5 rounded-lg border border-yellow-500/30 bg-yellow-950/20 px-2.5 py-1 text-xs font-bold text-yellow-300 hover:border-yellow-400 transition-all shadow-sm"
+              title="Open Power-Up Item Shop"
+            >
+              <Coins className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400 animate-pulse" />
+              <span className="font-mono">{profile.coins}</span>
+            </div>
+
+            {/* Shop Button */}
+            <button
+              onClick={() => setIsShopOpen(true)}
+              className="hidden lg:flex items-center space-x-1.5 rounded-lg border border-amber-500/40 bg-gradient-to-r from-amber-500 to-amber-600 px-2.5 py-1 text-xs font-extrabold text-slate-950 hover:from-amber-400 hover:to-amber-500 shadow-sm"
+            >
+              <ShoppingBag className="h-3.5 w-3.5" />
+              <span>Shop</span>
+            </button>
+
             {/* Audio Toggle */}
             <button
               onClick={toggleAudio}
@@ -166,6 +189,9 @@ export const TopNav: React.FC = () => {
 
       {/* Auth Modal */}
       {isAuthOpen && <AuthModal onClose={() => setIsAuthOpen(false)} />}
+
+      {/* Shop Modal */}
+      {isShopOpen && <PowerUpShopModal onClose={() => setIsShopOpen(false)} />}
     </>
   );
 };
