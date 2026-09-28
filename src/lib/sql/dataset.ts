@@ -80,6 +80,50 @@ export const SCHEMA_DEFINITIONS: TableSchema[] = [
       { name: 'cancel_date', type: 'TEXT', description: 'Cancellation date or NULL if active' },
       { name: 'status', type: 'TEXT', description: 'active, cancelled, paused' }
     ]
+  },
+  {
+    name: 'cuevas',
+    description: 'Refugios y cavernas de la tribu en la Edad de Piedra',
+    columns: [
+      { name: 'id', type: 'INTEGER', isPrimary: true, description: 'ID de la cueva' },
+      { name: 'nombre', type: 'TEXT', description: 'Nombre o apodo de la cueva' },
+      { name: 'region', type: 'TEXT', description: 'Región geográfica del valle' },
+      { name: 'habitada', type: 'INTEGER', description: '1 si tiene fuego y ocupantes, 0 si está desierta' },
+      { name: 'capacidad', type: 'INTEGER', description: 'Cantidad máxima de personas que abriga' }
+    ]
+  },
+  {
+    name: 'mamuts',
+    description: 'Registro de manadas y avistamientos de megafauna',
+    columns: [
+      { name: 'id', type: 'INTEGER', isPrimary: true, description: 'ID de registro del mamut' },
+      { name: 'apodo', type: 'TEXT', description: 'Nombre dado por los rastreadores' },
+      { name: 'manada', type: 'TEXT', description: 'Sector o manada a la que pertenece' },
+      { name: 'peso_toneladas', type: 'REAL', description: 'Peso estimado en toneladas métricas' },
+      { name: 'peligrosidad', type: 'TEXT', description: 'Nivel de riesgo: Baja, Media, Alta, Extrema' }
+    ]
+  },
+  {
+    name: 'recursos_tribu',
+    description: 'Inventario de supervivencia y materiales del campamento',
+    columns: [
+      { name: 'id', type: 'INTEGER', isPrimary: true, description: 'Identificador del recurso' },
+      { name: 'recurso', type: 'TEXT', description: 'Nombre del material' },
+      { name: 'tipo', type: 'TEXT', description: 'Categoría: Armas, Madera, Ropa, Combustible, Cuerdas' },
+      { name: 'cantidad', type: 'INTEGER', description: 'Unidades disponibles en el almacén' },
+      { name: 'estado', type: 'TEXT', description: 'Condición: Crítico, Bajo, Bueno, Excelente' }
+    ]
+  },
+  {
+    name: 'cazadores',
+    description: 'Rango y registros de caza de los miembros del clan',
+    columns: [
+      { name: 'id', type: 'INTEGER', isPrimary: true, description: 'ID del cazador' },
+      { name: 'nombre', type: 'TEXT', description: 'Nombre del miembro' },
+      { name: 'edad', type: 'INTEGER', description: 'Edad en ciclos solares' },
+      { name: 'rango', type: 'TEXT', description: 'Jerarquía: Novato, Iniciado, Veterano, Líder' },
+      { name: 'presas_cobradas', type: 'INTEGER', description: 'Cantidad de presas aportadas al clan' }
+    ]
   }
 ];
 
@@ -92,6 +136,10 @@ DROP TABLE IF EXISTS orders;
 DROP TABLE IF EXISTS products;
 DROP TABLE IF EXISTS categories;
 DROP TABLE IF EXISTS customers;
+DROP TABLE IF EXISTS cazadores;
+DROP TABLE IF EXISTS recursos_tribu;
+DROP TABLE IF EXISTS mamuts;
+DROP TABLE IF EXISTS cuevas;
 
 -- 1. Customers
 CREATE TABLE customers (
@@ -276,4 +324,72 @@ INSERT INTO subscriptions VALUES
 (210, 10, 'pro', 129.00, '2023-10-01', NULL, 'active'),
 (211, 11, 'enterprise', 299.00, '2023-11-01', NULL, 'active'),
 (212, 12, 'starter', 49.00, '2023-12-01', NULL, 'active');
+
+-- 8. Cuevas (Era I: Edad de Piedra)
+CREATE TABLE cuevas (
+  id INTEGER PRIMARY KEY,
+  nombre TEXT NOT NULL,
+  region TEXT NOT NULL,
+  habitada INTEGER NOT NULL,
+  capacidad INTEGER NOT NULL
+);
+
+INSERT INTO cuevas VALUES 
+(1, 'Cueva del Sol', 'Valle Norte', 1, 12),
+(2, 'Gruta Helada', 'Picos Altos', 0, 5),
+(3, 'Caverna del Río', 'Ribera Este', 1, 20),
+(4, 'Grieta Profunda', 'Paso Rocoso', 0, 8),
+(5, 'Abrigo del Bosque', 'Valle Norte', 1, 15);
+
+-- 9. Mamuts (Era I: Edad de Piedra)
+CREATE TABLE mamuts (
+  id INTEGER PRIMARY KEY,
+  apodo TEXT NOT NULL,
+  manada TEXT NOT NULL,
+  peso_toneladas REAL NOT NULL,
+  peligrosidad TEXT NOT NULL
+);
+
+INSERT INTO mamuts VALUES 
+(1, 'Colmillo Blanco', 'Valle Norte', 5.2, 'Alta'),
+(2, 'Peludo Veloz', 'Estepa Sur', 3.8, 'Media'),
+(3, 'Gran Berta', 'Valle Norte', 6.1, 'Extrema'),
+(4, 'Trueno Gris', 'Paso Rocoso', 4.5, 'Media'),
+(5, 'Sombra Ártica', 'Valle Norte', 4.8, 'Alta'),
+(6, 'Titán Colosal', 'Glaciar Eterno', 7.2, 'Extrema');
+
+-- 10. Recursos de la Tribu (Era I: Edad de Piedra)
+CREATE TABLE recursos_tribu (
+  id INTEGER PRIMARY KEY,
+  recurso TEXT NOT NULL,
+  tipo TEXT NOT NULL,
+  cantidad INTEGER NOT NULL,
+  estado TEXT NOT NULL
+);
+
+INSERT INTO recursos_tribu VALUES 
+(1, 'Puntas de Sílex', 'Armas', 45, 'Excelente'),
+(2, 'Ramas de Fresno', 'Madera', 8, 'Crítico'),
+(3, 'Pieles Curtidas', 'Ropa', 12, 'Bajo'),
+(4, 'Grasa de Ballena', 'Combustible', 30, 'Bueno'),
+(5, 'Tendones Secos', 'Cuerdas', 6, 'Crítico'),
+(6, 'Madera de Pino', 'Combustible', 24, 'Excelente'),
+(7, 'Lanzas con Espinas', 'Armas', 14, 'Bueno');
+
+-- 11. Cazadores del Clan (Era I: Edad de Piedra)
+CREATE TABLE cazadores (
+  id INTEGER PRIMARY KEY,
+  nombre TEXT NOT NULL,
+  edad INTEGER NOT NULL,
+  rango TEXT NOT NULL,
+  presas_cobradas INTEGER NOT NULL
+);
+
+INSERT INTO cazadores VALUES 
+(1, 'Kael', 32, 'Líder', 48),
+(2, 'Sura', 27, 'Veterano', 35),
+(3, 'Tark', 19, 'Novato', 4),
+(4, 'Bran', 40, 'Veterano', 52),
+(5, 'Mira', 22, 'Iniciado', 11),
+(6, 'Orik', 29, 'Veterano', 38);
 `;

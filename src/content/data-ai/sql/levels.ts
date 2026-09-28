@@ -21,6 +21,11 @@ export interface GameLevel {
   coinReward: number;
   pedagogicalNote: string;
   position: { x: number; y: number };
+  storyContext?: string;
+  characterDialogue?: {
+    speaker: string;
+    text: string;
+  };
 }
 
 function calculateWindingPath(indexInWorld: number): { x: number; y: number } {
@@ -34,48 +39,48 @@ function calculateWindingPath(indexInWorld: number): { x: number; y: number } {
 export const GAME_WORLDS = [
   {
     number: 1,
-    name: 'Reino de las Praderas',
-    subtitle: 'Llanuras de SELECT, WHERE y Bifurcación',
+    name: 'Era I: Edad de Piedra',
+    subtitle: 'El Dominio del Fuego y los Primeros Registros (Niveles 1–20)',
     biome: 'plains' as const,
-    bgImage: '/maps/world_1_plains.jpg',
+    bgImage: '/maps/era_1_piedra.jpg',
     levelsRange: [1, 20],
-    accentColor: '#10B981'
+    accentColor: '#F97316'
   },
   {
     number: 2,
-    name: 'Cañón de las Dunas',
-    subtitle: 'El Desierto de Agregaciones y GROUP BY',
+    name: 'Era II: Primeras Civilizaciones',
+    subtitle: 'Riberas del Nilo, Cosechas y Agrupaciones (Niveles 21–40)',
     biome: 'desert' as const,
-    bgImage: '/maps/world_2_desert.jpg',
+    bgImage: '/maps/era_2_antigua.jpg',
     levelsRange: [21, 40],
-    accentColor: '#F59E0B'
+    accentColor: '#0284C7'
   },
   {
     number: 3,
-    name: 'Islas de Cristal',
-    subtitle: 'El Océano de JOINs Relacionales',
+    name: 'Era III: Grandes Reinos e Hierro',
+    subtitle: 'Fortalezas, Forjas y Relaciones JOIN (Niveles 41–60)',
     biome: 'bridge' as const,
-    bgImage: '/maps/world_1_plains.jpg',
+    bgImage: '/maps/era_3_hierro.jpg',
     levelsRange: [41, 60],
-    accentColor: '#06B6D4'
+    accentColor: '#B91C1C'
   },
   {
     number: 4,
-    name: 'Cavernas de la Lógica',
-    subtitle: 'El Subterráneo de CASE, Subconsultas y Funciones',
+    name: 'Era IV: Revolución del Vapor',
+    subtitle: 'Fábricas, Ferrocarriles y Transformaciones (Niveles 61–80)',
     biome: 'cavern' as const,
-    bgImage: '/maps/world_2_desert.jpg',
+    bgImage: '/maps/era_4_vapor.jpg',
     levelsRange: [61, 80],
-    accentColor: '#8B5CF6'
+    accentColor: '#C2410C'
   },
   {
     number: 5,
-    name: 'Volcán de Bowser',
-    subtitle: 'La Ciudadela de CTEs y Funciones Ventana',
+    name: 'Era V: Era Digital e Inteligencia',
+    subtitle: 'Ciberespacio, Modelos de IA y Futuro (Niveles 81–100)',
     biome: 'volcano' as const,
-    bgImage: '/maps/world_3_volcano.jpg',
+    bgImage: '/maps/era_5_digital.jpg',
     levelsRange: [81, 100],
-    accentColor: '#EF4444'
+    accentColor: '#2563EB'
   }
 ];
 
@@ -91,86 +96,136 @@ export function build100Levels(): GameLevel[] {
   // - Nivel 20: Castillo
   // =========================================================================
   const w1Config = [
-    // 1-10: Tronco Principal
+    // 1-10: Tronco Principal (Era I: Edad de Piedra)
     {
-      lvl: 1, title: 'La Primera Chispa',
-      prompt: "¡Bienvenido a Learn-Lab! Completa la consulta escribiendo el asterisco (*) para seleccionar todas las columnas de la tabla 'customers'.",
-      expected: 'SELECT * FROM customers;',
-      initial: "-- Nivel 1: Escribe el asterisco (*) para traer todas las columnas\nSELECT \nFROM customers;",
-      tbls: ['customers'], hint: "En SQL usamos el asterisco (*) para traer todas las columnas: SELECT * FROM customers;",
-      pos: { x: 50, y: 6 }, prereqs: []
+      lvl: 1, title: 'El Primer Registro',
+      storyContext: "Nova despierta junto a una fogata mortecina en el valle glaciar. Kael, líder de la tribu nómada, necesita saber qué cuevas existen antes de que azote la gran ventisca.",
+      characterDialogue: {
+        speaker: 'Kael',
+        text: '¡Nova! Las marcas en la roca se borran con la lluvia. Necesito ver todas las cuevas registradas en este valle para no enviar a mi gente a ciegas.'
+      },
+      prompt: "Inspecciona la tabla 'cuevas'. Usa el asterisco (*) para seleccionar todas las columnas de la tabla 'cuevas'.",
+      expected: 'SELECT * FROM cuevas;',
+      initial: "-- Nivel 1: Selecciona todas las columnas de la tabla 'cuevas'\nSELECT * FROM cuevas;",
+      tbls: ['cuevas'], hint: "En SQL usamos el asterisco (*) para traer todas las columnas: SELECT * FROM cuevas;",
+      pos: { x: 10.5, y: 72.5 }, prereqs: []
     },
     {
-      lvl: 2, title: 'Proyección Individual',
-      prompt: "Selecciona únicamente la columna 'first_name' de la tabla 'customers'.",
-      expected: 'SELECT first_name FROM customers;',
-      initial: "-- Nivel 2: Escribe 'first_name' después de SELECT\nSELECT \nFROM customers;",
-      tbls: ['customers'], hint: "Reemplaza el espacio por el nombre de la columna: SELECT first_name FROM customers;",
-      pos: { x: 40, y: 11 }, prereqs: [1]
+      lvl: 2, title: 'Las Manadas del Valle',
+      storyContext: "Kael observa la planicie nevada. Allá afuera se mueven manadas gigantescas, pero los cazadores solo necesitan el apodo y la manada de cada bestia.",
+      characterDialogue: {
+        speaker: 'Nova',
+        text: 'No gastes energía procesando columnas innecesarias. Trae únicamente el apodo y la manada de los mamuts avistados.'
+      },
+      prompt: "Selecciona únicamente las columnas 'apodo' y 'manada' de la tabla 'mamuts'.",
+      expected: 'SELECT apodo, manada FROM mamuts;',
+      initial: "-- Nivel 2: Selecciona apodo y manada\nSELECT apodo, manada \nFROM mamuts;",
+      tbls: ['mamuts'], hint: "Separa los nombres de las columnas con una coma: SELECT apodo, manada FROM mamuts;",
+      pos: { x: 10.5, y: 53.0 }, prereqs: [1]
     },
     {
-      lvl: 3, title: 'Doble Identidad',
-      prompt: "Selecciona las columnas 'first_name' y 'last_name' (separadas por coma) de la tabla 'customers'.",
-      expected: 'SELECT first_name, last_name FROM customers;',
-      initial: "-- Nivel 3: Separa ambas columnas con coma\nSELECT \nFROM customers;",
-      tbls: ['customers'], hint: "Separa múltiples columnas con una coma: SELECT first_name, last_name FROM customers;",
-      pos: { x: 30, y: 16 }, prereqs: [2]
+      lvl: 3, title: 'El Filtro de la Supervivencia',
+      storyContext: "El frío arrecian. Solo las cuevas que actualmente estén habitadas (habitada = 1) cuentan con fuego encendido y abrigo para los exploradores agotados.",
+      characterDialogue: {
+        speaker: 'Kael',
+        text: '¡Rápido! Si enviamos a las familias a cavernas vacías perecerán de frío. Filtra solo las cuevas donde habitada sea igual a 1.'
+      },
+      prompt: "Selecciona 'nombre' y 'region' de la tabla 'cuevas' donde habitada = 1.",
+      expected: 'SELECT nombre, region FROM cuevas WHERE habitada = 1;',
+      initial: "-- Nivel 3: Filtra las cuevas habitadas (habitada = 1)\nSELECT nombre, region \nFROM cuevas \nWHERE habitada = 1;",
+      tbls: ['cuevas'], hint: "Usa la cláusula WHERE: SELECT nombre, region FROM cuevas WHERE habitada = 1;",
+      pos: { x: 23.5, y: 47.0 }, prereqs: [2]
     },
     {
-      lvl: 4, title: 'Directorio de Contacto',
-      prompt: "Selecciona las columnas 'email' y 'city' de la tabla 'customers'.",
-      expected: 'SELECT email, city FROM customers;',
-      initial: "-- Nivel 4: Selecciona email y city\nSELECT \nFROM customers;",
-      tbls: ['customers'], hint: "Escribe: SELECT email, city FROM customers;",
-      pos: { x: 42, y: 21 }, prereqs: [3]
+      lvl: 4, title: 'Bestias Imponentes',
+      storyContext: "El clan prepara sus lanzas pesadas de sílex. Para almacenar carne antes del invierno, solo rastrearemos mamuts con un peso mayor a 4 toneladas métricas.",
+      characterDialogue: {
+        speaker: 'Nova',
+        text: 'Usa el operador de comparación mayor que (>) para encontrar a los gigantes cuyo peso_toneladas supere 4.0.'
+      },
+      prompt: "Selecciona 'apodo' y 'peso_toneladas' de la tabla 'mamuts' donde peso_toneladas > 4.0.",
+      expected: 'SELECT apodo, peso_toneladas FROM mamuts WHERE peso_toneladas > 4.0;',
+      initial: "-- Nivel 4: Filtra mamuts con peso_toneladas > 4.0\nSELECT apodo, peso_toneladas \nFROM mamuts \nWHERE peso_toneladas > 4.0;",
+      tbls: ['mamuts'], hint: "Escribe: SELECT apodo, peso_toneladas FROM mamuts WHERE peso_toneladas > 4.0;",
+      pos: { x: 37.0, y: 56.0 }, prereqs: [3]
     },
     {
-      lvl: 5, title: 'Alias de Columnas (AS)',
-      prompt: "Usa AS para renombrar columnas: selecciona 'name AS product_name' y 'price AS retail_price' de 'products'.",
-      expected: 'SELECT name AS product_name, price AS retail_price FROM products;',
-      initial: "-- Nivel 5: Renombra las columnas con AS\nSELECT name AS , price AS \nFROM products;",
-      tbls: ['products'], hint: "Escribe: SELECT name AS product_name, price AS retail_price FROM products;",
-      pos: { x: 58, y: 26 }, prereqs: [4]
+      lvl: 5, title: 'Inventario de Sílex y Madera',
+      storyContext: "Las herramientas del taller se desgastan rápidamente. Necesitamos alertar a los recolectores sobre aquellos recursos cuya cantidad sea menor a 15 unidades.",
+      characterDialogue: {
+        speaker: 'Kael',
+        text: 'Nuestras reservas de ramas y tendones están bajando. Revisa la tabla recursos_tribu y avísame cuáles tienen cantidad menor a 15.'
+      },
+      prompt: "Selecciona 'recurso' y 'cantidad' de 'recursos_tribu' donde cantidad < 15.",
+      expected: 'SELECT recurso, cantidad FROM recursos_tribu WHERE cantidad < 15;',
+      initial: "-- Nivel 5: Filtra los recursos con cantidad < 15\nSELECT recurso, cantidad \nFROM recursos_tribu \nWHERE cantidad < 15;",
+      tbls: ['recursos_tribu'], hint: "Usa el operador menor que (<): WHERE cantidad < 15;",
+      pos: { x: 46.5, y: 55.0 }, prereqs: [4]
     },
     {
-      lvl: 6, title: 'Puerta de Igualdad (WHERE)',
-      prompt: "Filtra los clientes donde 'country' sea igual a 'Germany'. Trae todas las columnas (*).",
-      expected: "SELECT * FROM customers WHERE country = 'Germany';",
-      initial: "-- Nivel 6: Completa la condición WHERE con 'Germany'\nSELECT * \nFROM customers \nWHERE country = ;",
-      tbls: ['customers'], hint: "Los textos en SQL van entre comillas simples: WHERE country = 'Germany';",
-      pos: { x: 70, y: 31 }, prereqs: [5]
+      lvl: 6, title: 'Cazadores Veteranos',
+      storyContext: "El cruce del torrente requiere experiencia en el hielo. Kael convoca a los miembros del clan que ostentan el rango de 'Veterano'.",
+      characterDialogue: {
+        speaker: 'Nova',
+        text: 'Recuerda que en SQL las cadenas de texto van envueltas en comillas simples. Filtra cazadores donde rango sea igual a \'Veterano\'.'
+      },
+      prompt: "Selecciona 'nombre' y 'presas_cobradas' de 'cazadores' donde rango = 'Veterano'.",
+      expected: "SELECT nombre, presas_cobradas FROM cazadores WHERE rango = 'Veterano';",
+      initial: "-- Nivel 6: Filtra cazadores donde rango = 'Veterano'\nSELECT nombre, presas_cobradas \nFROM cazadores \nWHERE rango = 'Veterano';",
+      tbls: ['cazadores'], hint: "Los textos van entre comillas simples: WHERE rango = 'Veterano';",
+      pos: { x: 52.0, y: 48.0 }, prereqs: [5]
     },
     {
-      lvl: 7, title: 'Umbral de Precios',
-      prompt: "Selecciona 'name' y 'price' de la tabla 'products' donde price sea mayor a 500.",
-      expected: 'SELECT name, price FROM products WHERE price > 500;',
-      initial: "-- Nivel 7: Agrega el filtro WHERE price > 500\nSELECT name, price \nFROM products \nWHERE ;",
-      tbls: ['products'], hint: "Usa el operador mayor que (>): WHERE price > 500;",
-      pos: { x: 60, y: 36 }, prereqs: [6]
+      lvl: 7, title: 'Prioridad de Refugio',
+      storyContext: "Llegan familias nómadas buscando abrigo. El consejo de ancianos necesita ver todas las cuevas ordenadas desde la de mayor capacidad hasta la más pequeña.",
+      characterDialogue: {
+        speaker: 'Kael',
+        text: '¡Ordenemos las cavernas! Quiero ver primero las que tengan más espacio para albergar a los clanes que vienen marchando.'
+      },
+      prompt: "Selecciona 'nombre' y 'capacidad' de 'cuevas' ordenando por 'capacidad' de forma descendente (DESC).",
+      expected: 'SELECT nombre, capacidad FROM cuevas ORDER BY capacidad DESC;',
+      initial: "-- Nivel 7: Ordena por capacidad DESC\nSELECT nombre, capacidad \nFROM cuevas \nORDER BY capacidad DESC;",
+      tbls: ['cuevas'], hint: "Usa ORDER BY columna DESC: SELECT nombre, capacidad FROM cuevas ORDER BY capacidad DESC;",
+      pos: { x: 60.5, y: 48.0 }, prereqs: [6]
     },
     {
-      lvl: 8, title: 'Alerta de Inventario',
-      prompt: "Selecciona 'name' y 'stock_quantity' de 'products' donde stock_quantity sea menor o igual a 25.",
-      expected: 'SELECT name, stock_quantity FROM products WHERE stock_quantity <= 25;',
-      initial: "-- Nivel 8: Filtra por stock_quantity <= 25\nSELECT name, stock_quantity \nFROM products \nWHERE ;",
-      tbls: ['products'], hint: "Usa el operador menor o igual (<=): WHERE stock_quantity <= 25;",
-      pos: { x: 44, y: 41 }, prereqs: [7]
+      lvl: 8, title: 'Los Más Diestros (Top 3)',
+      storyContext: "La tribu celebra a sus 3 mejores cazadores históricos entregándoles capas ceremoniales de lince. Debemos obtener el Top 3 con mayor presas_cobradas.",
+      characterDialogue: {
+        speaker: 'Nova',
+        text: 'Combina ORDER BY con LIMIT: primero ordena por presas_cobradas DESC y luego quédate solo con los 3 primeros.'
+      },
+      prompt: "Selecciona 'nombre' y 'presas_cobradas' de 'cazadores' ordenados por presas_cobradas DESC y limitados a 3.",
+      expected: 'SELECT nombre, presas_cobradas FROM cazadores ORDER BY presas_cobradas DESC LIMIT 3;',
+      initial: "-- Nivel 8: Top 3 cazadores con ORDER BY y LIMIT 3\nSELECT nombre, presas_cobradas \nFROM cazadores \nORDER BY presas_cobradas DESC \nLIMIT 3;",
+      tbls: ['cazadores'], hint: "Escribe: SELECT nombre, presas_cobradas FROM cazadores ORDER BY presas_cobradas DESC LIMIT 3;",
+      pos: { x: 68.5, y: 79.0 }, prereqs: [7]
     },
     {
-      lvl: 9, title: 'Aislamiento por País',
-      prompt: "Selecciona 'first_name' y 'email' de 'customers' donde country sea 'USA'.",
-      expected: "SELECT first_name, email FROM customers WHERE country = 'USA';",
-      initial: "-- Nivel 9: Filtra clientes de USA\nSELECT first_name, email \nFROM customers \nWHERE country = ;",
-      tbls: ['customers'], hint: "Escribe: SELECT first_name, email FROM customers WHERE country = 'USA';",
-      pos: { x: 36, y: 46 }, prereqs: [8]
+      lvl: 9, title: 'El Gran Filtro Compuesto',
+      storyContext: "Una bestia peligrosa acecha cerca del campamento. Los exploradores deben hallar mamuts que pertenezcan a la manada 'Valle Norte' Y que tengan peligrosidad 'Alta'.",
+      characterDialogue: {
+        speaker: 'Kael',
+        text: '¡Alerta máxima! Solo prepararemos las trampas de foso si la presa es del Valle Norte y su peligrosidad es Alta.'
+      },
+      prompt: "Selecciona 'apodo' y 'peso_toneladas' de 'mamuts' donde manada = 'Valle Norte' AND peligrosidad = 'Alta'.",
+      expected: "SELECT apodo, peso_toneladas FROM mamuts WHERE manada = 'Valle Norte' AND peligrosidad = 'Alta';",
+      initial: "-- Nivel 9: Combina filtros con AND\nSELECT apodo, peso_toneladas \nFROM mamuts \nWHERE manada = 'Valle Norte' AND peligrosidad = 'Alta';",
+      tbls: ['mamuts'], hint: "Usa el operador AND: WHERE manada = 'Valle Norte' AND peligrosidad = 'Alta';",
+      pos: { x: 82.5, y: 77.0 }, prereqs: [8]
     },
     {
-      lvl: 10, title: 'Cruce de Caminos (AND)',
-      prompt: "¡Cruce de Caminos! Selecciona 'name' y 'price' de 'products' donde price > 200 AND price < 1000. Supera este nivel para elegir tu ruta.",
-      expected: 'SELECT name, price FROM products WHERE price > 200 AND price < 1000;',
-      initial: "-- Nivel 10: Usa AND para exigir ambas condiciones\nSELECT name, price \nFROM products \nWHERE price > 200 AND ;",
-      tbls: ['products'], hint: "Combina ambas condiciones: WHERE price > 200 AND price < 1000;",
-      pos: { x: 50, y: 51 }, prereqs: [9]
+      lvl: 10, title: 'Jefe de Era: La Primera Aldea',
+      storyContext: "¡El Glitch intenta borrar el inventario del clan! Para cruzar al Valle Fértil y fundar la primera aldea permanente, debemos asegurar los recursos de combustible con más de 10 unidades.",
+      characterDialogue: {
+        speaker: 'Nova',
+        text: '¡El Núcleo de Datos resistirá la tormenta! Recuperemos los recursos con cantidad > 10 y tipo = \'Combustible\', ordenados de mayor a menor cantidad.'
+      },
+      prompt: "Selecciona 'recurso', 'tipo' y 'cantidad' de 'recursos_tribu' donde cantidad > 10 AND tipo = 'Combustible' ORDER BY cantidad DESC.",
+      expected: "SELECT recurso, tipo, cantidad FROM recursos_tribu WHERE cantidad > 10 AND tipo = 'Combustible' ORDER BY cantidad DESC;",
+      initial: "-- Nivel 10: Derrota al Glitch y funda la Primera Aldea\nSELECT recurso, tipo, cantidad \nFROM recursos_tribu \nWHERE cantidad > 10 AND tipo = 'Combustible' \nORDER BY cantidad DESC;",
+      tbls: ['recursos_tribu'], hint: "Combina WHERE con AND y finaliza con ORDER BY cantidad DESC.",
+      pos: { x: 86.5, y: 57.0 }, prereqs: [9]
     },
 
     // BIFURCACIÓN IZQUIERDA: RUTA VERDE (Fácil / Pradera)

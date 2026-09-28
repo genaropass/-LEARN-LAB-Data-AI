@@ -23,11 +23,11 @@ import {
 import { sfx } from '@/lib/audio/sfx';
 
 const WORLD_NAMES_ES: Record<number, { name: string; subtitle: string }> = {
-  1: { name: 'Reino Pradera', subtitle: 'Las Llanuras de SELECT y Bifurcación (Niveles 1–20)' },
-  2: { name: 'Cañón de Dunas', subtitle: 'El Desierto de Agrupaciones y Métricas (Niveles 21–40)' },
-  3: { name: 'Islas de Cristal', subtitle: 'El Océano de Relaciones y JOINs (Niveles 41–60)' },
-  4: { name: 'Cavernas Lógicas', subtitle: 'Las Minas de CASE y Subconsultas (Niveles 61–80)' },
-  5: { name: 'Volcán de Bowser', subtitle: 'La Ciudadela de CTEs y Funciones Ventana (Niveles 81–100)' }
+  1: { name: 'Era I: Edad de Piedra', subtitle: 'El Dominio del Fuego y los Primeros Registros (Niveles 1–20)' },
+  2: { name: 'Era II: Primeras Civilizaciones', subtitle: 'Riberas del Nilo, Cosechas y Agrupaciones (Niveles 21–40)' },
+  3: { name: 'Era III: Grandes Reinos e Hierro', subtitle: 'Fortalezas, Forjas y Relaciones JOIN (Niveles 41–60)' },
+  4: { name: 'Era IV: Revolución del Vapor', subtitle: 'Fábricas, Ferrocarriles y Transformaciones (Niveles 61–80)' },
+  5: { name: 'Era V: Era Digital e Inteligencia', subtitle: 'Ciberespacio, Modelos de IA y Futuro (Niveles 81–100)' }
 };
 
 interface PathSegment {
@@ -37,7 +37,7 @@ interface PathSegment {
 }
 
 const WORLD_1_SEGMENTS: PathSegment[] = [
-  // Tronco Principal 1 a 10
+  // Tronco Principal de la Edad de Piedra 1 a 10
   { fromLevel: 1, toLevel: 2 },
   { fromLevel: 2, toLevel: 3 },
   { fromLevel: 3, toLevel: 4 },
@@ -60,7 +60,7 @@ const WORLD_1_SEGMENTS: PathSegment[] = [
   // Reunificación hacia 19
   { fromLevel: 14, toLevel: 19, color: '#10b981' },
   { fromLevel: 18, toLevel: 19, color: '#f59e0b' },
-  // Hacia el Castillo de Bowser
+  // Hacia el Gran Desafío de Era
   { fromLevel: 19, toLevel: 20, color: '#ef4444' }
 ];
 
@@ -245,13 +245,11 @@ export const WorldMap: React.FC = () => {
         {/* TABLERO DE AVENTURA VÍVIDO (Opacidad al 95% para colores vivos del paisaje) */}
         <div className="relative w-full rounded-3xl border-4 border-amber-400/60 overflow-hidden shadow-[0_15px_40px_rgba(0,0,0,0.6)]">
           
-          {/* Imagen de fondo viva y brillante */}
+          {/* Imagen de fondo viva y brillante (100% opacidad y máxima nitidez) */}
           <div 
-            className="absolute inset-0 bg-cover bg-center transition-all duration-700 opacity-95"
+            className="absolute inset-0 bg-cover bg-center transition-all duration-700 opacity-100"
             style={{ backgroundImage: `url(${currentWorld.bgImage})` }}
           />
-          {/* Suave degradado para mejorar contraste */}
-          <div className="absolute inset-0 bg-gradient-to-b from-blue-950/15 via-transparent to-blue-950/20 pointer-events-none" />
 
           {/* Lienzo del Camino Serpenteante (1850px) */}
           <div className="relative w-full h-[1850px]">
@@ -353,29 +351,36 @@ export const WorldMap: React.FC = () => {
                 >
                   <div className="relative flex flex-col items-center">
                     
-                    {/* MASCOTA ANIMADA GRANDE (100px) DE DUOLINGO / MARIO sobre el nivel activo */}
+                    {/* MASCOTA ANIMADA PROTAGONISTA NOVA (GRANDE Y SIN FONDO) sobre el nivel activo */}
                     {isCurrent && (
-                      <div className="absolute -top-32 flex flex-col items-center animate-bounce z-40 pointer-events-none">
+                      <div className="absolute -top-36 flex flex-col items-center animate-bounce z-40 pointer-events-none">
                         
-                        {/* Bocadillo de Diálogo estilo Comic / Mario */}
-                        <div className="relative rounded-2xl border-3 border-amber-400 bg-white px-3.5 py-1.5 text-xs font-black text-slate-950 shadow-[0_6px_0_#b45309,0_12px_25px_rgba(0,0,0,0.5)] whitespace-nowrap mb-1 flex items-center gap-1">
-                          <span>¡A por este nivel! 🚀</span>
+                        {/* Bocadillo de Diálogo estilo Comic / Aventura con puntero hacia Nova */}
+                        <div className="relative rounded-2xl border-3 border-amber-400 bg-white/95 backdrop-blur-xs px-4 py-2 text-xs font-black text-slate-950 shadow-[0_6px_0_#b45309,0_12px_25px_rgba(0,0,0,0.5)] whitespace-nowrap mb-1 flex items-center gap-1.5 max-w-[260px] truncate">
+                          <span>
+                            {lvl.characterDialogue?.text 
+                              ? (lvl.characterDialogue.text.length > 42 
+                                  ? lvl.characterDialogue.text.slice(0, 40) + '...' 
+                                  : lvl.characterDialogue.text)
+                              : '¡Avanza en la historia! 🚀'}
+                          </span>
                           <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 border-solid border-t-amber-400 border-t-8 border-x-transparent border-x-8 border-b-0" />
                         </div>
 
-                        {/* Personaje Ilustrado en Gran Tamaño (100px x 100px) */}
-                        <div className="relative h-24 w-24 sm:h-28 sm:w-28 drop-shadow-[0_12px_20px_rgba(0,0,0,0.7)]">
+                        {/* Personaje Nova en Gran Tamaño (128px) recortado transparente */}
+                        <div className="relative h-28 w-28 sm:h-32 sm:w-32 drop-shadow-[0_14px_24px_rgba(0,0,0,0.6)]">
                           <Image
                             src="/mascot.png"
-                            alt="Tu personaje"
-                            width={112}
-                            height={112}
-                            className="rounded-3xl object-contain filter drop-shadow-md"
+                            alt="Nova la Exploradora"
+                            width={128}
+                            height={128}
+                            className="object-contain filter drop-shadow-md select-none"
+                            priority
                           />
                         </div>
 
                         {/* Pedestal de Brillo 3D bajo sus pies */}
-                        <div className="w-16 h-3 rounded-full bg-amber-400/40 blur-xs -mt-1 border border-amber-300 shadow-[0_0_15px_rgba(250,204,21,0.8)]" />
+                        <div className="w-20 h-3.5 rounded-full bg-amber-400/50 blur-xs -mt-1 border border-amber-300 shadow-[0_0_20px_rgba(250,204,21,0.9)]" />
                       </div>
                     )}
 

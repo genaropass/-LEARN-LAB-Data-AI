@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { useGameState } from '@/context/GameStateContext';
 import { GameLevel } from '@/content/data-ai/sql/levels';
 import { validateUserQuery } from '@/lib/sql/validator';
@@ -239,22 +240,58 @@ export const LevelGameLab: React.FC<LevelGameLabProps> = ({
         {/* Panel Izquierdo: Misión y Poderes Canjeables */}
         <div className="w-full lg:w-[45%] flex flex-col border-r-4 border-slate-800 bg-[#0c182c] p-5 overflow-y-auto space-y-4">
           
-          {/* Tarjeta de Objetivo */}
-          <div className="rounded-3xl border-3 border-amber-400/40 bg-gradient-to-br from-amber-400/10 via-slate-900 to-slate-900 p-5 shadow-lg">
-            <div className="flex items-center justify-between mb-2">
-              <span className="rounded-full bg-amber-400 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider text-slate-950">
-                OBJETIVO DEL NIVEL
-              </span>
-              <span className="font-mono text-xs font-black text-yellow-300">
-                +{level.xpReward} XP • +{level.coinReward} 🪙 Monedas
+          {/* Diálogo de Personaje y Bocadillo Cómic */}
+          <div className="flex items-start space-x-3 rounded-3xl border-3 border-amber-400/50 bg-[#0e1f3d] p-4 shadow-xl">
+            <div className="relative h-18 w-18 shrink-0 rounded-2xl bg-amber-400/20 border-2 border-amber-400/60 p-1 flex items-center justify-center">
+              <Image
+                src="/mascot.png"
+                alt="Nova"
+                width={70}
+                height={70}
+                className="object-contain filter drop-shadow-md select-none"
+              />
+              <span className="absolute -bottom-2 bg-amber-400 text-slate-950 text-[9px] font-black uppercase px-2 py-0.2 rounded-full border border-amber-300">
+                {level.characterDialogue?.speaker || 'Nova'}
               </span>
             </div>
             
-            <p className="text-sm font-bold text-white leading-relaxed mt-2">
+            {/* Nube de Diálogo Cómic */}
+            <div className="relative flex-1 rounded-2xl border-2 border-amber-300/80 bg-white/95 p-3 text-slate-950 shadow-md">
+              <p className="text-xs sm:text-sm font-black leading-snug">
+                {level.characterDialogue?.text || '¡Analicemos los datos juntos para avanzar!'}
+              </p>
+              <div className="absolute -left-2 top-4 border-solid border-r-white/95 border-r-8 border-y-transparent border-y-6 border-l-0" />
+            </div>
+          </div>
+
+          {/* Tarjeta de Historia / Crónica de la Era */}
+          {level.storyContext && (
+            <div className="rounded-2xl border-2 border-amber-600/40 bg-gradient-to-r from-amber-950/40 to-slate-900/60 p-3.5 shadow-sm">
+              <span className="text-[10px] font-black uppercase tracking-wider text-amber-400 block mb-1">
+                📜 Crónica de la Tribu
+              </span>
+              <p className="text-xs text-slate-200 leading-relaxed font-medium">
+                {level.storyContext}
+              </p>
+            </div>
+          )}
+
+          {/* Tarjeta de Objetivo */}
+          <div className="rounded-3xl border-3 border-amber-400/40 bg-gradient-to-br from-amber-400/10 via-slate-900 to-slate-900 p-4 shadow-lg">
+            <div className="flex items-center justify-between mb-2">
+              <span className="rounded-full bg-amber-400 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider text-slate-950">
+                MISIÓN DEL NIVEL
+              </span>
+              <span className="font-mono text-xs font-black text-yellow-300">
+                +{level.xpReward} XP • +{level.coinReward} 🪙
+              </span>
+            </div>
+            
+            <p className="text-sm font-bold text-white leading-relaxed mt-1">
               {level.prompt}
             </p>
 
-            <div className="mt-4 flex flex-wrap gap-2 pt-3 border-t border-slate-700/80">
+            <div className="mt-3 flex flex-wrap gap-2 pt-2.5 border-t border-slate-700/80">
               <span className="text-xs font-bold text-amber-300">Tablas Disponibles:</span>
               {level.targetTables.map(t => (
                 <span
