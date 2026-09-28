@@ -39,6 +39,7 @@ interface GameStateContextType {
   dismissAchievement: () => void;
   levelUpInfo: { level: number; title: string } | null;
   dismissLevelUp: () => void;
+  isLevelUnlocked: (levelNumber: number) => boolean;
   resetProgress: () => void;
 }
 
@@ -129,6 +130,21 @@ export const GameStateProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   }, [completedLevels]);
 
   const currentLevelNumber = unlockedLevelMax;
+
+  // Check if a specific level is unlocked (supporting branching paths & prerequisites)
+  const isLevelUnlocked = useCallback((levelNumber: number) => {
+    if (levelNumber === 1) return true;
+    if (completedLevels.has(levelNumber)) return true;
+
+    const level = ALL_100_LEVELS.find(l => l.levelNumber === levelNumber);
+    if (!level) return levelNumber <= unlockedLevelMax;
+
+    if (level.prerequisites && level.prerequisites.length > 0) {
+      return level.prerequisites.some(p => completedLevels.has(p));
+    }
+
+    return levelNumber <= unlockedLevelMax;
+  }, [completedLevels, unlockedLevelMax]);
 
   // Sync selected world with highest level
   useEffect(() => {
@@ -404,6 +420,7 @@ export const GameStateProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         dismissAchievement,
         levelUpInfo,
         dismissLevelUp,
+        isLevelUnlocked,
         resetProgress
       }}
     >
