@@ -58,34 +58,34 @@ export const SqlEditor: React.FC<SqlEditorProps> = ({
         <div className="flex items-center space-x-1.5">
           <button
             onClick={handleCopy}
-            className="flex items-center space-x-1 rounded px-2 py-1 text-xs text-slate-400 hover:bg-slate-800 hover:text-slate-200 transition-all"
-            title="Copy Query"
+            className="flex items-center space-x-1 rounded-xl px-2.5 py-1 text-xs text-slate-400 hover:bg-slate-800 hover:text-slate-200 transition-all font-bold"
+            title="Copiar consulta"
           >
             {copied ? <Check className="h-3.5 w-3.5 text-emerald-400" /> : <Copy className="h-3.5 w-3.5" />}
-            <span className="hidden sm:inline text-[11px]">{copied ? 'Copied' : 'Copy'}</span>
+            <span className="hidden sm:inline text-xs">{copied ? 'Copiado' : 'Copiar'}</span>
           </button>
 
           <button
             onClick={onReset}
-            className="flex items-center space-x-1 rounded px-2 py-1 text-xs text-slate-400 hover:bg-slate-800 hover:text-slate-200 transition-all"
-            title="Reset to Template"
+            className="flex items-center space-x-1 rounded-xl px-2.5 py-1 text-xs text-slate-400 hover:bg-slate-800 hover:text-slate-200 transition-all font-bold"
+            title="Restablecer plantilla inicial"
           >
             <RotateCcw className="h-3.5 w-3.5" />
-            <span className="hidden sm:inline text-[11px]">Reset</span>
+            <span className="hidden sm:inline text-xs">Reiniciar</span>
           </button>
 
           <button
             onClick={onRun}
             disabled={isRunning}
-            className="flex items-center space-x-1.5 rounded-lg bg-amber-500 px-3 py-1.5 text-xs font-bold text-slate-950 hover:bg-amber-400 active:scale-95 disabled:opacity-50 transition-all shadow-[0_0_12px_rgba(245,158,11,0.25)]"
+            className="btn-mario flex items-center space-x-2 px-4 py-2 text-xs font-black disabled:opacity-50"
           >
             {isRunning ? (
               <div className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-slate-950 border-t-transparent" />
             ) : (
               <Play className="h-3.5 w-3.5 fill-slate-950 text-slate-950" />
             )}
-            <span>RUN QUERY</span>
-            <kbd className="hidden sm:inline rounded bg-amber-600/30 px-1 py-0.5 font-mono text-[9px] text-slate-900 border border-amber-600/40">
+            <span>EJECUTAR CONSULTA</span>
+            <kbd className="hidden sm:inline rounded bg-amber-600/30 px-1.5 py-0.5 font-mono text-[10px] text-slate-950 border border-amber-600/40">
               Ctrl+↵
             </kbd>
           </button>

@@ -4,7 +4,6 @@ import { QueryResult } from '@/types/sql';
 
 let SQL: SqlJsStatic | null = null;
 let dbInstance: Database | null = null;
-let isInitializing = false;
 let initPromise: Promise<Database> | null = null;
 
 export async function getSqlEngine(): Promise<Database> {
@@ -19,19 +18,28 @@ export async function getSqlEngine(): Promise<Database> {
   initPromise = (async () => {
     try {
       if (!SQL) {
-        SQL = await initSqlJs({
-          locateFile: (file) => `/${file}`
-        });
+        try {
+          SQL = await initSqlJs({
+            locateFile: (file) => {
+              if (file.endsWith('.wasm')) return '/sql-wasm.wasm';
+              return `/${file}`;
+            }
+          });
+        } catch (localErr) {
+          console.warn('WASM local no disponible, intentando CDN de respaldo...', localErr);
+          SQL = await initSqlJs({
+            locateFile: (file) => `https://sql.js.org/dist/${file}`
+          });
+        }
       }
 
       dbInstance = new SQL.Database();
       dbInstance.run(SEED_SQL);
       return dbInstance;
     } catch (err) {
-      console.error('Failed to initialize SQLite engine:', err);
-      throw err;
-    } finally {
+      console.error('Error al inicializar el motor SQLite:', err);
       initPromise = null;
+      throw err;
     }
   })();
 
@@ -43,7 +51,7 @@ export async function resetDatabase(): Promise<void> {
   try {
     db.run(SEED_SQL);
   } catch (err) {
-    console.error('Failed to reset database:', err);
+    console.error('Error al reiniciar base de datos:', err);
   }
 }
 
@@ -57,7 +65,7 @@ export async function executeQuery(query: string): Promise<QueryResult> {
       values: [],
       rowCount: 0,
       executionTimeMs: 0,
-      error: 'Query is empty. Please enter an SQL statement.'
+      error: 'La consulta está vacía. Por favor escribe una sentencia SQL.'
     };
   }
 
@@ -77,7 +85,7 @@ export async function executeQuery(query: string): Promise<QueryResult> {
 
     const lastResult = results[results.length - 1];
     const safeValues: (string | number | null | boolean)[][] = (lastResult.values || []).map(row =>
-      row.map(val => (val instanceof Uint8Array ? '[BINARY DATA]' : (val as string | number | null | boolean)))
+      row.map(val => (val instanceof Uint8Array ? '[DATOS BINARIOS]' : (val as string | number | null | boolean)))
     );
 
     return {

@@ -10,6 +10,31 @@ function normalizeValue(val: unknown): string | number | null {
   return String(val).trim().toLowerCase();
 }
 
+function translateSqlError(error: string): string {
+  const err = error.trim();
+  if (err.includes('incomplete input')) {
+    return 'Error de sintaxis: La consulta SQL está incompleta. Asegúrate de escribir la cláusula completa (por ejemplo: SELECT * FROM customers;).';
+  }
+  if (err.includes('no such table:')) {
+    const tableMatch = err.match(/no such table:\s*(\S+)/);
+    const tbl = tableMatch ? tableMatch[1] : '';
+    return `La tabla '${tbl}' no existe en la base de datos. Recuerda que los nombres de tablas son en inglés: customers (clientes), orders (pedidos), products (productos), categories (categorías), order_items (ítems), payments (pagos), subscriptions (suscripciones).`;
+  }
+  if (err.includes('no such column:')) {
+    const colMatch = err.match(/no such column:\s*(\S+)/);
+    const col = colMatch ? colMatch[1] : '';
+    return `La columna '${col}' no existe. Revisa el visor de tablas abajo para ver los nombres exactos de los campos.`;
+  }
+  if (err.includes('syntax error')) {
+    const nearMatch = err.match(/near\s+"([^"]+)":\s*syntax error/);
+    if (nearMatch) {
+      return `Error de sintaxis cerca de "${nearMatch[1]}". Revisa si faltan comas, comillas o si una palabra reservada está incompleta.`;
+    }
+    return `Error de sintaxis en SQL: ${err}. Verifica la ortografía de las palabras clave como SELECT, FROM, WHERE.`;
+  }
+  return `Error de SQL: ${err}`;
+}
+
 export async function validateUserQuery(
   userQuery: string,
   expectedQuery: string,
@@ -19,7 +44,7 @@ export async function validateUserQuery(
   if (!trimmed) {
     return {
       isValid: false,
-      message: 'Please write an SQL query before submitting.'
+      message: 'Por favor escribe una consulta SQL antes de ejecutar.'
     };
   }
 
@@ -29,7 +54,7 @@ export async function validateUserQuery(
   if (actualResult.error) {
     return {
       isValid: false,
-      message: `SQL Error: ${actualResult.error}`,
+      message: translateSqlError(actualResult.error),
       actualResult
     };
   }
@@ -38,10 +63,10 @@ export async function validateUserQuery(
   const expectedResult = await executeQuery(expectedQuery);
 
   if (expectedResult.error) {
-    console.error('Benchmark query error:', expectedResult.error);
+    console.error('Error en consulta de referencia:', expectedResult.error);
     return {
       isValid: false,
-      message: 'Internal benchmark error validating query. Please report this.',
+      message: 'Error interno en la consulta de prueba de referencia. Por favor repórtalo.',
       actualResult,
       expectedResult
     };
@@ -51,12 +76,12 @@ export async function validateUserQuery(
   if (actualResult.rowCount !== expectedResult.rowCount) {
     return {
       isValid: false,
-      message: `Row count mismatch: Your query returned ${actualResult.rowCount} ${actualResult.rowCount === 1 ? 'row' : 'rows'}, but ${expectedResult.rowCount} were expected.`,
+      message: `Diferencia de filas: Tu consulta devolvió ${actualResult.rowCount} ${actualResult.rowCount === 1 ? 'fila' : 'filas'}, pero se esperaban ${expectedResult.rowCount}.`,
       actualResult,
       expectedResult,
       differences: {
         rowCountMismatch: true,
-        details: `Expected ${expectedResult.rowCount} rows, received ${actualResult.rowCount}. Review your filter (WHERE), join type, or aggregation (GROUP BY).`
+        details: `Se esperaban ${expectedResult.rowCount} filas y se recibieron ${actualResult.rowCount}. Revisa tus filtros (WHERE), tipos de JOIN o agrupaciones (GROUP BY).`
       }
     };
   }
@@ -65,12 +90,12 @@ export async function validateUserQuery(
   if (actualResult.columns.length !== expectedResult.columns.length) {
     return {
       isValid: false,
-      message: `Column count mismatch: Expected ${expectedResult.columns.length} columns (${expectedResult.columns.join(', ')}), but your query returned ${actualResult.columns.length} columns (${actualResult.columns.join(', ')}).`,
+      message: `Diferencia en columnas: Se esperaban ${expectedResult.columns.length} columnas (${expectedResult.columns.join(', ')}), pero tu consulta devolvió ${actualResult.columns.length} (${actualResult.columns.join(', ')}).`,
       actualResult,
       expectedResult,
       differences: {
         columnMismatch: true,
-        details: `Columns expected: [${expectedResult.columns.join(', ')}] vs received: [${actualResult.columns.join(', ')}]`
+        details: `Columnas esperadas: [${expectedResult.columns.join(', ')}] vs recibidas: [${actualResult.columns.join(', ')}]`
       }
     };
   }
@@ -90,12 +115,12 @@ export async function validateUserQuery(
         if (expVal !== actVal) {
           return {
             isValid: false,
-            message: `Result mismatch at row ${r + 1}: expected value "${expRow[c]}" for column "${expectedResult.columns[c]}", but received "${actRow[c]}".`,
+            message: `Diferencia en la fila ${r + 1}: se esperaba "${expRow[c]}" para la columna "${expectedResult.columns[c]}", pero se obtuvo "${actRow[c]}".`,
             actualResult,
             expectedResult,
             differences: {
               valueMismatch: true,
-              details: `Row ${r + 1} value divergence. Ensure calculations and sorting order strictly match requirements.`
+              details: `Divergencia de valores en fila ${r + 1}. Asegúrate de que el ordenamiento ORDER BY coincida con las instrucciones.`
             }
           };
         }
@@ -113,12 +138,12 @@ export async function validateUserQuery(
       if (expectedSet[i] !== actualSet[i]) {
         return {
           isValid: false,
-          message: 'The rows returned do not match the expected dataset analysis.',
+          message: 'Los registros obtenidos no coinciden con los datos requeridos en el ejercicio.',
           actualResult,
           expectedResult,
           differences: {
             valueMismatch: true,
-            details: 'Some row records differ in their filtered values or groupings.'
+            details: 'Algunas filas difieren en sus valores calculados o filtrados.'
           }
         };
       }
@@ -128,8 +153,8 @@ export async function validateUserQuery(
   // Passed!
   return {
     isValid: true,
-    message: '✓ Correct Analysis! Benchmark test passed.',
-    pedagogicalFeedback: pedagogicalFeedback || 'Excellent work. Your query executed efficiently and produced the exact analytical result.',
+    message: '✓ ¡Análisis Correcto! Has superado el desafío con éxito.',
+    pedagogicalFeedback: pedagogicalFeedback || '¡Excelente trabajo! Tu consulta se ejecutó de forma óptima y produjo el resultado analítico exacto.',
     actualResult,
     expectedResult
   };

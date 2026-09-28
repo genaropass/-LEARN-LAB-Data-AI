@@ -12,8 +12,8 @@ async function test() {
 
   const levelsFile = fs.readFileSync(path.join(__dirname, 'src/content/data-ai/sql/levels.ts'), 'utf8');
   
-  // Find all expected: ... before tbls:
-  const regex = /expected:\s*(["'])([\s\S]*?)\1,\s*tbls:/g;
+  // Find all expected: "..." or expected: '...'
+  const regex = /expected:\s*(["'])(SELECT[\s\S]*?|WITH[\s\S]*?)\1/g;
   let match;
   const queries = [];
   while ((match = regex.exec(levelsFile)) !== null) {
