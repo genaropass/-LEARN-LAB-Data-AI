@@ -149,12 +149,25 @@ En la esquina o centro del bioma de la Era I, se renderiza el **Asentamiento Tri
 - **Nivel 9 completado:** Una empalizada defensiva cerca el campamento.
 - **Nivel 10 completado:** El campamento se transforma en la primera aldea de barro con estandartes y huertos iniciales, y se abre el portal hacia la Era II.
 
-### El Trazo del Camino y Bifurcaciones:
-- El camino sigue la geografía de la ilustración (evita atravesar lagos o riscos ilógicamente).
-- **Línea de camino:** Trazo discontinuo o empedrado con estilo de ilustración.
-- **Bifurcaciones de Dificultad (Nivel 6 y 7):**
-  - **Ruta Principal (Estándar):** El camino principal para avanzar la historia.
-  - **Ruta Desafío Opcional (Garganta Helada):** Un desvío marcado con un tótem de calavera de mamut para niveles avanzados o ejercicios sin pistas, que otorgan más PC y reliquias exclusivas.
+### Las 6 Eras y Mundos de Juego (Ilustraciones 16:9 y Calibración):
+
+| Mundo | Nombre y Época | Archivo de Fondo | Hitos Visuales y Geografía |
+|---|---|---|---|
+| **Mundo 1** | **Era I: Edad de Piedra** | `/maps/era_1_piedra.jpg` | Cueva primitiva con fogata, torrente fluvial con cascada, puente de troncos y esqueleto de mamut ancestral. |
+| **Mundo 2** | **Era II: Primeras Civilizaciones** | `/maps/era_2_antigua.jpg` | Cuenca desértica del Nilo, puente de madera, oasis con palmeras, obeliscos y Gran Pirámide en la meseta. |
+| **Mundo 3** | **Era III: Grandes Reinos e Hierro** | `/maps/era_3_hierro.jpg` | Granja de trigo dorado con molino de agua, puente de piedra de arcos, bosque de pinos, fortaleza feudal en la colina y faro costero. |
+| **Mundo 4** | **Era IV: Revolución del Vapor** | `/maps/era_4_vapor.jpg` | Dársena portuaria con buque de vapor, canales, vías férreas con locomotora, gran Torre del Reloj y fábricas de ladrillo victoriano. |
+| **Mundo 5** | **Era V: Hub de la Globalización Conectada** | `/maps/era_5_global.jpg` | Puerto automatizado de contenedores con grúas pórtico, aeropuerto con pista, cúpulas geodésicas de cristal y rascacielos corporativos. |
+| **Mundo 6** | **Era VI: Metrópolis de la Inteligencia Artificial** | `/maps/era_6_ia.jpg` | Centro de datos con servidores iluminados, parque eólico/solar, autopistas magnéticas para vehículos autónomos, estanque de datos y monolito del Núcleo IA. |
+
+### Estandarización de Fichas de Nivel (Nodos 3D):
+- **Máximo 14-15 niveles por mundo:** Garantiza separación visual limpia (al menos 1 cm visual entre cada punto), evitando aglomeraciones.
+- **Ficha Bloqueada:** Silueta metálica oscura en pizarra (`bg-slate-800`), borde sutil y candado claro (`Lock`).
+- **Ficha Desbloqueada:** Ficha dorada/ámbar viva con número en tipografía display mono bold.
+- **Ficha Actual:** Ficha con pulso brillante, avatar flotante de Nova y bocadillo de diálogo narrativo.
+- **Ficha Completada:** Ficha verde esmeralda con check bold (`Check`) y pedestal inferior con 3 estrellas doradas.
+- **Ficha de Jefe de Era:** Ficha hexagonal/cuadrada redondeada de gran formato con icono de fortaleza (`Castle`) y placa `👑 JEFE`.
+- **Etiquetas en Español:** Cartelas de alto contraste (+50% de tamaño respecto a versiones previas, tipografía 12-14px font-black) alternadas superior/inferiormente para evitar superposiciones en curvas del camino.
 
 ---
 

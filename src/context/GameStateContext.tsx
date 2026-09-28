@@ -148,8 +148,10 @@ export const GameStateProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   // Sync selected world with highest level
   useEffect(() => {
-    const worldOfCurrent = Math.min(5, Math.ceil(unlockedLevelMax / 20));
-    setSelectedWorldNumber(worldOfCurrent);
+    const foundWorld = GAME_WORLDS.find(w => unlockedLevelMax >= w.levelsRange[0] && unlockedLevelMax <= w.levelsRange[1]);
+    if (foundWorld) {
+      setSelectedWorldNumber(foundWorld.number);
+    }
   }, [unlockedLevelMax]);
 
   // Daily Quests

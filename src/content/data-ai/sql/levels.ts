@@ -28,539 +28,876 @@ export interface GameLevel {
   };
 }
 
-function calculateWindingPath(indexInWorld: number): { x: number; y: number } {
-  const step = indexInWorld;
-  const y = 8 + (step * 4.3);
-  const wave = Math.sin(step * 0.7);
-  const x = Math.round(50 + wave * 32);
-  return { x, y };
-}
-
 export const GAME_WORLDS = [
   {
     number: 1,
     name: 'Era I: Edad de Piedra',
-    subtitle: 'El Dominio del Fuego y los Primeros Registros (Niveles 1–20)',
+    subtitle: 'El Dominio del Fuego y los Primeros Registros (Niveles 1–14)',
     biome: 'plains' as const,
     bgImage: '/maps/era_1_piedra.jpg',
-    levelsRange: [1, 20],
-    accentColor: '#F97316'
+    levelsRange: [1, 14],
+    accentColor: '#10B981'
   },
   {
     number: 2,
     name: 'Era II: Primeras Civilizaciones',
-    subtitle: 'Riberas del Nilo, Cosechas y Agrupaciones (Niveles 21–40)',
+    subtitle: 'Riberas del Nilo, Cosechas y Agrupaciones (Niveles 15–28)',
     biome: 'desert' as const,
     bgImage: '/maps/era_2_antigua.jpg',
-    levelsRange: [21, 40],
+    levelsRange: [15, 28],
     accentColor: '#0284C7'
   },
   {
     number: 3,
     name: 'Era III: Grandes Reinos e Hierro',
-    subtitle: 'Fortalezas, Forjas y Relaciones JOIN (Niveles 41–60)',
+    subtitle: 'Fortalezas, Molinos y Relaciones JOIN (Niveles 29–42)',
     biome: 'bridge' as const,
     bgImage: '/maps/era_3_hierro.jpg',
-    levelsRange: [41, 60],
-    accentColor: '#B91C1C'
+    levelsRange: [29, 42],
+    accentColor: '#EAB308'
   },
   {
     number: 4,
     name: 'Era IV: Revolución del Vapor',
-    subtitle: 'Fábricas, Ferrocarriles y Transformaciones (Niveles 61–80)',
+    subtitle: 'Fábricas, Ferrocarriles y Lógica Condicional (Niveles 43–56)',
     biome: 'cavern' as const,
     bgImage: '/maps/era_4_vapor.jpg',
-    levelsRange: [61, 80],
-    accentColor: '#C2410C'
+    levelsRange: [43, 56],
+    accentColor: '#F97316'
   },
   {
     number: 5,
-    name: 'Era V: Era Digital e Inteligencia',
-    subtitle: 'Ciberespacio, Modelos de IA y Futuro (Niveles 81–100)',
+    name: 'Era V: Hub de la Globalización Conectada',
+    subtitle: 'Comercio Transfronterizo, Logística y Subconsultas CTE (Niveles 57–70)',
+    biome: 'plains' as const,
+    bgImage: '/maps/era_5_global.jpg',
+    levelsRange: [57, 70],
+    accentColor: '#06B6D4'
+  },
+  {
+    number: 6,
+    name: 'Era VI: Metrópolis de la Inteligencia Artificial',
+    subtitle: 'Ciberespacio, Modelos Neuronales y Funciones de Ventana (Niveles 71–84)',
     biome: 'volcano' as const,
-    bgImage: '/maps/era_5_digital.jpg',
-    levelsRange: [81, 100],
-    accentColor: '#2563EB'
+    bgImage: '/maps/era_6_ia.jpg',
+    levelsRange: [71, 84],
+    accentColor: '#8B5CF6'
   }
 ];
 
-export function build100Levels(): GameLevel[] {
+export function build84Levels(): GameLevel[] {
   const levels: GameLevel[] = [];
 
   // =========================================================================
-  // MUNDO 1: REINO DE LAS PRADERAS (Niveles 1 al 20)
-  // Con Bifurcación en Nivel 10:
-  // - Ruta Verde (11-14): Fácil / Praderas
-  // - Ruta Roja (15-18): Desafío / Cañón (+Monedas)
-  // - Nivel 19: Reunificación
-  // - Nivel 20: Castillo
+  // MUNDO 1: EL INICIO DE LA PREHISTORIA (Niveles 1 al 14)
+  // Sendero del Valle Prehistórico: Cueva -> Fogata -> Bosque -> Puente de Troncos -> Tótem del Mamut
   // =========================================================================
   const w1Config = [
-    // 1-10: Tronco Principal (Era I: Edad de Piedra)
     {
       lvl: 1, title: 'El Primer Registro',
-      storyContext: "Nova despierta junto a una fogata mortecina en el valle glaciar. Kael, líder de la tribu nómada, necesita saber qué cuevas existen antes de que azote la gran ventisca.",
-      characterDialogue: {
-        speaker: 'Kael',
-        text: '¡Nova! Las marcas en la roca se borran con la lluvia. Necesito ver todas las cuevas registradas en este valle para no enviar a mi gente a ciegas.'
-      },
-      prompt: "Inspecciona la tabla 'cuevas'. Usa el asterisco (*) para seleccionar todas las columnas de la tabla 'cuevas'.",
+      storyContext: "Nova despierta junto a la fogata en el valle glaciar. Kael, líder de la tribu nómada, necesita ver todas las cavernas descubiertas antes de que azote la tormenta.",
+      characterDialogue: { speaker: 'Kael', text: '¡Nova! Las marcas en la roca se borran con la lluvia. Necesito ver todas las columnas de la tabla de cuevas.' },
+      prompt: "Inspecciona la tabla 'cuevas'. Usa el asterisco (*) para seleccionar todas las columnas de 'cuevas'.",
       expected: 'SELECT * FROM cuevas;',
-      initial: "-- Nivel 1: Escribe el asterisco (*) para traer todas las columnas\nSELECT \nFROM cuevas;",
-      tbls: ['cuevas'], hint: "En SQL usamos el asterisco (*) para traer todas las columnas: SELECT * FROM cuevas;",
-      pos: { x: 8.0, y: 92.0 }, prereqs: []
+      initial: "-- Nivel 1: Selecciona todas las columnas usando el asterisco (*)\nSELECT \nFROM cuevas;",
+      tbls: ['cuevas'], hint: "Escribe: SELECT * FROM cuevas;",
+      pos: { x: 81.0, y: 46.0 }
     },
     {
       lvl: 2, title: 'Las Manadas del Valle',
-      storyContext: "Kael observa la planicie nevada. Allá afuera se mueven manadas gigantescas, pero los cazadores solo necesitan el apodo y la manada de cada bestia.",
-      characterDialogue: {
-        speaker: 'Nova',
-        text: 'No gastes energía procesando columnas innecesarias. Trae únicamente el apodo y la manada de los mamuts avistados.'
-      },
+      storyContext: "Kael observa la planicie. Se mueven manadas gigantescas, pero los cazadores solo necesitan el apodo y la manada de cada bestia.",
+      characterDialogue: { speaker: 'Nova', text: 'No gastes memoria procesando columnas innecesarias. Trae únicamente el apodo y la manada de los mamuts.' },
       prompt: "Selecciona únicamente las columnas 'apodo' y 'manada' de la tabla 'mamuts'.",
       expected: 'SELECT apodo, manada FROM mamuts;',
-      initial: "-- Nivel 2: Escribe 'apodo, manada' después de SELECT\nSELECT \nFROM mamuts;",
-      tbls: ['mamuts'], hint: "Separa los nombres de las columnas con una coma: SELECT apodo, manada FROM mamuts;",
-      pos: { x: 17.0, y: 85.0 }, prereqs: [1]
+      initial: "-- Nivel 2: Proyecta apodo y manada\nSELECT \nFROM mamuts;",
+      tbls: ['mamuts'], hint: "Separa los nombres con comas: SELECT apodo, manada FROM mamuts;",
+      pos: { x: 74.0, y: 55.0 }
     },
     {
-      lvl: 3, title: 'El Filtro de la Supervivencia',
-      storyContext: "El frío arreciará pronto. Solo las cuevas que actualmente estén habitadas (habitada = 1) cuentan con fuego encendido y abrigo para los exploradores agotados.",
-      characterDialogue: {
-        speaker: 'Kael',
-        text: '¡Rápido! Si enviamos a las familias a cavernas vacías perecerán de frío. Filtra solo las cuevas donde habitada sea igual a 1.'
-      },
+      lvl: 3, title: 'Regiones Únicas (DISTINCT)',
+      storyContext: "La tribu quiere saber qué regiones diferentes abarcan las cavernas sin repetir nombres en el censo.",
+      characterDialogue: { speaker: 'Nova', text: 'Usa DISTINCT para eliminar regiones duplicadas en tu consulta.' },
+      prompt: "Selecciona las regiones únicas de la tabla 'cuevas' usando DISTINCT region.",
+      expected: 'SELECT DISTINCT region FROM cuevas;',
+      initial: "-- Nivel 3: Elimina duplicados con DISTINCT\nSELECT DISTINCT \nFROM cuevas;",
+      tbls: ['cuevas'], hint: "Escribe: SELECT DISTINCT region FROM cuevas;",
+      pos: { x: 79.0, y: 64.0 }
+    },
+    {
+      lvl: 4, title: 'El Refugio Habitado',
+      storyContext: "El frío arreciará pronto. Solo las cuevas que actualmente estén habitadas (habitada = 1) cuentan con fuego encendido y abrigo.",
+      characterDialogue: { speaker: 'Kael', text: '¡Filtra solo las cuevas donde habitada sea igual a 1!' },
       prompt: "Selecciona 'nombre' y 'region' de la tabla 'cuevas' donde habitada = 1.",
       expected: 'SELECT nombre, region FROM cuevas WHERE habitada = 1;',
-      initial: "-- Nivel 3: Completa la condición WHERE habitada = 1\nSELECT nombre, region \nFROM cuevas \nWHERE ;",
-      tbls: ['cuevas'], hint: "Usa la cláusula WHERE: SELECT nombre, region FROM cuevas WHERE habitada = 1;",
-      pos: { x: 28.0, y: 78.0 }, prereqs: [2]
+      initial: "-- Nivel 4: Filtra cuevas habitadas\nSELECT nombre, region \nFROM cuevas \nWHERE ;",
+      tbls: ['cuevas'], hint: "Usa WHERE habitada = 1;",
+      pos: { x: 69.0, y: 72.0 }
     },
     {
-      lvl: 4, title: 'Bestias Imponentes',
-      storyContext: "El clan prepara sus lanzas pesadas de sílex. Para almacenar carne antes del invierno, solo rastrearemos mamuts con un peso mayor a 4 toneladas métricas.",
-      characterDialogue: {
-        speaker: 'Nova',
-        text: 'Usa el operador de comparación mayor que (>) para encontrar a los gigantes cuyo peso_toneladas supere 4.0.'
-      },
-      prompt: "Selecciona 'apodo' y 'peso_toneladas' de la tabla 'mamuts' donde peso_toneladas > 4.0.",
+      lvl: 5, title: 'Bestias Imponentes',
+      storyContext: "El clan prepara lanzas pesadas. Para almacenar carne antes del invierno, solo rastrearemos mamuts con un peso mayor a 4 toneladas.",
+      characterDialogue: { speaker: 'Nova', text: 'Usa el operador mayor que (>) para encontrar a los gigantes cuyo peso_toneladas supere 4.0.' },
+      prompt: "Selecciona 'apodo' y 'peso_toneladas' de 'mamuts' donde peso_toneladas > 4.0.",
       expected: 'SELECT apodo, peso_toneladas FROM mamuts WHERE peso_toneladas > 4.0;',
-      initial: "-- Nivel 4: Filtra mamuts con peso_toneladas > 4.0\nSELECT apodo, peso_toneladas \nFROM mamuts \nWHERE peso_toneladas > ;",
-      tbls: ['mamuts'], hint: "Escribe: SELECT apodo, peso_toneladas FROM mamuts WHERE peso_toneladas > 4.0;",
-      pos: { x: 35.0, y: 73.0 }, prereqs: [3]
-    },
-    {
-      lvl: 5, title: 'Inventario de Sílex y Madera',
-      storyContext: "Las herramientas del taller se desgastan rápidamente. Necesitamos alertar a los recolectores sobre aquellos recursos cuya cantidad sea menor a 15 unidades.",
-      characterDialogue: {
-        speaker: 'Kael',
-        text: 'Nuestras reservas de ramas y tendones están bajando. Revisa la tabla recursos_tribu y avísame cuáles tienen cantidad menor a 15.'
-      },
-      prompt: "Selecciona 'recurso' y 'cantidad' de 'recursos_tribu' donde cantidad < 15.",
-      expected: 'SELECT recurso, cantidad FROM recursos_tribu WHERE cantidad < 15;',
-      initial: "-- Nivel 5: Filtra los recursos con cantidad < 15\nSELECT recurso, cantidad \nFROM recursos_tribu \nWHERE cantidad < ;",
-      tbls: ['recursos_tribu'], hint: "Usa el operador menor que (<): WHERE cantidad < 15;",
-      pos: { x: 44.0, y: 69.0 }, prereqs: [4]
+      initial: "-- Nivel 5: Filtra mamuts con peso_toneladas > 4.0\nSELECT apodo, peso_toneladas \nFROM mamuts \nWHERE peso_toneladas > ;",
+      tbls: ['mamuts'], hint: "Escribe: WHERE peso_toneladas > 4.0;",
+      pos: { x: 57.0, y: 70.0 }
     },
     {
       lvl: 6, title: 'Cazadores Veteranos',
-      storyContext: "El cruce del torrente requiere experiencia en el hielo. Kael convoca a los miembros del clan que ostentan el rango de 'Veterano'.",
-      characterDialogue: {
-        speaker: 'Nova',
-        text: 'Recuerda que en SQL las cadenas de texto van envueltas en comillas simples. Filtra cazadores donde rango sea igual a \'Veterano\'.'
-      },
+      storyContext: "El cruce del torrente requiere experiencia en el hielo. Kael convoca a los cazadores con rango 'Veterano'.",
+      characterDialogue: { speaker: 'Nova', text: 'Las cadenas de texto en SQL se encierran en comillas simples: \'Veterano\'.' },
       prompt: "Selecciona 'nombre' y 'presas_cobradas' de 'cazadores' donde rango = 'Veterano'.",
       expected: "SELECT nombre, presas_cobradas FROM cazadores WHERE rango = 'Veterano';",
       initial: "-- Nivel 6: Filtra cazadores con rango 'Veterano'\nSELECT nombre, presas_cobradas \nFROM cazadores \nWHERE rango = ;",
-      tbls: ['cazadores'], hint: "Los textos van entre comillas simples: WHERE rango = 'Veterano';",
-      pos: { x: 54.0, y: 69.0 }, prereqs: [5]
+      tbls: ['cazadores'], hint: "WHERE rango = 'Veterano';",
+      pos: { x: 45.0, y: 73.0 }
     },
     {
-      lvl: 7, title: 'Prioridad de Refugio',
-      storyContext: "Llegan familias nómadas buscando abrigo. El consejo de ancianos necesita ver todas las cuevas ordenadas desde la de mayor capacidad hasta la más pequeña.",
-      characterDialogue: {
-        speaker: 'Kael',
-        text: '¡Ordenemos las cavernas! Quiero ver primero las que tengan más espacio para albergar a los clanes que vienen marchando.'
-      },
-      prompt: "Selecciona 'nombre' y 'capacidad' de 'cuevas' ordenando por 'capacidad' de forma descendente (DESC).",
+      lvl: 7, title: 'Prioridad de Refugio (ORDER BY)',
+      storyContext: "Llegan familias nómadas buscando abrigo. El consejo de ancianos necesita ver las cuevas ordenadas desde la de mayor capacidad a la menor.",
+      characterDialogue: { speaker: 'Kael', text: '¡Quiero ver primero las cavernas con más espacio disponible!' },
+      prompt: "Selecciona 'nombre' y 'capacidad' de 'cuevas' ordenando por 'capacidad' descendente (DESC).",
       expected: 'SELECT nombre, capacidad FROM cuevas ORDER BY capacidad DESC;',
-      initial: "-- Nivel 7: Ordena por capacidad en orden descendente\nSELECT nombre, capacidad \nFROM cuevas \nORDER BY ;",
-      tbls: ['cuevas'], hint: "Usa ORDER BY columna DESC: SELECT nombre, capacidad FROM cuevas ORDER BY capacidad DESC;",
-      pos: { x: 67.0, y: 75.0 }, prereqs: [6]
+      initial: "-- Nivel 7: Ordena descendente por capacidad\nSELECT nombre, capacidad \nFROM cuevas \nORDER BY ;",
+      tbls: ['cuevas'], hint: "Escribe: ORDER BY capacidad DESC;",
+      pos: { x: 33.0, y: 77.0 }
     },
     {
-      lvl: 8, title: 'Los Más Diestros (Top 3)',
-      storyContext: "La tribu celebra a sus 3 mejores cazadores históricos entregándoles capas ceremoniales de lince. Debemos obtener el Top 3 con mayor presas_cobradas.",
-      characterDialogue: {
-        speaker: 'Nova',
-        text: 'Combina ORDER BY con LIMIT: primero ordena por presas_cobradas DESC y luego quédate solo con los 3 primeros.'
-      },
+      lvl: 8, title: 'Los Más Diestros (LIMIT)',
+      storyContext: "La tribu celebra a sus 3 mejores cazadores con mantas de lince ceremonial. Debemos obtener el Top 3 con mayor presas_cobradas.",
+      characterDialogue: { speaker: 'Nova', text: 'Combina ORDER BY presas_cobradas DESC con LIMIT 3.' },
       prompt: "Selecciona 'nombre' y 'presas_cobradas' de 'cazadores' ordenados por presas_cobradas DESC y limitados a 3.",
       expected: 'SELECT nombre, presas_cobradas FROM cazadores ORDER BY presas_cobradas DESC LIMIT 3;',
-      initial: "-- Nivel 8: Top 3 cazadores con ORDER BY y LIMIT 3\nSELECT nombre, presas_cobradas \nFROM cazadores \nORDER BY presas_cobradas DESC \nLIMIT ;",
-      tbls: ['cazadores'], hint: "Escribe: SELECT nombre, presas_cobradas FROM cazadores ORDER BY presas_cobradas DESC LIMIT 3;",
-      pos: { x: 76.0, y: 78.0 }, prereqs: [7]
+      initial: "-- Nivel 8: Top 3 cazadores\nSELECT nombre, presas_cobradas \nFROM cazadores \nORDER BY presas_cobradas DESC \nLIMIT ;",
+      tbls: ['cazadores'], hint: "Finaliza con: LIMIT 3;",
+      pos: { x: 23.0, y: 83.0 }
     },
     {
-      lvl: 9, title: 'El Gran Filtro Compuesto',
-      storyContext: "Una bestia peligrosa acecha cerca del campamento. Los exploradores deben hallar mamuts que pertenezcan a la manada 'Valle Norte' Y que tengan peligrosidad 'Alta'.",
-      characterDialogue: {
-        speaker: 'Kael',
-        text: '¡Alerta máxima! Solo prepararemos las trampas de foso si la presa es del Valle Norte y su peligrosidad es Alta.'
-      },
+      lvl: 9, title: 'Filtro Compuesto (AND)',
+      storyContext: "Bestias acechan en la noche. Filtraremos mamuts de la manada 'Valle Norte' cuya peligrosidad sea 'Alta'.",
+      characterDialogue: { speaker: 'Kael', text: '¡Alerta máxima! Solo prepararemos las trampas si coinciden ambas condiciones.' },
       prompt: "Selecciona 'apodo' y 'peso_toneladas' de 'mamuts' donde manada = 'Valle Norte' AND peligrosidad = 'Alta'.",
       expected: "SELECT apodo, peso_toneladas FROM mamuts WHERE manada = 'Valle Norte' AND peligrosidad = 'Alta';",
-      initial: "-- Nivel 9: Combina filtros con AND\nSELECT apodo, peso_toneladas \nFROM mamuts \nWHERE manada = 'Valle Norte'  peligrosidad = 'Alta';",
-      tbls: ['mamuts'], hint: "Usa el operador AND: WHERE manada = 'Valle Norte' AND peligrosidad = 'Alta';",
-      pos: { x: 83.0, y: 67.0 }, prereqs: [8]
+      initial: "-- Nivel 9: Concatena con AND\nSELECT apodo, peso_toneladas \nFROM mamuts \nWHERE manada = 'Valle Norte'  peligrosidad = 'Alta';",
+      tbls: ['mamuts'], hint: "Usa AND entre ambas expresiones.",
+      pos: { x: 14.0, y: 88.0 }
     },
     {
-      lvl: 10, title: 'Jefe de Era: La Primera Aldea',
-      storyContext: "¡El Glitch intenta borrar el inventario del clan! Para cruzar al Valle Fértil y fundar la primera aldea permanente, debemos asegurar los recursos de combustible con más de 10 unidades.",
-      characterDialogue: {
-        speaker: 'Nova',
-        text: '¡El Núcleo de Datos resistirá la tormenta! Recuperemos los recursos con cantidad > 10 y tipo = \'Combustible\', ordenados de mayor a menor cantidad.'
-      },
-      prompt: "Selecciona 'recurso', 'tipo' y 'cantidad' de 'recursos_tribu' donde cantidad > 10 AND tipo = 'Combustible' ORDER BY cantidad DESC.",
-      expected: "SELECT recurso, tipo, cantidad FROM recursos_tribu WHERE cantidad > 10 AND tipo = 'Combustible' ORDER BY cantidad DESC;",
-      initial: "-- Nivel 10: Derrota al Glitch completando el filtro y el orden\nSELECT recurso, tipo, cantidad \nFROM recursos_tribu \nWHERE cantidad > 10 AND tipo = \nORDER BY ;",
-      tbls: ['recursos_tribu'], hint: "Combina WHERE con AND y finaliza con ORDER BY cantidad DESC.",
-      pos: { x: 76.0, y: 57.0 }, prereqs: [9]
-    },
-
-    // BIFURCACIÓN IZQUIERDA: RUTA CAVERNA (11-14)
-    {
-      lvl: 11, title: 'Ruta Caverna: Alternativas (OR)',
-      prompt: "[Ruta Caverna] Selecciona todas las columnas de 'cuevas' donde region = 'Valle Norte' OR region = 'Ribera Este'.",
-      expected: "SELECT * FROM cuevas WHERE region = 'Valle Norte' OR region = 'Ribera Este';",
-      initial: "-- Ruta Caverna 11: Usa OR para incluir ambas regiones\nSELECT * \nFROM cuevas \nWHERE region = 'Valle Norte' OR ;",
-      tbls: ['cuevas'], hint: "Escribe: SELECT * FROM cuevas WHERE region = 'Valle Norte' OR region = 'Ribera Este';",
-      pos: { x: 71.0, y: 52.0 }, prereqs: [10], branch: 'easy' as const, branchLabel: '🟢 Caverna'
+      lvl: 10, title: 'Refugios Alternativos (OR)',
+      storyContext: "Los exploradores buscan cuevas seguras en el 'Valle Norte' o en la 'Ribera Este'.",
+      characterDialogue: { speaker: 'Nova', text: 'Usa OR para que la consulta devuelva registros que cumplan cualquiera de las dos zonas.' },
+      prompt: "Selecciona 'nombre' y 'region' de 'cuevas' donde region = 'Valle Norte' OR region = 'Ribera Este'.",
+      expected: "SELECT nombre, region FROM cuevas WHERE region = 'Valle Norte' OR region = 'Ribera Este';",
+      initial: "-- Nivel 10: Usa el operador OR\nSELECT nombre, region \nFROM cuevas \nWHERE region = 'Valle Norte'  region = 'Ribera Este';",
+      tbls: ['cuevas'], hint: "Escribe OR entre las dos comparaciones.",
+      pos: { x: 11.0, y: 69.0 }
     },
     {
-      lvl: 12, title: 'Ruta Caverna: Capacidad (BETWEEN)',
-      prompt: "[Ruta Caverna] Selecciona 'nombre' y 'capacidad' de 'cuevas' donde capacidad esté BETWEEN 10 AND 25.",
-      expected: 'SELECT nombre, capacidad FROM cuevas WHERE capacidad BETWEEN 10 AND 25;',
-      initial: "-- Ruta Caverna 12: Completa con BETWEEN 10 AND 25\nSELECT nombre, capacidad \nFROM cuevas \nWHERE capacidad BETWEEN ;",
-      tbls: ['cuevas'], hint: "BETWEEN incluye los extremos: WHERE capacidad BETWEEN 10 AND 25;",
-      pos: { x: 74.0, y: 47.0 }, prereqs: [11], branch: 'easy' as const, branchLabel: '🟢 Caverna'
+      lvl: 11, title: 'Rango de Capacidad (BETWEEN)',
+      storyContext: "Para un grupo mediano de exploradores, buscamos cuevas cuya capacidad esté entre 10 y 25 personas.",
+      characterDialogue: { speaker: 'Kael', text: 'BETWEEN incluye tanto el valor inicial como el valor final.' },
+      prompt: "Selecciona 'nombre' y 'capacidad' de 'cuevas' donde capacidad BETWEEN 10 AND 25.",
+      expected: 'SELECT nombre, capacity FROM cuevas WHERE capacidad BETWEEN 10 AND 25;'
+        .replace('capacity', 'capacidad'),
+      initial: "-- Nivel 11: Usa BETWEEN 10 AND 25\nSELECT nombre, capacidad \nFROM cuevas \nWHERE capacidad BETWEEN ;",
+      tbls: ['cuevas'], hint: "Escribe: WHERE capacidad BETWEEN 10 AND 25;",
+      pos: { x: 17.0, y: 56.0 }
     },
     {
-      lvl: 13, title: 'Ruta Caverna: Regiones (IN)',
-      prompt: "[Ruta Caverna] Selecciona 'nombre' y 'region' de 'cuevas' donde region esté IN ('Valle Norte', 'Picos Altos').",
+      lvl: 12, title: 'Regiones Seguras (IN)',
+      storyContext: "Las patrullas se concentran solo en cavernas de ciertas regiones conocidas.",
+      characterDialogue: { speaker: 'Nova', text: 'El operador IN permite verificar si un valor pertenece a una lista de opciones.' },
+      prompt: "Selecciona 'nombre' y 'region' de 'cuevas' donde region IN ('Valle Norte', 'Picos Altos').",
       expected: "SELECT nombre, region FROM cuevas WHERE region IN ('Valle Norte', 'Picos Altos');",
-      initial: "-- Ruta Caverna 13: Usa el operador IN\nSELECT nombre, region \nFROM cuevas \nWHERE region IN ;",
+      initial: "-- Nivel 12: Usa el operador IN\nSELECT nombre, region \nFROM cuevas \nWHERE region IN ;",
       tbls: ['cuevas'], hint: "Usa: WHERE region IN ('Valle Norte', 'Picos Altos');",
-      pos: { x: 78.0, y: 44.0 }, prereqs: [12], branch: 'easy' as const, branchLabel: '🟢 Caverna'
+      pos: { x: 26.0, y: 52.0 }
     },
     {
-      lvl: 14, title: 'Ruta Caverna: Portal de la Gruta',
-      prompt: "[Ruta Caverna] Selecciona 'nombre' y 'capacidad' de 'cuevas' ordenados por capacidad de menor a mayor (ORDER BY capacidad ASC).",
-      expected: 'SELECT nombre, capacidad FROM cuevas ORDER BY capacidad ASC;',
-      initial: "-- Ruta Caverna 14: Ordena de menor a mayor\nSELECT nombre, capacidad \nFROM cuevas \nORDER BY ;",
-      tbls: ['cuevas'], hint: "Añade: ORDER BY capacidad ASC;",
-      pos: { x: 83.0, y: 41.0 }, prereqs: [13], branch: 'easy' as const, branchLabel: '🟢 Caverna'
-    },
-
-    // BIFURCACIÓN DERECHA: RUTA MAMUT GLACIAR (15-20)
-    {
-      lvl: 15, title: 'Ruta Mamut: Gigantes del Hielo',
-      prompt: "🔥 [Ruta Mamut] Selecciona 'apodo' y 'peso_toneladas' de 'mamuts' ordenados de mayor a menor peso (ORDER BY peso_toneladas DESC).",
-      expected: 'SELECT apodo, peso_toneladas FROM mamuts ORDER BY peso_toneladas DESC;',
-      initial: "-- Ruta Mamut 15: Ordena por peso_toneladas DESC\nSELECT apodo, peso_toneladas \nFROM mamuts \nORDER BY ;",
-      tbls: ['mamuts'], hint: "Usa: ORDER BY peso_toneladas DESC;",
-      pos: { x: 22.0, y: 56.0 }, prereqs: [10], branch: 'hard' as const, branchLabel: '🔴 Mamut Glaciar'
+      lvl: 13, title: 'El Mamut Alfa',
+      storyContext: "Cerca de los riscos de hielo se vislumbran mamuts con peligrosidad 'Extrema'.",
+      characterDialogue: { speaker: 'Kael', text: '¡Cuidado con la estampida! Localicemos sus apodos y pesos.' },
+      prompt: "Selecciona 'apodo', 'peso_toneladas' de 'mamuts' donde peligrosidad = 'Extrema'.",
+      expected: "SELECT apodo, peso_toneladas FROM mamuts WHERE peligrosidad = 'Extrema';",
+      initial: "-- Nivel 13: Filtra peligrosidad 'Extrema'\nSELECT apodo, peso_toneladas \nFROM mamuts \nWHERE peligrosidad = ;",
+      tbls: ['mamuts'], hint: "WHERE peligrosidad = 'Extrema';",
+      pos: { x: 36.0, y: 44.0 }
     },
     {
-      lvl: 16, title: 'Ruta Mamut: Top 2 Colosos',
-      prompt: "🔥 [Ruta Mamut] Selecciona 'apodo' y 'peso_toneladas' de 'mamuts' ORDER BY peso_toneladas DESC LIMIT 2.",
-      expected: 'SELECT apodo, peso_toneladas FROM mamuts ORDER BY peso_toneladas DESC LIMIT 2;',
-      initial: "-- Ruta Mamut 16: Top 2 colosos\nSELECT apodo, peso_toneladas \nFROM mamuts \nORDER BY \nLIMIT ;",
-      tbls: ['mamuts'], hint: "Escribe: ORDER BY peso_toneladas DESC LIMIT 2;",
-      pos: { x: 27.0, y: 53.0 }, prereqs: [15], branch: 'hard' as const, branchLabel: '🔴 Mamut Glaciar'
-    },
-    {
-      lvl: 17, title: 'Ruta Mamut: Manadas Únicas',
-      prompt: "🔥 [Ruta Mamut] Selecciona valores únicos con DISTINCT manada de 'mamuts' ordenados alfabéticamente (ORDER BY manada ASC).",
-      expected: 'SELECT DISTINCT manada FROM mamuts ORDER BY manada ASC;',
-      initial: "-- Ruta Mamut 17: DISTINCT manada\nSELECT DISTINCT \nFROM mamuts \nORDER BY manada ASC;",
-      tbls: ['mamuts'], hint: "Escribe: SELECT DISTINCT manada FROM mamuts ORDER BY manada ASC;",
-      pos: { x: 35.0, y: 49.0 }, prereqs: [16], branch: 'hard' as const, branchLabel: '🔴 Mamut Glaciar'
-    },
-    {
-      lvl: 18, title: 'Ruta Mamut: Paginación Glaciar',
-      prompt: "🔥 [Ruta Mamut] Selecciona 'apodo' y 'peso_toneladas' de 'mamuts' ORDER BY peso_toneladas ASC LIMIT 2 OFFSET 2;",
-      expected: 'SELECT apodo, peso_toneladas FROM mamuts ORDER BY peso_toneladas ASC LIMIT 2 OFFSET 2;',
-      initial: "-- Ruta Mamut 18: LIMIT 2 OFFSET 2\nSELECT apodo, peso_toneladas \nFROM mamuts \nORDER BY peso_toneladas ASC \nLIMIT 2 OFFSET ;",
-      tbls: ['mamuts'], hint: "Usa: LIMIT 2 OFFSET 2;",
-      pos: { x: 38.0, y: 44.0 }, prereqs: [17], branch: 'hard' as const, branchLabel: '🔴 Mamut Glaciar'
-    },
-    {
-      lvl: 19, title: 'Ruta Mamut: Aproximación al Coloso',
-      prompt: "¡Ante el santuario del Mamut! Selecciona 'apodo' y 'peligrosidad' de 'mamuts' donde peligrosidad = 'Extrema'.",
-      expected: "SELECT apodo, peligrosidad FROM mamuts WHERE peligrosidad = 'Extrema';",
-      initial: "-- Nivel 19: Filtra peligrosidad 'Extrema'\nSELECT apodo, peligrosidad \nFROM mamuts \nWHERE peligrosidad = ;",
-      tbls: ['mamuts'], hint: "Escribe: WHERE peligrosidad = 'Extrema';",
-      pos: { x: 31.0, y: 36.0 }, prereqs: [14, 18], branch: 'main' as const
-    },
-    {
-      lvl: 20, title: 'Tótem Ancestral del Mamut',
-      prompt: "👑 ¡JEFE DE ERA I! Selecciona 'recurso', 'tipo' y 'cantidad' de 'recursos_tribu' donde tipo = 'Armas' AND cantidad >= 14 ORDER BY cantidad DESC;",
+      lvl: 14, title: 'Tótem Ancestral del Mamut',
+      storyContext: "👑 ¡JEFE DE ERA I! Para cruzar la cordillera y fundar las primeras ciudades, debemos certificar el arsenal de armas con al menos 14 unidades.",
+      characterDialogue: { speaker: 'Nova', text: '¡El clan resistirá el invierno! Selecciona los recursos de tipo \'Armas\' con cantidad >= 14 ordenados por cantidad DESC.' },
+      prompt: "Selecciona 'recurso', 'tipo' y 'cantidad' de 'recursos_tribu' donde tipo = 'Armas' AND cantidad >= 14 ORDER BY cantidad DESC.",
       expected: "SELECT recurso, tipo, cantidad FROM recursos_tribu WHERE tipo = 'Armas' AND cantidad >= 14 ORDER BY cantidad DESC;",
-      initial: "-- Nivel 20 JEFE: Combina WHERE con AND y ORDER BY\nSELECT recurso, tipo, cantidad \nFROM recursos_tribu \nWHERE tipo = 'Armas' AND \nORDER BY ;",
+      initial: "-- Nivel 14 JEFE: Combina WHERE, AND y ORDER BY\nSELECT recurso, tipo, cantidad \nFROM recursos_tribu \nWHERE tipo = 'Armas' AND \nORDER BY ;",
       tbls: ['recursos_tribu'], hint: "Usa: WHERE tipo = 'Armas' AND cantidad >= 14 ORDER BY cantidad DESC;",
-      pos: { x: 22.0, y: 36.0 }, prereqs: [19], branch: 'main' as const
+      pos: { x: 23.0, y: 35.0 }
     }
   ];
 
   w1Config.forEach((cfg) => {
-    const isBoss = cfg.lvl === 20;
-    const isMystery = cfg.lvl === 5 || cfg.lvl === 12;
-    const isHard = cfg.branch === 'hard';
+    const isBoss = cfg.lvl === 14;
     levels.push({
       levelNumber: cfg.lvl,
       worldNumber: 1,
-      worldName: 'Reino de las Praderas',
+      worldName: 'Era I: Edad de Piedra',
       biome: 'plains',
       title: cfg.title,
-      type: isBoss ? 'boss_fortress' : isMystery ? 'mystery_block' : 'standard',
-      difficulty: isBoss ? 'Master Boss' : isHard ? 'Hard' : cfg.lvl <= 8 ? 'Easy' : 'Medium',
-      branch: cfg.branch || 'main',
-      branchLabel: cfg.branchLabel,
-      prerequisites: cfg.prereqs,
+      type: isBoss ? 'boss_fortress' : cfg.lvl === 8 ? 'mystery_block' : 'standard',
+      difficulty: isBoss ? 'Master Boss' : cfg.lvl <= 6 ? 'Easy' : 'Medium',
       targetTables: cfg.tbls,
       prompt: cfg.prompt,
       initialQuery: cfg.initial,
       expectedQuery: cfg.expected,
-      hints: [
-        cfg.hint,
-        `Tablas del objetivo: ${cfg.tbls.join(', ')}.`,
-        `Estructura esperada: ${cfg.expected}`
-      ],
-      xpReward: isBoss ? 200 : isHard ? 65 : 25 + cfg.lvl * 2,
-      coinReward: isBoss ? 80 : isHard ? 45 : 15,
+      hints: [cfg.hint, `Tablas involucradas: ${cfg.tbls.join(', ')}.`, `Estructura esperada: ${cfg.expected}`],
+      xpReward: isBoss ? 200 : 25 + cfg.lvl * 2,
+      coinReward: isBoss ? 80 : 15,
       pedagogicalNote: `¡Nivel ${cfg.lvl} completado! Dominar proyecciones y filtros WHERE establece la base de la analítica SQL.`,
+      position: cfg.pos,
+      storyContext: cfg.storyContext,
+      characterDialogue: cfg.characterDialogue
+    });
+  });
+
+  // =========================================================================
+  // MUNDO 2: EL DESIERTO DE LOS ANCESTROS (Niveles 15 al 28)
+  // Ruta del Río Nilo y las Pirámides: Puente -> Palmeras del Oasis -> Meandro -> Gran Pirámide
+  // =========================================================================
+  const w2Config = [
+    {
+      lvl: 15, title: 'Censo de Clientes (COUNT)',
+      prompt: 'Calcula el número total de clientes registrados usando COUNT(*) AS total_customers de la tabla customers.',
+      expected: 'SELECT COUNT(*) AS total_customers FROM customers;',
+      initial: '-- Nivel 15: Cuenta registros con COUNT(*)\nSELECT COUNT(*) AS total_customers \nFROM customers;',
+      tbls: ['customers'], pos: { x: 73.0, y: 60.0 }
+    },
+    {
+      lvl: 16, title: 'Granero Real (SUM)',
+      prompt: 'Calcula la suma total facturada con SUM(total_amount) AS gross_sales de orders.',
+      expected: 'SELECT SUM(total_amount) AS gross_sales FROM orders;',
+      initial: '-- Nivel 16: Suma ingresos brutos\nSELECT \nFROM orders;',
+      tbls: ['orders'], pos: { x: 65.0, y: 73.0 }
+    },
+    {
+      lvl: 17, title: 'Rendimiento de Cosechas (AVG)',
+      prompt: 'Calcula el precio promedio de productos redondeado a 2 decimales: ROUND(AVG(price), 2) AS average_price de products.',
+      expected: 'SELECT ROUND(AVG(price), 2) AS average_price FROM products;',
+      initial: '-- Nivel 17: Calcula el promedio redondeado\nSELECT ROUND(AVG(price), 2) AS average_price \nFROM products;',
+      tbls: ['products'], pos: { x: 55.0, y: 73.0 }
+    },
+    {
+      lvl: 18, title: 'Extremos del Caudal (MIN/MAX)',
+      prompt: 'Extrae el precio más bajo y más alto: MIN(price) AS lowest_price, MAX(price) AS highest_price de products.',
+      expected: 'SELECT MIN(price) AS lowest_price, MAX(price) AS highest_price FROM products;',
+      initial: '-- Nivel 18: Límites de precios con MIN y MAX\nSELECT MIN(price) AS lowest_price, MAX(price) AS highest_price \nFROM products;',
+      tbls: ['products'], pos: { x: 44.0, y: 76.0 }
+    },
+    {
+      lvl: 19, title: 'Tributos Pagados (COUNT Filtrado)',
+      prompt: "Calcula cuántas órdenes están completadas: COUNT(*) AS completed_count de orders donde status = 'completed'.",
+      expected: "SELECT COUNT(*) AS completed_count FROM orders WHERE status = 'completed';",
+      initial: "-- Nivel 19: Cuenta con filtro WHERE\nSELECT COUNT(*) AS completed_count \nFROM orders \nWHERE status = 'completed';",
+      tbls: ['orders'], pos: { x: 33.0, y: 78.0 }
+    },
+    {
+      lvl: 20, title: 'Censo por Región (GROUP BY)',
+      prompt: 'Agrupa clientes por country y cuéntalos: country, COUNT(*) AS customer_count ordenado descendente.',
+      expected: 'SELECT country, COUNT(*) AS customer_count FROM customers GROUP BY country ORDER BY customer_count DESC;',
+      initial: '-- Nivel 20: Agrupa por país\nSELECT country, COUNT(*) AS customer_count \nFROM customers \nGROUP BY country \nORDER BY customer_count DESC;',
+      tbls: ['customers'], pos: { x: 22.0, y: 70.0 }
+    },
+    {
+      lvl: 21, title: 'Estados de Pedidos',
+      prompt: 'Cuenta los pedidos agrupados por estado: status, COUNT(*) AS orders_count de orders.',
+      expected: 'SELECT status, COUNT(*) AS orders_count FROM orders GROUP BY status;',
+      initial: '-- Nivel 21: Agrupa por status\nSELECT status, COUNT(*) AS orders_count \nFROM orders \nGROUP BY status;',
+      tbls: ['orders'], pos: { x: 15.0, y: 58.0 }
+    },
+    {
+      lvl: 22, title: 'Inventario por Categoría',
+      prompt: 'Suma el stock_quantity por category_id: category_id, SUM(stock_quantity) AS total_inventory de products agrupado por category_id.',
+      expected: 'SELECT category_id, SUM(stock_quantity) AS total_inventory FROM products GROUP BY category_id ORDER BY total_inventory DESC;',
+      initial: '-- Nivel 22: Inventario por categoría\nSELECT category_id, SUM(stock_quantity) AS total_inventory \nFROM products \nGROUP BY category_id \nORDER BY total_inventory DESC;',
+      tbls: ['products'], pos: { x: 20.0, y: 46.0 }
+    },
+    {
+      lvl: 23, title: 'Precio Promedio por Sector',
+      prompt: 'Calcula el promedio de precio por categoría: category_id, ROUND(AVG(price), 2) AS avg_price de products.',
+      expected: 'SELECT category_id, ROUND(AVG(price), 2) AS avg_price FROM products GROUP BY category_id ORDER BY avg_price DESC;',
+      initial: '-- Nivel 23: Promedio por category_id\nSELECT category_id, ROUND(AVG(price), 2) AS avg_price \nFROM products \nGROUP BY category_id \nORDER BY avg_price DESC;',
+      tbls: ['products'], pos: { x: 29.0, y: 44.0 }
+    },
+    {
+      lvl: 24, title: 'Compras por Mercader',
+      prompt: 'Cuenta los pedidos de cada cliente: customer_id, COUNT(*) AS total_orders de orders agrupado por customer_id.',
+      expected: 'SELECT customer_id, COUNT(*) AS total_orders FROM orders GROUP BY customer_id ORDER BY total_orders DESC;',
+      initial: '-- Nivel 24: Total de órdenes por customer_id\nSELECT customer_id, COUNT(*) AS total_orders \nFROM orders \nGROUP BY customer_id \nORDER BY total_orders DESC;',
+      tbls: ['orders'], pos: { x: 40.0, y: 41.0 }
+    },
+    {
+      lvl: 25, title: 'Mercaderes Frecuentes (HAVING)',
+      prompt: 'Filtra clientes con más de 1 pedido: customer_id, COUNT(*) AS order_count de orders agrupado por customer_id HAVING COUNT(*) > 1.',
+      expected: 'SELECT customer_id, COUNT(*) AS order_count FROM orders GROUP BY customer_id HAVING COUNT(*) > 1 ORDER BY order_count DESC;',
+      initial: '-- Nivel 25: Filtra con HAVING COUNT(*) > 1\nSELECT customer_id, COUNT(*) AS order_count \nFROM orders \nGROUP BY customer_id \nHAVING COUNT(*) > 1 \nORDER BY order_count DESC;',
+      tbls: ['orders'], pos: { x: 44.0, y: 32.0 }
+    },
+    {
+      lvl: 26, title: 'Altos Contribuyentes',
+      prompt: 'Filtra clientes cuyo gasto acumulado supere 1000: customer_id, SUM(total_amount) AS total_spend agrupado por customer_id HAVING SUM(total_amount) > 1000.',
+      expected: 'SELECT customer_id, SUM(total_amount) AS total_spend FROM orders GROUP BY customer_id HAVING SUM(total_amount) > 1000 ORDER BY total_spend DESC;',
+      initial: '-- Nivel 26: Gasto mayor a 1000 con HAVING\nSELECT customer_id, SUM(total_amount) AS total_spend \nFROM orders \nGROUP BY customer_id \nHAVING SUM(total_amount) > 1000 \nORDER BY total_spend DESC;',
+      tbls: ['orders'], pos: { x: 37.0, y: 27.0 }
+    },
+    {
+      lvl: 27, title: 'Contribuyentes Únicos Reales',
+      prompt: 'Cuenta clientes únicos que han realizado pedidos: COUNT(DISTINCT customer_id) AS buying_customers de orders.',
+      expected: 'SELECT COUNT(DISTINCT customer_id) AS buying_customers FROM orders;',
+      initial: '-- Nivel 27: Conteo distintivo\nSELECT COUNT(DISTINCT customer_id) AS buying_customers \nFROM orders;',
+      tbls: ['orders'], pos: { x: 35.0, y: 22.0 }
+    },
+    {
+      lvl: 28, title: 'La Gran Pirámide de los Ancestros',
+      prompt: "👑 ¡JEFE DE ERA II! Selecciona customer_id, COUNT(*) AS completed_orders, SUM(total_amount) AS gross_spent FROM orders WHERE status = 'completed' GROUP BY customer_id HAVING SUM(total_amount) > 1500 ORDER BY gross_spent DESC;",
+      expected: "SELECT customer_id, COUNT(*) AS completed_orders, SUM(total_amount) AS gross_spent FROM orders WHERE status = 'completed' GROUP BY customer_id HAVING SUM(total_amount) > 1500 ORDER BY gross_spent DESC;",
+      initial: "-- Nivel 28 JEFE: Combina WHERE, GROUP BY y HAVING\nSELECT customer_id, COUNT(*) AS completed_orders, SUM(total_amount) AS gross_spent \nFROM orders \nWHERE status = 'completed' \nGROUP BY customer_id \nHAVING SUM(total_amount) > 1500 \nORDER BY gross_spent DESC;",
+      tbls: ['orders'], pos: { x: 30.0, y: 21.0 }
+    }
+  ];
+
+  w2Config.forEach((cfg) => {
+    const isBoss = cfg.lvl === 28;
+    levels.push({
+      levelNumber: cfg.lvl,
+      worldNumber: 2,
+      worldName: 'Era II: Primeras Civilizaciones',
+      biome: 'desert',
+      title: cfg.title,
+      type: isBoss ? 'boss_fortress' : cfg.lvl === 23 ? 'mystery_block' : 'standard',
+      difficulty: isBoss ? 'Master Boss' : cfg.lvl <= 20 ? 'Medium' : 'Hard',
+      targetTables: cfg.tbls,
+      prompt: cfg.prompt,
+      initialQuery: cfg.initial,
+      expectedQuery: cfg.expected,
+      hints: ['Recuerda: Cualquier columna en SELECT no agregada debe estar en GROUP BY.', `Estructura esperada: ${cfg.expected}`],
+      xpReward: isBoss ? 250 : 35 + (cfg.lvl - 14) * 3,
+      coinReward: isBoss ? 90 : 20,
+      pedagogicalNote: `¡Nivel ${cfg.lvl} completado! GROUP BY y funciones de agregación sintetizan transacciones masivas en métricas ejecutivas.`,
       position: cfg.pos
     });
   });
 
   // =========================================================================
-  // MUNDO 2: CAÑÓN DE LAS DUNAS (Niveles 21 al 40) — Agregaciones y GROUP BY
+  // MUNDO 3: EL REINO MEDIEVAL DE LA AGRICULTURA (Niveles 29 al 42)
+  // Ruta Feudal: Molino y Granja -> Puente de Piedra -> Bosque de Pinos -> Castillo -> Faro
   // =========================================================================
-  const w2Titles = [
-    { title: 'Censo de Clientes (COUNT)', prompt: 'Calcula el número total de clientes usando COUNT(*) AS total_customers de customers.', expected: 'SELECT COUNT(*) AS total_customers FROM customers;', initial: '-- Nivel 21: Calcula COUNT(*) AS total_customers\nSELECT \nFROM customers;', tbls: ['customers'] },
-    { title: 'Ingresos Brutos (SUM)', prompt: 'Calcula la suma total facturada con SUM(total_amount) AS gross_sales de orders.', expected: 'SELECT SUM(total_amount) AS gross_sales FROM orders;', initial: '-- Nivel 22: Suma total_amount con SUM()\nSELECT \nFROM orders;', tbls: ['orders'] },
-    { title: 'Precio Promedio (AVG)', prompt: 'Calcula el precio promedio redondeado: ROUND(AVG(price), 2) AS average_price de products.', expected: 'SELECT ROUND(AVG(price), 2) AS average_price FROM products;', initial: '-- Nivel 23: Calcula ROUND(AVG(price), 2)\nSELECT \nFROM products;', tbls: ['products'] },
-    { title: 'Límites Extremos (MIN/MAX)', prompt: 'Selecciona MIN(price) AS lowest_price y MAX(price) AS highest_price de products.', expected: 'SELECT MIN(price) AS lowest_price, MAX(price) AS highest_price FROM products;', initial: '-- Nivel 24: Extrae MIN(price) y MAX(price)\nSELECT \nFROM products;', tbls: ['products'] },
-    { title: 'Volumen Completado Filtrado', prompt: "Calcula cuántas órdenes están completadas: COUNT(*) AS completed_count de orders donde status = 'completed'.", expected: "SELECT COUNT(*) AS completed_count FROM orders WHERE status = 'completed';", initial: "-- Nivel 25: Cuenta pedidos con status = 'completed'\nSELECT COUNT(*) AS completed_count \nFROM orders \nWHERE ;", tbls: ['orders'] },
-    { title: 'Agrupación por País (GROUP BY)', prompt: 'Agrupa clientes por country y cuéntalos: country, COUNT(*) AS customer_count ordenado descendente.', expected: 'SELECT country, COUNT(*) AS customer_count FROM customers GROUP BY country ORDER BY customer_count DESC;', initial: '-- Nivel 26: Agrupa por country\nSELECT country, COUNT(*) AS customer_count \nFROM customers \nGROUP BY \nORDER BY customer_count DESC;', tbls: ['customers'] },
-    { title: 'Resumen por Estado de Pedido', prompt: 'Cuenta pedidos agrupados por status: status, COUNT(*) AS orders_count.', expected: 'SELECT status, COUNT(*) AS orders_count FROM orders GROUP BY status;', initial: '-- Nivel 27: Agrupa pedidos por status\nSELECT status, COUNT(*) AS orders_count \nFROM orders \nGROUP BY ;', tbls: ['orders'] },
-    { title: 'Ingresos por Estado', prompt: 'Calcula los ingresos agrupados por status: status, SUM(total_amount) AS status_revenue.', expected: 'SELECT status, SUM(total_amount) AS status_revenue FROM orders GROUP BY status ORDER BY status_revenue DESC;', initial: '-- Nivel 28: Suma total_amount por status\nSELECT status, SUM(total_amount) AS status_revenue \nFROM orders \nGROUP BY \nORDER BY status_revenue DESC;', tbls: ['orders'] },
-    { title: 'Inventario por Categoría', prompt: 'Suma el stock_quantity por category_id: category_id, SUM(stock_quantity) AS total_inventory.', expected: 'SELECT category_id, SUM(stock_quantity) AS total_inventory FROM products GROUP BY category_id ORDER BY total_inventory DESC;', initial: '-- Nivel 29: Suma inventario por categoría\nSELECT category_id, SUM(stock_quantity) AS total_inventory \nFROM products \nGROUP BY \nORDER BY total_inventory DESC;', tbls: ['products'] },
-    { title: 'Precio Promedio por Categoría', prompt: 'Calcula el promedio de precio por categoría: category_id, ROUND(AVG(price), 2) AS avg_price.', expected: 'SELECT category_id, ROUND(AVG(price), 2) AS avg_price FROM products GROUP BY category_id ORDER BY avg_price DESC;', initial: '-- Nivel 30: Promedia precios por category_id\nSELECT category_id, ROUND(AVG(price), 2) AS avg_price \nFROM products \nGROUP BY \nORDER BY avg_price DESC;', tbls: ['products'] },
-    { title: 'Pedidos por Cliente', prompt: 'Cuenta los pedidos por cada cliente: customer_id, COUNT(*) AS total_orders.', expected: 'SELECT customer_id, COUNT(*) AS total_orders FROM orders GROUP BY customer_id ORDER BY total_orders DESC;', initial: '-- Nivel 31: Agrupa por customer_id\nSELECT customer_id, COUNT(*) AS total_orders \nFROM orders \nGROUP BY \nORDER BY total_orders DESC;', tbls: ['orders'] },
-    { title: 'Gasto Total por Cliente', prompt: 'Calcula el gasto acumulado por cliente: customer_id, SUM(total_amount) AS total_spent.', expected: 'SELECT customer_id, SUM(total_amount) AS total_spent FROM orders GROUP BY customer_id ORDER BY total_spent DESC;', initial: '-- Nivel 32: Suma gasto por customer_id\nSELECT customer_id, SUM(total_amount) AS total_spent \nFROM orders \nGROUP BY \nORDER BY total_spent DESC;', tbls: ['orders'] },
-    { title: 'Censo de Suscripciones por Plan', prompt: 'Cuenta suscriptores por plan: plan, COUNT(*) AS subscriber_count.', expected: 'SELECT plan, COUNT(*) AS subscriber_count FROM subscriptions GROUP BY plan ORDER BY subscriber_count DESC;', initial: '-- Nivel 33: Cuenta suscriptores por plan\nSELECT plan, COUNT(*) AS subscriber_count \nFROM subscriptions \nGROUP BY \nORDER BY subscriber_count DESC;', tbls: ['subscriptions'] },
-    { title: 'Facturación Mensual MRR', prompt: 'Calcula los ingresos mensuales por plan: plan, SUM(monthly_cost) AS total_mrr.', expected: 'SELECT plan, SUM(monthly_cost) AS total_mrr FROM subscriptions GROUP BY plan ORDER BY total_mrr DESC;', initial: '-- Nivel 34: Suma monthly_cost por plan\nSELECT plan, SUM(monthly_cost) AS total_mrr \nFROM subscriptions \nGROUP BY \nORDER BY total_mrr DESC;', tbls: ['subscriptions'] },
-    { title: 'Filtro sobre Grupos (HAVING)', prompt: 'Filtra clientes con más de 1 pedido: customer_id, COUNT(*) AS order_count HAVING COUNT(*) > 1.', expected: 'SELECT customer_id, COUNT(*) AS order_count FROM orders GROUP BY customer_id HAVING COUNT(*) > 1 ORDER BY order_count DESC;', initial: '-- Nivel 35: Filtra grupos con HAVING COUNT(*) > 1\nSELECT customer_id, COUNT(*) AS order_count \nFROM orders \nGROUP BY customer_id \nHAVING \nORDER BY order_count DESC;', tbls: ['orders'] },
-    { title: 'Umbral de Altos Compradores', prompt: 'Filtra clientes que gastaron más de 1000: customer_id, SUM(total_amount) AS total_spend HAVING SUM(total_amount) > 1000.', expected: 'SELECT customer_id, SUM(total_amount) AS total_spend FROM orders GROUP BY customer_id HAVING SUM(total_amount) > 1000 ORDER BY total_spend DESC;', initial: '-- Nivel 36: Usa HAVING SUM(total_amount) > 1000\nSELECT customer_id, SUM(total_amount) AS total_spend \nFROM orders \nGROUP BY customer_id \nHAVING \nORDER BY total_spend DESC;', tbls: ['orders'] },
-    { title: 'Auditoría de Métodos de Pago', prompt: 'Analiza pagos: payment_method, COUNT(*) AS tx_count, SUM(amount) AS settled_sum.', expected: 'SELECT payment_method, COUNT(*) AS tx_count, SUM(amount) AS settled_sum FROM payments GROUP BY payment_method ORDER BY settled_sum DESC;', initial: '-- Nivel 37: Agrupa pagos por payment_method\nSELECT payment_method, COUNT(*) AS tx_count, SUM(amount) AS settled_sum \nFROM payments \nGROUP BY \nORDER BY settled_sum DESC;', tbls: ['payments'] },
-    { title: 'MRR de Suscriptores Activos', prompt: "Suma monthly_cost de suscriptores activos: plan, SUM(monthly_cost) AS active_mrr WHERE status = 'active' GROUP BY plan.", expected: "SELECT plan, SUM(monthly_cost) AS active_mrr FROM subscriptions WHERE status = 'active' GROUP BY plan ORDER BY active_mrr DESC;", initial: "-- Nivel 38: Combina WHERE status = 'active' con GROUP BY\nSELECT plan, SUM(monthly_cost) AS active_mrr \nFROM subscriptions \nWHERE status = 'active' \nGROUP BY \nORDER BY active_mrr DESC;", tbls: ['subscriptions'] },
-    { title: 'Compradores Únicos Reales', prompt: 'Cuenta clientes únicos que han comprado: COUNT(DISTINCT customer_id) AS buying_customers de orders.', expected: 'SELECT COUNT(DISTINCT customer_id) AS buying_customers FROM orders;', initial: '-- Nivel 39: Cuenta clientes únicos con COUNT(DISTINCT ...)\nSELECT \nFROM orders;', tbls: ['orders'] },
-    { title: 'Castillo del Jefe Mundo 2', prompt: "👑 Jefe #02: Selecciona customer_id, COUNT(*) AS completed_orders, SUM(total_amount) AS gross_spent FROM orders WHERE status = 'completed' GROUP BY customer_id HAVING SUM(total_amount) > 1500 ORDER BY gross_spent DESC;", expected: "SELECT customer_id, COUNT(*) AS completed_orders, SUM(total_amount) AS gross_spent FROM orders WHERE status = 'completed' GROUP BY customer_id HAVING SUM(total_amount) > 1500 ORDER BY gross_spent DESC;", initial: "-- Nivel 40 JEFE: Combina WHERE, GROUP BY y HAVING\nSELECT customer_id, COUNT(*) AS completed_orders, SUM(total_amount) AS gross_spent \nFROM orders \nWHERE status = 'completed' \nGROUP BY customer_id \nHAVING \nORDER BY gross_spent DESC;", tbls: ['orders'] }
+  const w3Config = [
+    {
+      lvl: 29, title: 'El Molino del Feudo (INNER JOIN)',
+      prompt: 'Conecta orders o y customers c: o.order_id, c.first_name, o.total_amount vinculados por customer_id.',
+      expected: 'SELECT o.order_id, c.first_name, o.total_amount FROM orders o INNER JOIN customers c ON o.customer_id = c.customer_id ORDER BY o.order_id ASC;',
+      initial: '-- Nivel 29: Une orders y customers con INNER JOIN\nSELECT o.order_id, c.first_name, o.total_amount \nFROM orders o \nINNER JOIN customers c ON o.customer_id = c.customer_id \nORDER BY o.order_id ASC;',
+      tbls: ['orders', 'customers'], pos: { x: 73.0, y: 82.0 }
+    },
+    {
+      lvl: 30, title: 'Productos y Gremios',
+      prompt: 'Conecta products p y categories c: p.name, c.name AS category_name, p.price por category_id.',
+      expected: 'SELECT p.name, c.name AS category_name, p.price FROM products p INNER JOIN categories c ON p.category_id = c.category_id ORDER BY p.price DESC;',
+      initial: '-- Nivel 30: Conecta products y categories\nSELECT p.name, c.name AS category_name, p.price \nFROM products p \nINNER JOIN categories c ON p.category_id = c.category_id \nORDER BY p.price DESC;',
+      tbls: ['products', 'categories'], pos: { x: 67.0, y: 76.0 }
+    },
+    {
+      lvl: 31, title: 'El Puente de Piedra',
+      prompt: 'Conecta orders o y customers c: o.order_id, c.email, o.status por customer_id.',
+      expected: 'SELECT o.order_id, c.email, o.status FROM orders o INNER JOIN customers c ON o.customer_id = c.customer_id ORDER BY o.order_id ASC;',
+      initial: '-- Nivel 31: Relaciona orders y email de customers\nSELECT o.order_id, c.email, o.status \nFROM orders o \nINNER JOIN customers c ON o.customer_id = c.customer_id \nORDER BY o.order_id ASC;',
+      tbls: ['orders', 'customers'], pos: { x: 79.0, y: 63.0 }
+    },
+    {
+      lvl: 32, title: 'Detalle de Línea de Tarea',
+      prompt: 'Conecta order_items oi y products p: oi.order_id, p.name, oi.quantity, oi.unit_price por product_id.',
+      expected: 'SELECT oi.order_id, p.name, oi.quantity, oi.unit_price FROM order_items oi INNER JOIN products p ON oi.product_id = p.product_id ORDER BY oi.item_id ASC;',
+      initial: '-- Nivel 32: Une order_items y products por product_id\nSELECT oi.order_id, p.name, oi.quantity, oi.unit_price \nFROM order_items oi \nINNER JOIN products p ON oi.product_id = p.product_id \nORDER BY oi.item_id ASC;',
+      tbls: ['order_items', 'products'], pos: { x: 84.0, y: 53.0 }
+    },
+    {
+      lvl: 33, title: 'Liquidación de Pagos',
+      prompt: 'Conecta payments p y orders o: p.payment_id, o.order_id, p.payment_method, p.amount por order_id.',
+      expected: 'SELECT p.payment_id, o.order_id, p.payment_method, p.amount FROM payments p INNER JOIN orders o ON p.order_id = o.order_id ORDER BY p.payment_id ASC;',
+      initial: '-- Nivel 33: Une payments y orders por order_id\nSELECT p.payment_id, o.order_id, p.payment_method, p.amount \nFROM payments p \nINNER JOIN orders o ON p.order_id = o.order_id \nORDER BY p.payment_id ASC;',
+      tbls: ['payments', 'orders'], pos: { x: 86.0, y: 41.0 }
+    },
+    {
+      lvl: 34, title: 'Unión Izquierda (LEFT JOIN)',
+      prompt: 'Preserva clientes sin compras usando LEFT JOIN: c.customer_id, c.first_name, o.order_id.',
+      expected: 'SELECT c.customer_id, c.first_name, o.order_id FROM customers c LEFT JOIN orders o ON c.customer_id = o.customer_id ORDER BY c.customer_id ASC, o.order_id ASC;',
+      initial: '-- Nivel 34: LEFT JOIN para incluir clientes sin pedidos\nSELECT c.customer_id, c.first_name, o.order_id \nFROM customers c \nLEFT JOIN orders o ON c.customer_id = o.customer_id \nORDER BY c.customer_id ASC, o.order_id ASC;',
+      tbls: ['customers', 'orders'], pos: { x: 78.0, y: 32.0 }
+    },
+    {
+      lvl: 35, title: 'Aldeanos sin Compras (Anti-Join)',
+      prompt: 'Encuentra clientes sin pedidos con LEFT JOIN y WHERE o.order_id IS NULL: c.customer_id, c.first_name, c.country.',
+      expected: 'SELECT c.customer_id, c.first_name, c.country FROM customers c LEFT JOIN orders o ON c.customer_id = o.customer_id WHERE o.order_id IS NULL ORDER BY c.customer_id ASC;',
+      initial: '-- Nivel 35: Detecta registros huérfanos con Anti-Join\nSELECT c.customer_id, c.first_name, c.country \nFROM customers c \nLEFT JOIN orders o ON c.customer_id = o.customer_id \nWHERE o.order_id IS NULL \nORDER BY c.customer_id ASC;',
+      tbls: ['customers', 'orders'], pos: { x: 57.0, y: 55.0 }
+    },
+    {
+      lvl: 36, title: 'Ingresos por Feudo (Triple JOIN)',
+      prompt: 'Conecta categories c, products p y order_items oi: c.department, SUM(oi.quantity * oi.unit_price) AS dept_sales agrupado por department.',
+      expected: 'SELECT c.department, SUM(oi.quantity * oi.unit_price) AS dept_sales FROM categories c INNER JOIN products p ON c.category_id = p.category_id INNER JOIN order_items oi ON p.product_id = oi.product_id GROUP BY c.department ORDER BY dept_sales DESC;',
+      initial: '-- Nivel 36: Triple JOIN con agregación de ventas\nSELECT c.department, SUM(oi.quantity * oi.unit_price) AS dept_sales \nFROM categories c \nINNER JOIN products p ON c.category_id = p.category_id \nINNER JOIN order_items oi ON p.product_id = oi.product_id \nGROUP BY c.department \nORDER BY dept_sales DESC;',
+      tbls: ['categories', 'products', 'order_items'], pos: { x: 48.0, y: 63.0 }
+    },
+    {
+      lvl: 37, title: 'Volumen por Ciudadela',
+      prompt: 'Cuenta órdenes por ciudad: c.city, COUNT(o.order_id) AS total_orders uniendo customers c y orders o.',
+      expected: 'SELECT c.city, COUNT(o.order_id) AS total_orders FROM customers c INNER JOIN orders o ON c.customer_id = o.customer_id GROUP BY c.city ORDER BY total_orders DESC;',
+      initial: '-- Nivel 37: Une customers y orders y agrupa por ciudad\nSELECT c.city, COUNT(o.order_id) AS total_orders \nFROM customers c \nINNER JOIN orders o ON c.customer_id = o.customer_id \nGROUP BY c.city \nORDER BY total_orders DESC;',
+      tbls: ['customers', 'orders'], pos: { x: 38.0, y: 68.0 }
+    },
+    {
+      lvl: 38, title: 'Top Productos Más Vendidos',
+      prompt: 'Conecta products p y order_items oi: p.name, SUM(oi.quantity) AS units_sold GROUP BY p.name ORDER BY units_sold DESC LIMIT 5.',
+      expected: 'SELECT p.name, SUM(oi.quantity) AS units_sold FROM products p INNER JOIN order_items oi ON p.product_id = oi.product_id GROUP BY p.name ORDER BY units_sold DESC LIMIT 5;',
+      initial: '-- Nivel 38: Top 5 productos en volumen de ventas\nSELECT p.name, SUM(oi.quantity) AS units_sold \nFROM products p \nINNER JOIN order_items oi ON p.product_id = oi.product_id \nGROUP BY p.name \nORDER BY units_sold DESC \nLIMIT 5;',
+      tbls: ['products', 'order_items'], pos: { x: 33.0, y: 61.0 }
+    },
+    {
+      lvl: 39, title: 'Gremios y Tributos (Subscriptions)',
+      prompt: 'Conecta customers c y subscriptions s: c.first_name, s.plan, s.monthly_cost por customer_id.',
+      expected: 'SELECT c.first_name, s.plan, s.monthly_cost FROM customers c INNER JOIN subscriptions s ON c.customer_id = s.customer_id ORDER BY s.monthly_cost DESC;',
+      initial: '-- Nivel 39: Une clientes con sus planes de suscripción\nSELECT c.first_name, s.plan, s.monthly_cost \nFROM customers c \nINNER JOIN subscriptions s ON c.customer_id = s.customer_id \nORDER BY s.monthly_cost DESC;',
+      tbls: ['customers', 'subscriptions'], pos: { x: 38.0, y: 51.0 }
+    },
+    {
+      lvl: 40, title: 'Rastro de Pagos Rechazados',
+      prompt: "Conecta customers c, orders o y payments p: c.first_name, o.order_id, p.amount WHERE p.status = 'declined'.",
+      expected: "SELECT c.first_name, o.order_id, p.amount FROM customers c INNER JOIN orders o ON c.customer_id = o.customer_id INNER JOIN payments p ON o.order_id = p.order_id WHERE p.status = 'declined';",
+      initial: "-- Nivel 40: Detecta pagos fallidos en 3 tablas\nSELECT c.first_name, o.order_id, p.amount \nFROM customers c \nINNER JOIN orders o ON c.customer_id = o.customer_id \nINNER JOIN payments p ON o.order_id = p.order_id \nWHERE p.status = 'declined';",
+      tbls: ['customers', 'orders', 'payments'], pos: { x: 45.0, y: 44.0 }
+    },
+    {
+      lvl: 41, title: 'El Faro de la Costa (Sin Plan)',
+      prompt: 'Encuentra clientes sin suscripción activa usando LEFT JOIN y WHERE s.subscription_id IS NULL: c.customer_id, c.first_name.',
+      expected: 'SELECT c.customer_id, c.first_name FROM customers c LEFT JOIN subscriptions s ON c.customer_id = s.customer_id WHERE s.subscription_id IS NULL ORDER BY c.customer_id ASC;',
+      initial: '-- Nivel 41: Anti-Join con subscriptions\nSELECT c.customer_id, c.first_name \nFROM customers c \nLEFT JOIN subscriptions s ON c.customer_id = s.customer_id \nWHERE s.subscription_id IS NULL \nORDER BY c.customer_id ASC;',
+      tbls: ['customers', 'subscriptions'], pos: { x: 12.0, y: 46.0 }
+    },
+    {
+      lvl: 42, title: 'Fortaleza del Rey Feudal',
+      prompt: '👑 ¡JEFE DE ERA III! Une customers, orders, order_items, products y categories y filtra clientes con gasto > 1000 en departamentos.',
+      expected: 'SELECT c.first_name, cat.department, SUM(oi.quantity * oi.unit_price) AS spend FROM customers c INNER JOIN orders o ON c.customer_id = o.customer_id INNER JOIN order_items oi ON o.order_id = oi.order_id INNER JOIN products p ON oi.product_id = p.product_id INNER JOIN categories cat ON p.category_id = cat.category_id GROUP BY c.first_name, cat.department HAVING spend > 1000 ORDER BY spend DESC;',
+      initial: '-- Nivel 42 JEFE: Cruce relacional de 5 tablas con HAVING\nSELECT c.first_name, cat.department, SUM(oi.quantity * oi.unit_price) AS spend \nFROM customers c \nINNER JOIN orders o ON c.customer_id = o.customer_id \nINNER JOIN order_items oi ON o.order_id = oi.order_id \nINNER JOIN products p ON oi.product_id = p.product_id \nINNER JOIN categories cat ON p.category_id = cat.category_id \nGROUP BY c.first_name, cat.department \nHAVING spend > 1000 \nORDER BY spend DESC;',
+      tbls: ['customers', 'orders', 'order_items', 'products', 'categories'], pos: { x: 39.0, y: 33.0 }
+    }
   ];
 
-  w2Titles.forEach((item, idx) => {
-    const lvlNum = 21 + idx;
-    const isBoss = lvlNum === 40;
-    const isMystery = lvlNum === 25 || lvlNum === 35;
+  w3Config.forEach((cfg) => {
+    const isBoss = cfg.lvl === 42;
     levels.push({
-      levelNumber: lvlNum,
-      worldNumber: 2,
-      worldName: 'Cañón de las Dunas',
-      biome: 'desert',
-      title: item.title,
-      type: isBoss ? 'boss_fortress' : isMystery ? 'mystery_block' : 'standard',
-      difficulty: isBoss ? 'Master Boss' : lvlNum <= 28 ? 'Medium' : 'Hard',
-      targetTables: item.tbls,
-      prompt: item.prompt,
-      initialQuery: item.initial,
-      expectedQuery: item.expected,
-      hints: [
-        'Recuerda: Cualquier columna no agregada en SELECT debe estar presente en GROUP BY.',
-        `Tablas del objetivo: ${item.tbls.join(', ')}.`,
-        `Consulta de referencia: ${item.expected}`
-      ],
-      xpReward: isBoss ? 200 : 40 + idx * 3,
-      coinReward: isBoss ? 70 : 20,
-      pedagogicalNote: `¡Nivel ${lvlNum} superado! GROUP BY y HAVING transforman millones de transacciones individuales en métricas gerenciales (KPIs).`,
-      position: calculateWindingPath(idx)
-    });
-  });
-
-  // =========================================================================
-  // MUNDO 3: ISLAS DE CRISTAL (Niveles 41 al 60) — JOINs Relacionales
-  // =========================================================================
-  const w3Titles = [
-    { title: 'El Primer Puente (INNER JOIN)', prompt: 'Conecta orders y customers: o.order_id, c.first_name, o.total_amount vinculados por customer_id.', expected: 'SELECT o.order_id, c.first_name, o.total_amount FROM orders o INNER JOIN customers c ON o.customer_id = c.customer_id ORDER BY o.order_id ASC;', initial: '-- Nivel 41: Une orders y customers con INNER JOIN\nSELECT o.order_id, c.first_name, o.total_amount \nFROM orders o \nINNER JOIN customers c ON \nORDER BY o.order_id ASC;', tbls: ['orders', 'customers'] },
-    { title: 'Enlace Producto y Categoría', prompt: 'Conecta products p y categories c: p.name, c.name AS category_name, p.price por category_id.', expected: 'SELECT p.name, c.name AS category_name, p.price FROM products p INNER JOIN categories c ON p.category_id = c.category_id ORDER BY p.price DESC;', initial: '-- Nivel 42: Une products con categories\nSELECT p.name, c.name AS category_name, p.price \nFROM products p \nINNER JOIN categories c ON \nORDER BY p.price DESC;', tbls: ['products', 'categories'] },
-    { title: 'Correo y Pedidos', prompt: 'Conecta orders o y customers c: o.order_id, c.email, o.status.', expected: 'SELECT o.order_id, c.email, o.status FROM orders o INNER JOIN customers c ON o.customer_id = c.customer_id ORDER BY o.order_id ASC;', initial: '-- Nivel 43: Vincula orders con email de clientes\nSELECT o.order_id, c.email, o.status \nFROM orders o \nINNER JOIN customers c ON \nORDER BY o.order_id ASC;', tbls: ['orders', 'customers'] },
-    { title: 'Detalle de Líneas de Ítems', prompt: 'Conecta order_items oi y products p: oi.order_id, p.name, oi.quantity, oi.unit_price.', expected: 'SELECT oi.order_id, p.name, oi.quantity, oi.unit_price FROM order_items oi INNER JOIN products p ON oi.product_id = p.product_id ORDER BY oi.item_id ASC;', initial: '-- Nivel 44: Une order_items y products por product_id\nSELECT oi.order_id, p.name, oi.quantity, oi.unit_price \nFROM order_items oi \nINNER JOIN products p ON \nORDER BY oi.item_id ASC;', tbls: ['order_items', 'products'] },
-    { title: 'Liquidación de Pagos', prompt: 'Conecta payments p y orders o: p.payment_id, o.order_id, p.payment_method, p.amount.', expected: 'SELECT p.payment_id, o.order_id, p.payment_method, p.amount FROM payments p INNER JOIN orders o ON p.order_id = o.order_id ORDER BY p.payment_id ASC;', initial: '-- Nivel 45: Une payments y orders por order_id\nSELECT p.payment_id, o.order_id, p.payment_method, p.amount \nFROM payments p \nINNER JOIN orders o ON \nORDER BY p.payment_id ASC;', tbls: ['payments', 'orders'] },
-    { title: 'Unión Izquierda (LEFT JOIN)', prompt: 'Incluye clientes sin pedidos con LEFT JOIN: c.customer_id, c.first_name, o.order_id.', expected: 'SELECT c.customer_id, c.first_name, o.order_id FROM customers c LEFT JOIN orders o ON c.customer_id = o.customer_id ORDER BY c.customer_id ASC, o.order_id ASC;', initial: '-- Nivel 46: Aplica LEFT JOIN para no descartar clientes sin pedidos\nSELECT c.customer_id, c.first_name, o.order_id \nFROM customers c \nLEFT JOIN orders o ON \nORDER BY c.customer_id ASC, o.order_id ASC;', tbls: ['customers', 'orders'] },
-    { title: 'Clientes sin Compras (Anti-Join)', prompt: 'Encuentra clientes que nunca han comprado con LEFT JOIN y WHERE o.order_id IS NULL: c.customer_id, c.first_name, c.country.', expected: 'SELECT c.customer_id, c.first_name, c.country FROM customers c LEFT JOIN orders o ON c.customer_id = o.customer_id WHERE o.order_id IS NULL ORDER BY c.customer_id ASC;', initial: '-- Nivel 47: Anti-Join con LEFT JOIN y WHERE o.order_id IS NULL\nSELECT c.customer_id, c.first_name, c.country \nFROM customers c \nLEFT JOIN orders o ON c.customer_id = o.customer_id \nWHERE \nORDER BY c.customer_id ASC;', tbls: ['customers', 'orders'] },
-    { title: 'Ingresos por Departamento', prompt: 'Conecta categories c, products p y order_items oi: c.department, SUM(oi.quantity * oi.unit_price) AS dept_sales.', expected: 'SELECT c.department, SUM(oi.quantity * oi.unit_price) AS dept_sales FROM categories c INNER JOIN products p ON c.category_id = p.category_id INNER JOIN order_items oi ON p.product_id = oi.product_id GROUP BY c.department ORDER BY dept_sales DESC;', initial: '-- Nivel 48: Triple JOIN para calcular ventas por departamento\nSELECT c.department, SUM(oi.quantity * oi.unit_price) AS dept_sales \nFROM categories c \nINNER JOIN products p ON c.category_id = p.category_id \nINNER JOIN order_items oi ON \nGROUP BY c.department \nORDER BY dept_sales DESC;', tbls: ['categories', 'products', 'order_items'] },
-    { title: 'Volumen de Órdenes por Ciudad', prompt: 'Cuenta pedidos por ciudad: c.city, COUNT(o.order_id) AS total_orders conectando customers c y orders o.', expected: 'SELECT c.city, COUNT(o.order_id) AS total_orders FROM customers c INNER JOIN orders o ON c.customer_id = o.customer_id GROUP BY c.city ORDER BY total_orders DESC;', initial: '-- Nivel 49: Une customers y orders y agrupa por c.city\nSELECT c.city, COUNT(o.order_id) AS total_orders \nFROM customers c \nINNER JOIN orders o ON \nGROUP BY c.city \nORDER BY total_orders DESC;', tbls: ['customers', 'orders'] },
-    { title: 'Esquema Estrella Triple', prompt: 'Conecta customers c, orders o y payments p: c.first_name, o.order_id, p.payment_method, p.amount.', expected: 'SELECT c.first_name, o.order_id, p.payment_method, p.amount FROM customers c INNER JOIN orders o ON c.customer_id = o.customer_id INNER JOIN payments p ON o.order_id = p.order_id ORDER BY o.order_id ASC;', initial: '-- Nivel 50: Conecta 3 tablas centrales\nSELECT c.first_name, o.order_id, p.payment_method, p.amount \nFROM customers c \nINNER JOIN orders o ON \nINNER JOIN payments p ON \nORDER BY o.order_id ASC;', tbls: ['customers', 'orders', 'payments'] },
-    { title: 'Relación Clientes y Suscripciones', prompt: 'Conecta customers c y subscriptions s: c.first_name, s.plan, s.monthly_cost.', expected: 'SELECT c.first_name, s.plan, s.monthly_cost FROM customers c INNER JOIN subscriptions s ON c.customer_id = s.customer_id ORDER BY s.monthly_cost DESC;', initial: '-- Nivel 51: Une customers y subscriptions por customer_id\nSELECT c.first_name, s.plan, s.monthly_cost \nFROM customers c \nINNER JOIN subscriptions s ON \nORDER BY s.monthly_cost DESC;', tbls: ['customers', 'subscriptions'] },
-    { title: 'Top Productos Más Vendidos', prompt: 'Conecta products p y order_items oi: p.name, SUM(oi.quantity) AS units_sold GROUP BY p.name LIMIT 5.', expected: 'SELECT p.name, SUM(oi.quantity) AS units_sold FROM products p INNER JOIN order_items oi ON p.product_id = oi.product_id GROUP BY p.name ORDER BY units_sold DESC LIMIT 5;', initial: '-- Nivel 52: Une products y order_items y calcula el top 5 de unidades vendidas\nSELECT p.name, SUM(oi.quantity) AS units_sold \nFROM products p \nINNER JOIN order_items oi ON \nGROUP BY p.name \nORDER BY units_sold DESC \nLIMIT 5;', tbls: ['products', 'order_items'] },
-    { title: 'Facturación por Línea de Producto', prompt: 'Calcula ingresos por producto: p.name, SUM(oi.quantity * oi.unit_price) AS product_revenue.', expected: 'SELECT p.name, SUM(oi.quantity * oi.unit_price) AS product_revenue FROM products p INNER JOIN order_items oi ON p.product_id = oi.product_id GROUP BY p.name ORDER BY product_revenue DESC LIMIT 5;', initial: '-- Nivel 53: Multiplica cantidad por precio unitario\nSELECT p.name, SUM(oi.quantity * oi.unit_price) AS product_revenue \nFROM products p \nINNER JOIN order_items oi ON \nGROUP BY p.name \nORDER BY product_revenue DESC \nLIMIT 5;', tbls: ['products', 'order_items'] },
-    { title: 'Catálogo de SKUs por Categoría', prompt: 'Cuenta productos por categoría: c.name, COUNT(p.product_id) AS sku_count.', expected: 'SELECT c.name, COUNT(p.product_id) AS sku_count FROM categories c INNER JOIN products p ON c.category_id = p.category_id GROUP BY c.name ORDER BY sku_count DESC;', initial: '-- Nivel 54: Une categories y products por category_id\nSELECT c.name, COUNT(p.product_id) AS sku_count \nFROM categories c \nINNER JOIN products p ON \nGROUP BY c.name \nORDER BY sku_count DESC;', tbls: ['categories', 'products'] },
-    { title: 'Facturación por País de Origen', prompt: 'Calcula ingresos por país: c.country, SUM(o.total_amount) AS country_revenue.', expected: 'SELECT c.country, SUM(o.total_amount) AS country_revenue FROM customers c INNER JOIN orders o ON c.customer_id = o.customer_id GROUP BY c.country ORDER BY country_revenue DESC;', initial: '-- Nivel 55: Agrupa por país del cliente y suma total_amount\nSELECT c.country, SUM(o.total_amount) AS country_revenue \nFROM customers c \nINNER JOIN orders o ON \nGROUP BY c.country \nORDER BY country_revenue DESC;', tbls: ['customers', 'orders'] },
-    { title: 'Rastro de Pagos Rechazados', prompt: "Detecta pagos declinados con clientes: c.first_name, o.order_id, p.amount WHERE p.status = 'declined'.", expected: "SELECT c.first_name, o.order_id, p.amount FROM customers c INNER JOIN orders o ON c.customer_id = o.customer_id INNER JOIN payments p ON o.order_id = p.order_id WHERE p.status = 'declined';", initial: "-- Nivel 56: Une 3 tablas y filtra con WHERE p.status = 'declined'\nSELECT c.first_name, o.order_id, p.amount \nFROM customers c \nINNER JOIN orders o ON c.customer_id = o.customer_id \nINNER JOIN payments p ON o.order_id = p.order_id \nWHERE ;", tbls: ['customers', 'orders', 'payments'] },
-    { title: 'Compradores No Suscritos', prompt: 'Encuentra clientes sin plan de suscripción con LEFT JOIN y WHERE s.subscription_id IS NULL: c.customer_id, c.first_name.', expected: 'SELECT c.customer_id, c.first_name FROM customers c LEFT JOIN subscriptions s ON c.customer_id = s.customer_id WHERE s.subscription_id IS NULL ORDER BY c.customer_id ASC;', initial: '-- Nivel 57: Clientes sin suscripción con LEFT JOIN\nSELECT c.customer_id, c.first_name \nFROM customers c \nLEFT JOIN subscriptions s ON c.customer_id = s.customer_id \nWHERE \nORDER BY c.customer_id ASC;', tbls: ['customers', 'subscriptions'] },
-    { title: 'Ticket Promedio por Nivel de Plan', prompt: 'Calcula el ticket promedio según el plan: s.plan, ROUND(AVG(o.total_amount), 2) AS avg_order_val.', expected: 'SELECT s.plan, ROUND(AVG(o.total_amount), 2) AS avg_order_val FROM subscriptions s INNER JOIN orders o ON s.customer_id = o.customer_id GROUP BY s.plan ORDER BY avg_order_val DESC;', initial: '-- Nivel 58: Une subscriptions con orders y agrupa por plan\nSELECT s.plan, ROUND(AVG(o.total_amount), 2) AS avg_order_val \nFROM subscriptions s \nINNER JOIN orders o ON \nGROUP BY s.plan \nORDER BY avg_order_val DESC;', tbls: ['subscriptions', 'orders'] },
-    { title: 'Unidades Promedio por Departamento', prompt: 'Calcula unidades promedio por compra en cada departamento: c.department, ROUND(AVG(oi.quantity), 2) AS avg_qty.', expected: 'SELECT c.department, ROUND(AVG(oi.quantity), 2) AS avg_qty FROM categories c INNER JOIN products p ON c.category_id = p.category_id INNER JOIN order_items oi ON p.product_id = oi.product_id GROUP BY c.department ORDER BY avg_qty DESC;', initial: '-- Nivel 59: Conecta categories, products y order_items\nSELECT c.department, ROUND(AVG(oi.quantity), 2) AS avg_qty \nFROM categories c \nINNER JOIN products p ON c.category_id = p.category_id \nINNER JOIN order_items oi ON \nGROUP BY c.department \nORDER BY avg_qty DESC;', tbls: ['categories', 'products', 'order_items'] },
-    { title: 'Castillo del Jefe Mundo 3', prompt: '👑 Jefe #03: Conecta las 5 tablas relacionales y filtra clientes con gasto mayor a 1000 en departamentos.', expected: 'SELECT c.first_name, cat.department, SUM(oi.quantity * oi.unit_price) AS spend FROM customers c INNER JOIN orders o ON c.customer_id = o.customer_id INNER JOIN order_items oi ON o.order_id = oi.order_id INNER JOIN products p ON oi.product_id = p.product_id INNER JOIN categories cat ON p.category_id = cat.category_id GROUP BY c.first_name, cat.department HAVING spend > 1000 ORDER BY spend DESC;', initial: '-- Nivel 60 JEFE: Conecta customers, orders, order_items, products y categories\nSELECT c.first_name, cat.department, SUM(oi.quantity * oi.unit_price) AS spend \nFROM customers c \nINNER JOIN orders o ON c.customer_id = o.customer_id \nINNER JOIN order_items oi ON o.order_id = oi.order_id \nINNER JOIN products p ON oi.product_id = p.product_id \nINNER JOIN categories cat ON p.category_id = cat.category_id \nGROUP BY c.first_name, cat.department \nHAVING \nORDER BY spend DESC;', tbls: ['customers', 'orders', 'order_items', 'products', 'categories'] }
-  ];
-
-  w3Titles.forEach((item, idx) => {
-    const lvlNum = 41 + idx;
-    const isBoss = lvlNum === 60;
-    const isMystery = lvlNum === 48 || lvlNum === 55;
-    levels.push({
-      levelNumber: lvlNum,
+      levelNumber: cfg.lvl,
       worldNumber: 3,
-      worldName: 'Islas de Cristal',
+      worldName: 'Era III: Grandes Reinos e Hierro',
       biome: 'bridge',
-      title: item.title,
-      type: isBoss ? 'boss_fortress' : isMystery ? 'mystery_block' : 'standard',
-      difficulty: isBoss ? 'Master Boss' : lvlNum <= 48 ? 'Medium' : 'Hard',
-      targetTables: item.tbls,
-      prompt: item.prompt,
-      initialQuery: item.initial,
-      expectedQuery: item.expected,
-      hints: [
-        'Usa alias de tabla cortos (ej: customers c, orders o) para mantener las uniones legibles.',
-        `Tablas del objetivo: ${item.tbls.join(', ')}.`,
-        `Consulta de referencia: ${item.expected}`
-      ],
-      xpReward: isBoss ? 220 : 50 + idx * 3,
-      coinReward: isBoss ? 75 : 22,
-      pedagogicalNote: `¡Nivel ${lvlNum} completado! Los JOINs relacionales permiten cruzar entidades de negocio de forma consistente.`,
-      position: calculateWindingPath(idx)
+      title: cfg.title,
+      type: isBoss ? 'boss_fortress' : cfg.lvl === 35 ? 'mystery_block' : 'standard',
+      difficulty: isBoss ? 'Master Boss' : 'Hard',
+      targetTables: cfg.tbls,
+      prompt: cfg.prompt,
+      initialQuery: cfg.initial,
+      expectedQuery: cfg.expected,
+      hints: ['Usa alias cortos como c, o, p para mantener legibles los JOINs.', `Consulta esperada: ${cfg.expected}`],
+      xpReward: isBoss ? 300 : 45 + (cfg.lvl - 28) * 3,
+      coinReward: isBoss ? 100 : 25,
+      pedagogicalNote: `¡Nivel ${cfg.lvl} completado! Los JOINs relacionales permiten vincular entidades heterogéneas manteniendo la normalización.`,
+      position: cfg.pos
     });
   });
 
   // =========================================================================
-  // MUNDO 4: CAVERNAS DE LA LÓGICA (Niveles 61 al 80) — CASE, Subconsultas
+  // MUNDO 4: LA CIUDAD DE LA REVOLUCIÓN INDUSTRIAL (Niveles 43 al 56)
+  // Ruta Urbana e Industrial: Puerto de Vapor -> Ferrocarriles -> Torre del Reloj -> Fábricas
   // =========================================================================
-  const w4Titles = [
-    { title: 'Bifurcación Binaria (CASE)', prompt: "Clasifica precios con CASE WHEN price >= 500 THEN 'Expensive' ELSE 'Affordable' END AS price_class de products.", expected: "SELECT name, price, CASE WHEN price >= 500 THEN 'Expensive' ELSE 'Affordable' END AS price_class FROM products ORDER BY price DESC;", initial: "-- Nivel 61: Clasifica precios con CASE WHEN\nSELECT name, price, \n  CASE WHEN price >= 500 THEN 'Expensive' \n  ELSE 'Affordable' \n  END AS price_class \nFROM products \nORDER BY price DESC;", tbls: ['products'] },
-    { title: 'Segmentación en Tres Niveles', prompt: "Segmenta precios en Budget, Mid-Tier y Premium con CASE.", expected: "SELECT name, price, CASE WHEN price < 200 THEN 'Budget' WHEN price < 1000 THEN 'Mid-Tier' ELSE 'Premium' END AS tier FROM products ORDER BY price ASC;", initial: "-- Nivel 62: Segmenta en tres categorías con WHEN\nSELECT name, price, \n  CASE \n    WHEN price < 200 THEN 'Budget' \n    WHEN price < 1000 THEN 'Mid-Tier' \n    ELSE 'Premium' \n  END AS tier \nFROM products \nORDER BY price ASC;", tbls: ['products'] },
-    { title: 'Normalización de Estados', prompt: "Etiqueta órdenes: CASE WHEN status = 'completed' THEN 'Settled' ELSE 'Unsettled' END AS settlement_state.", expected: "SELECT order_id, total_amount, CASE WHEN status = 'completed' THEN 'Settled' ELSE 'Unsettled' END AS settlement_state FROM orders ORDER BY order_id ASC;", initial: "-- Nivel 63: Etiqueta pedidos completados como 'Settled'\nSELECT order_id, total_amount, \n  CASE WHEN status = 'completed' THEN 'Settled' ELSE 'Unsettled' END AS settlement_state \nFROM orders \nORDER BY order_id ASC;", tbls: ['orders'] },
-    { title: 'Longitud de Texto (LENGTH)', prompt: 'Calcula caracteres de nombres: LENGTH(name) AS name_char_count de products.', expected: 'SELECT name, LENGTH(name) AS name_char_count FROM products ORDER BY name_char_count DESC;', initial: '-- Nivel 64: Mide la longitud del nombre con LENGTH()\nSELECT name, \nFROM products \nORDER BY name_char_count DESC;', tbls: ['products'] },
-    { title: 'Transformación UPPER y LOWER', prompt: 'Limpia texto: UPPER(first_name) AS loud_name, LOWER(email) AS clean_email.', expected: 'SELECT UPPER(first_name) AS loud_name, LOWER(email) AS clean_email FROM customers ORDER BY loud_name ASC;', initial: '-- Nivel 65: Transforma con UPPER() y LOWER()\nSELECT UPPER(first_name) AS loud_name, \nFROM customers \nORDER BY loud_name ASC;', tbls: ['customers'] },
-    { title: 'Extracción de Año (SUBSTR)', prompt: 'Extrae el año YYYY: SUBSTR(order_date, 1, 4) AS order_year.', expected: 'SELECT order_id, SUBSTR(order_date, 1, 4) AS order_year FROM orders ORDER BY order_id ASC;', initial: '-- Nivel 66: Extrae los primeros 4 dígitos de la fecha con SUBSTR()\nSELECT order_id, \nFROM orders \nORDER BY order_id ASC;', tbls: ['orders'] },
-    { title: 'Extracción de Mes (SUBSTR)', prompt: 'Extrae el año y mes YYYY-MM: SUBSTR(order_date, 1, 7) AS order_month.', expected: 'SELECT order_id, SUBSTR(order_date, 1, 7) AS order_month FROM orders ORDER BY order_id ASC;', initial: '-- Nivel 67: Extrae los primeros 7 caracteres con SUBSTR()\nSELECT order_id, \nFROM orders \nORDER BY order_id ASC;', tbls: ['orders'] },
-    { title: 'Cohorte de Ingresos Mensuales', prompt: 'Agrupa por mes de orden: SUBSTR(order_date, 1, 7) AS month, SUM(total_amount) AS revenue.', expected: 'SELECT SUBSTR(order_date, 1, 7) AS month, SUM(total_amount) AS revenue FROM orders GROUP BY month ORDER BY month ASC;', initial: '-- Nivel 68: Agrupa por mes extraído\nSELECT SUBSTR(order_date, 1, 7) AS month, SUM(total_amount) AS revenue \nFROM orders \nGROUP BY month \nORDER BY month ASC;', tbls: ['orders'] },
-    { title: 'Reemplazo de Nulos (COALESCE)', prompt: "Reemplaza nulos por texto: COALESCE(cancel_date, 'Active Plan') AS plan_state de subscriptions.", expected: "SELECT subscription_id, COALESCE(cancel_date, 'Active Plan') AS plan_state FROM subscriptions ORDER BY subscription_id ASC;", initial: "-- Nivel 69: Reemplaza valores nulos con COALESCE()\nSELECT subscription_id, COALESCE(cancel_date, 'Active Plan') AS plan_state \nFROM subscriptions \nORDER BY subscription_id ASC;", tbls: ['subscriptions'] },
-    { title: 'Filtro con Subconsulta Escalar', prompt: 'Productos más caros que el promedio: WHERE price > (SELECT AVG(price) FROM products).', expected: 'SELECT name, price FROM products WHERE price > (SELECT AVG(price) FROM products) ORDER BY price DESC;', initial: '-- Nivel 70: Subconsulta escalar para comparar con el promedio\nSELECT name, price \nFROM products \nWHERE price > (SELECT AVG(price) FROM products) \nORDER BY price DESC;', tbls: ['products'] },
-    { title: 'Subconsulta con Fecha Máxima', prompt: 'Órdenes de la fecha más reciente: WHERE order_date = (SELECT MAX(order_date) FROM orders).', expected: 'SELECT order_id, customer_id, order_date FROM orders WHERE order_date = (SELECT MAX(order_date) FROM orders);', initial: '-- Nivel 71: Filtra por la fecha máxima con subconsulta\nSELECT order_id, customer_id, order_date \nFROM orders \nWHERE order_date = (SELECT MAX(order_date) FROM orders);', tbls: ['orders'] },
-    { title: 'Subconsulta con WHERE IN', prompt: "Clientes con compras completadas: customer_id IN (SELECT customer_id FROM orders WHERE status = 'completed').", expected: "SELECT first_name, email FROM customers WHERE customer_id IN (SELECT customer_id FROM orders WHERE status = 'completed') ORDER BY first_name ASC;", initial: "-- Nivel 72: Subconsulta con IN\nSELECT first_name, email \nFROM customers \nWHERE customer_id IN (SELECT customer_id FROM orders WHERE status = 'completed') \nORDER BY first_name ASC;", tbls: ['customers', 'orders'] },
-    { title: 'Subconsulta con WHERE NOT IN', prompt: 'Clientes sin ningún pedido: customer_id NOT IN (SELECT customer_id FROM orders).', expected: 'SELECT first_name, country FROM customers WHERE customer_id NOT IN (SELECT customer_id FROM orders) ORDER BY first_name ASC;', initial: '-- Nivel 73: Anti-filtro con NOT IN\nSELECT first_name, country \nFROM customers \nWHERE customer_id NOT IN (SELECT customer_id FROM orders) \nORDER BY first_name ASC;', tbls: ['customers', 'orders'] },
-    { title: 'Subconsulta en Proyección SELECT', prompt: 'Diferencia de precio frente al promedio en cada fila: ROUND(price - (SELECT AVG(price) FROM products), 2) AS diff_from_mean.', expected: 'SELECT name, price, ROUND(price - (SELECT AVG(price) FROM products), 2) AS diff_from_mean FROM products ORDER BY diff_from_mean DESC;', initial: '-- Nivel 74: Subconsulta dentro de la cláusula SELECT\nSELECT name, price, \n  ROUND(price - (SELECT AVG(price) FROM products), 2) AS diff_from_mean \nFROM products \nORDER BY diff_from_mean DESC;', tbls: ['products'] },
-    { title: 'Filtro de Existencia (EXISTS)', prompt: 'Clientes con suscripción usando EXISTS: WHERE EXISTS (SELECT 1 FROM subscriptions s WHERE s.customer_id = c.customer_id).', expected: 'SELECT c.customer_id, c.first_name FROM customers c WHERE EXISTS (SELECT 1 FROM subscriptions s WHERE s.customer_id = c.customer_id) ORDER BY c.customer_id ASC;', initial: '-- Nivel 75: Filtro con EXISTS correlacionado\nSELECT c.customer_id, c.first_name \nFROM customers c \nWHERE EXISTS (SELECT 1 FROM subscriptions s WHERE s.customer_id = c.customer_id) \nORDER BY c.customer_id ASC;', tbls: ['customers', 'subscriptions'] },
-    { title: 'Inexistencia con NOT EXISTS', prompt: 'Clientes sin suscripción usando NOT EXISTS.', expected: 'SELECT c.customer_id, c.first_name FROM customers c WHERE NOT EXISTS (SELECT 1 FROM subscriptions s WHERE s.customer_id = c.customer_id) ORDER BY c.customer_id ASC;', initial: '-- Nivel 76: Filtro con NOT EXISTS\nSELECT c.customer_id, c.first_name \nFROM customers c \nWHERE NOT EXISTS (SELECT 1 FROM subscriptions s WHERE s.customer_id = c.customer_id) \nORDER BY c.customer_id ASC;', tbls: ['customers', 'subscriptions'] },
-    { title: 'Agregación Condicional (SUM CASE)', prompt: "Suma condicional: SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END) AS completed_orders.", expected: "SELECT COUNT(*) AS total_orders, SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END) AS completed_orders FROM orders;", initial: "-- Nivel 77: Cuenta pedidos completados sumando con CASE\nSELECT COUNT(*) AS total_orders, \n  SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END) AS completed_orders \nFROM orders;", tbls: ['orders'] },
-    { title: 'Pivote de Canales de Pago', prompt: "Calcula volúmenes por método con CASE: SUM(CASE WHEN payment_method = 'credit_card' THEN amount ELSE 0 END) AS cc_volume.", expected: "SELECT SUM(CASE WHEN payment_method = 'credit_card' THEN amount ELSE 0 END) AS cc_volume, SUM(CASE WHEN payment_method = 'paypal' THEN amount ELSE 0 END) AS paypal_volume FROM payments;", initial: "-- Nivel 78: Pivota montos de tarjetas y paypal\nSELECT \n  SUM(CASE WHEN payment_method = 'credit_card' THEN amount ELSE 0 END) AS cc_volume, \n  SUM(CASE WHEN payment_method = 'paypal' THEN amount ELSE 0 END) AS paypal_volume \nFROM payments;", tbls: ['payments'] },
-    { title: 'Comparación con Promedio General', prompt: 'Pedidos con monto superior a la media: WHERE total_amount > (SELECT AVG(total_amount) FROM orders).', expected: 'SELECT customer_id, total_amount FROM orders WHERE total_amount > (SELECT AVG(total_amount) FROM orders) ORDER BY total_amount DESC;', initial: '-- Nivel 79: Filtra pedidos por encima de la media con subconsulta\nSELECT customer_id, total_amount \nFROM orders \nWHERE total_amount > (SELECT AVG(total_amount) FROM orders) \nORDER BY total_amount DESC;', tbls: ['orders'] },
-    { title: 'Castillo del Jefe Mundo 4', prompt: "👑 Jefe #04: Etiqueta productos según superen o no la media con CASE y subconsulta.", expected: "SELECT name, price, CASE WHEN price > (SELECT AVG(price) FROM products) THEN 'Above Average' ELSE 'Below Average' END AS benchmark_tag FROM products ORDER BY price DESC;", initial: "-- Nivel 80 JEFE: Combina CASE con subconsulta AVG()\nSELECT name, price, \n  CASE WHEN price > (SELECT AVG(price) FROM products) THEN 'Above Average' ELSE 'Below Average' END AS benchmark_tag \nFROM products \nORDER BY price DESC;", tbls: ['products'] }
+  const w4Config = [
+    {
+      lvl: 43, title: 'Transformación UPPER y LOWER',
+      prompt: 'Normaliza textos: SELECT UPPER(first_name) AS upper_name, LOWER(email) AS lower_email FROM customers ORDER BY upper_name ASC;',
+      expected: 'SELECT UPPER(first_name) AS upper_name, LOWER(email) AS lower_email FROM customers ORDER BY upper_name ASC;',
+      initial: '-- Nivel 43: Normaliza cadenas de texto\nSELECT UPPER(first_name) AS upper_name, LOWER(email) AS lower_email \nFROM customers \nORDER BY upper_name ASC;',
+      tbls: ['customers'], pos: { x: 13.0, y: 53.0 }
+    },
+    {
+      lvl: 44, title: 'Bifurcación Binaria (CASE)',
+      prompt: "Clasifica precios con CASE: WHEN price >= 500 THEN 'Expensive' ELSE 'Affordable' END AS price_class de products.",
+      expected: "SELECT name, price, CASE WHEN price >= 500 THEN 'Expensive' ELSE 'Affordable' END AS price_class FROM products ORDER BY price DESC;",
+      initial: "-- Nivel 44: Lógica condicional binaria con CASE\nSELECT name, price, \n  CASE WHEN price >= 500 THEN 'Expensive' ELSE 'Affordable' END AS price_class \nFROM products \nORDER BY price DESC;",
+      tbls: ['products'], pos: { x: 23.0, y: 42.0 }
+    },
+    {
+      lvl: 45, title: 'Segmentación en Tres Niveles',
+      prompt: "Segmenta precios en Budget, Mid-Tier y Premium con CASE: price < 200, price < 1000, ELSE 'Premium'.",
+      expected: "SELECT name, price, CASE WHEN price < 200 THEN 'Budget' WHEN price < 1000 THEN 'Mid-Tier' ELSE 'Premium' END AS tier FROM products ORDER BY price ASC;",
+      initial: "-- Nivel 45: Clasificación en 3 rangos con CASE\nSELECT name, price, \n  CASE \n    WHEN price < 200 THEN 'Budget' \n    WHEN price < 1000 THEN 'Mid-Tier' \n    ELSE 'Premium' \n  END AS tier \nFROM products \nORDER BY price ASC;",
+      tbls: ['products'], pos: { x: 25.0, y: 78.0 }
+    },
+    {
+      lvl: 46, title: 'Agregación Condicional (SUM CASE)',
+      prompt: "Calcula ventas de órdenes completadas frente a canceladas usando SUM(CASE WHEN status = 'completed' THEN total_amount ELSE 0 END) AS completed_rev.",
+      expected: "SELECT SUM(CASE WHEN status = 'completed' THEN total_amount ELSE 0 END) AS completed_rev, SUM(CASE WHEN status = 'cancelled' THEN total_amount ELSE 0 END) AS lost_rev FROM orders;",
+      initial: "-- Nivel 46: SUM con CASE WHEN adentro\nSELECT \n  SUM(CASE WHEN status = 'completed' THEN total_amount ELSE 0 END) AS completed_rev, \n  SUM(CASE WHEN status = 'cancelled' THEN total_amount ELSE 0 END) AS lost_rev \nFROM orders;",
+      tbls: ['orders'], pos: { x: 35.0, y: 80.0 }
+    },
+    {
+      lvl: 47, title: 'Matriz de Métodos de Pago',
+      prompt: "Pivota pagos: SUM(CASE WHEN payment_method = 'credit_card' THEN amount ELSE 0 END) AS card_total, SUM(CASE WHEN payment_method = 'paypal' THEN amount ELSE 0 END) AS paypal_total de payments.",
+      expected: "SELECT SUM(CASE WHEN payment_method = 'credit_card' THEN amount ELSE 0 END) AS card_total, SUM(CASE WHEN payment_method = 'paypal' THEN amount ELSE 0 END) AS paypal_total FROM payments;",
+      initial: "-- Nivel 47: Pivotaje de pagos por método\nSELECT \n  SUM(CASE WHEN payment_method = 'credit_card' THEN amount ELSE 0 END) AS card_total, \n  SUM(CASE WHEN payment_method = 'paypal' THEN amount ELSE 0 END) AS paypal_total \nFROM payments;",
+      tbls: ['payments'], pos: { x: 47.0, y: 72.0 }
+    },
+    {
+      lvl: 48, title: 'Filtro con Subconsulta Escalar',
+      prompt: 'Filtra productos cuyo precio supera el promedio general: price > (SELECT AVG(price) FROM products).',
+      expected: 'SELECT name, price FROM products WHERE price > (SELECT AVG(price) FROM products) ORDER BY price DESC;',
+      initial: '-- Nivel 48: Subconsulta escalar en WHERE\nSELECT name, price \nFROM products \nWHERE price > (SELECT AVG(price) FROM products) \nORDER BY price DESC;',
+      tbls: ['products'], pos: { x: 56.0, y: 66.0 }
+    },
+    {
+      lvl: 49, title: 'Subconsulta con Lista (IN)',
+      prompt: 'Encuentra clientes que han colocado al menos un pedido usando WHERE customer_id IN (SELECT customer_id FROM orders).',
+      expected: 'SELECT first_name, email FROM customers WHERE customer_id IN (SELECT customer_id FROM orders) ORDER BY first_name ASC;',
+      initial: '-- Nivel 49: Subconsulta IN en WHERE\nSELECT first_name, email \nFROM customers \nWHERE customer_id IN (SELECT customer_id FROM orders) \nORDER BY first_name ASC;',
+      tbls: ['customers', 'orders'], pos: { x: 67.0, y: 75.0 }
+    },
+    {
+      lvl: 50, title: 'Exclusión con NOT IN',
+      prompt: 'Encuentra productos que nunca han sido vendidos: product_id NOT IN (SELECT product_id FROM order_items).',
+      expected: 'SELECT product_id, name FROM products WHERE product_id NOT IN (SELECT product_id FROM order_items) ORDER BY product_id ASC;',
+      initial: '-- Nivel 50: Productos sin ventas con NOT IN\nSELECT product_id, name \nFROM products \nWHERE product_id NOT IN (SELECT product_id FROM order_items) \nORDER BY product_id ASC;',
+      tbls: ['products', 'order_items'], pos: { x: 52.0, y: 47.0 }
+    },
+    {
+      lvl: 51, title: 'Subconsulta Correlacionada (EXISTS)',
+      prompt: 'Encuentra clientes que tienen al menos un pedido completado usando WHERE EXISTS.',
+      expected: "SELECT c.customer_id, c.first_name FROM customers c WHERE EXISTS (SELECT 1 FROM orders o WHERE o.customer_id = c.customer_id AND o.status = 'completed') ORDER BY c.customer_id ASC;",
+      initial: "-- Nivel 51: Subconsulta correlacionada con EXISTS\nSELECT c.customer_id, c.first_name \nFROM customers c \nWHERE EXISTS (SELECT 1 FROM orders o WHERE o.customer_id = c.customer_id AND o.status = 'completed') \nORDER BY c.customer_id ASC;",
+      tbls: ['customers', 'orders'], pos: { x: 36.0, y: 38.0 }
+    },
+    {
+      lvl: 52, title: 'Tabla Derivada en FROM',
+      prompt: 'Calcula el promedio de gasto de los clientes a partir de una tabla derivada en FROM.',
+      expected: 'SELECT ROUND(AVG(customer_spent), 2) AS avg_customer_spend FROM (SELECT customer_id, SUM(total_amount) AS customer_spent FROM orders GROUP BY customer_id) AS spend_subquery;',
+      initial: '-- Nivel 52: Subconsulta como tabla derivada en FROM\nSELECT ROUND(AVG(customer_spent), 2) AS avg_customer_spend \nFROM (SELECT customer_id, SUM(total_amount) AS customer_spent FROM orders GROUP BY customer_id) AS spend_subquery;',
+      tbls: ['orders'], pos: { x: 27.0, y: 28.0 }
+    },
+    {
+      lvl: 53, title: 'Cálculo de Promedios por Categoría',
+      prompt: 'Compara el precio de cada producto con el precio promedio de su categoría usando una subconsulta correlacionada.',
+      expected: 'SELECT p.name, p.price, ROUND((SELECT AVG(p2.price) FROM products p2 WHERE p2.category_id = p.category_id), 2) AS cat_avg_price FROM products p ORDER BY p.price DESC;',
+      initial: '-- Nivel 53: Subconsulta correlacionada en SELECT\nSELECT p.name, p.price, \n  ROUND((SELECT AVG(p2.price) FROM products p2 WHERE p2.category_id = p.category_id), 2) AS cat_avg_price \nFROM products p \nORDER BY p.price DESC;',
+      tbls: ['products'], pos: { x: 40.0, y: 25.0 }
+    },
+    {
+      lvl: 54, title: 'Extracción Temporal con STRFTIME',
+      prompt: "Extrae año y mes de pedidos: STRFTIME('%Y-%m', order_date) AS order_month, COUNT(*) AS monthly_orders de orders.",
+      expected: "SELECT STRFTIME('%Y-%m', order_date) AS order_month, COUNT(*) AS monthly_orders FROM orders GROUP BY order_month ORDER BY order_month ASC;",
+      initial: "-- Nivel 54: Agrupación temporal con STRFTIME\nSELECT STRFTIME('%Y-%m', order_date) AS order_month, COUNT(*) AS monthly_orders \nFROM orders \nGROUP BY order_month \nORDER BY order_month ASC;",
+      tbls: ['orders'], pos: { x: 62.0, y: 32.0 }
+    },
+    {
+      lvl: 55, title: 'Reemplazo y Limpieza (REPLACE)',
+      prompt: "Limpia correos: REPLACE(email, '@example.com', '@empresa.com') AS enterprise_email de customers.",
+      expected: "SELECT first_name, REPLACE(email, '@example.com', '@empresa.com') AS enterprise_email FROM customers ORDER BY first_name ASC;",
+      initial: "-- Nivel 55: Transformación con REPLACE\nSELECT first_name, REPLACE(email, '@example.com', '@empresa.com') AS enterprise_email \nFROM customers \nORDER BY first_name ASC;",
+      tbls: ['customers'], pos: { x: 74.0, y: 25.0 }
+    },
+    {
+      lvl: 56, title: 'La Maquinaria Central de la Revolución',
+      prompt: '👑 ¡JEFE DE ERA IV! Selecciona customers cuyo gasto supere el promedio de todos los compradores activos, categorizados con CASE en Gold y Platinum.',
+      expected: "SELECT c.first_name, SUM(o.total_amount) AS total_spent, CASE WHEN SUM(o.total_amount) > 1500 THEN 'Platinum' ELSE 'Gold' END AS customer_tier FROM customers c INNER JOIN orders o ON c.customer_id = o.customer_id GROUP BY c.customer_id HAVING total_spent > (SELECT AVG(total_amount) FROM orders) ORDER BY total_spent DESC;",
+      initial: "-- Nivel 56 JEFE: CASE, Subconsulta en HAVING y JOIN\nSELECT c.first_name, SUM(o.total_amount) AS total_spent, \n  CASE WHEN SUM(o.total_amount) > 1500 THEN 'Platinum' ELSE 'Gold' END AS customer_tier \nFROM customers c \nINNER JOIN orders o ON c.customer_id = o.customer_id \nGROUP BY c.customer_id \nHAVING total_spent > (SELECT AVG(total_amount) FROM orders) \nORDER BY total_spent DESC;",
+      tbls: ['customers', 'orders'], pos: { x: 50.0, y: 34.0 }
+    }
   ];
 
-  w4Titles.forEach((item, idx) => {
-    const lvlNum = 61 + idx;
-    const isBoss = lvlNum === 80;
-    const isMystery = lvlNum === 67 || lvlNum === 75;
+  w4Config.forEach((cfg) => {
+    const isBoss = cfg.lvl === 56;
     levels.push({
-      levelNumber: lvlNum,
+      levelNumber: cfg.lvl,
       worldNumber: 4,
-      worldName: 'Cavernas de la Lógica',
+      worldName: 'Era IV: Revolución del Vapor',
       biome: 'cavern',
-      title: item.title,
-      type: isBoss ? 'boss_fortress' : isMystery ? 'mystery_block' : 'standard',
-      difficulty: isBoss ? 'Master Boss' : lvlNum <= 70 ? 'Hard' : 'Expert',
-      targetTables: item.tbls,
-      prompt: item.prompt,
-      initialQuery: item.initial,
-      expectedQuery: item.expected,
-      hints: [
-        'Estructura: CASE WHEN condición THEN resultado ELSE alternativo END.',
-        `Tablas del objetivo: ${item.tbls.join(', ')}.`,
-        `Consulta de referencia: ${item.expected}`
-      ],
-      xpReward: isBoss ? 250 : 60 + idx * 3,
-      coinReward: isBoss ? 80 : 25,
-      pedagogicalNote: `¡Nivel ${lvlNum} dominado! Las estructuras condicionales y subconsultas procesan lógica de negocio directamente en el motor de base de datos.`,
-      position: calculateWindingPath(idx)
+      title: cfg.title,
+      type: isBoss ? 'boss_fortress' : cfg.lvl === 50 ? 'mystery_block' : 'standard',
+      difficulty: isBoss ? 'Master Boss' : 'Hard',
+      targetTables: cfg.tbls,
+      prompt: cfg.prompt,
+      initialQuery: cfg.initial,
+      expectedQuery: cfg.expected,
+      hints: ['Asegura cerrar cada bloque CASE con END.', `Consulta esperada: ${cfg.expected}`],
+      xpReward: isBoss ? 350 : 55 + (cfg.lvl - 42) * 3,
+      coinReward: isBoss ? 110 : 28,
+      pedagogicalNote: `¡Nivel ${cfg.lvl} conquistado! La lógica condicional CASE y las subconsultas desbloquean análisis adaptativos sin código procedimental.`,
+      position: cfg.pos
     });
   });
 
   // =========================================================================
-  // MUNDO 5: VOLCÁN DE BOWSER (Niveles 81 al 100) — CTEs y Funciones Ventana
+  // MUNDO 5: EL HUB DE LA GLOBALIZACIÓN CONECTADA (Niveles 57 al 70) [NUEVO MUNDO]
+  // Terminal Portuaria -> Autopista Intermodal -> Cúpulas de Cristal -> Aeropuerto
+  // Conceptos: Common Table Expressions (WITH / CTEs), Subconsultas Correlacionadas, Análisis Transfronterizo
   // =========================================================================
-  const w5Titles = [
-    { title: 'Primer Pipeline con CTE (WITH)', prompt: 'Define un CTE para gastos de clientes con WITH spending AS (...) y filtra total_spent > 1000.', expected: 'WITH spending AS (SELECT customer_id, SUM(total_amount) AS total_spent FROM orders GROUP BY customer_id) SELECT * FROM spending WHERE total_spent > 1000 ORDER BY total_spent DESC;', initial: '-- Nivel 81: Define tu primer CTE con WITH\nWITH spending AS (\n  SELECT customer_id, SUM(total_amount) AS total_spent \n  FROM orders \n  GROUP BY customer_id\n)\nSELECT * \nFROM spending \nWHERE total_spent > 1000 \nORDER BY total_spent DESC;', tbls: ['orders'] },
-    { title: 'CTE con Unión Posterior', prompt: 'Une clientes con el resumen del CTE: c.first_name, ot.orders_count.', expected: 'WITH order_totals AS (SELECT customer_id, COUNT(*) AS orders_count FROM orders GROUP BY customer_id) SELECT c.first_name, ot.orders_count FROM customers c INNER JOIN order_totals ot ON c.customer_id = ot.customer_id ORDER BY ot.orders_count DESC;', initial: '-- Nivel 82: Conecta un CTE con la tabla customers\nWITH order_totals AS (\n  SELECT customer_id, COUNT(*) AS orders_count \n  FROM orders \n  GROUP BY customer_id\n)\nSELECT c.first_name, ot.orders_count \nFROM customers c \nINNER JOIN order_totals ot ON c.customer_id = ot.customer_id \nORDER BY ot.orders_count DESC;', tbls: ['customers', 'orders'] },
-    { title: 'CTEs Encadenados Múltiples', prompt: 'Encadena dos CTEs separados por coma: WITH active_subs AS (...), total_orders AS (...).', expected: "WITH active_subs AS (SELECT customer_id, monthly_cost FROM subscriptions WHERE status = 'active'), total_orders AS (SELECT customer_id, SUM(total_amount) AS spend FROM orders GROUP BY customer_id) SELECT a.customer_id, a.monthly_cost, t.spend FROM active_subs a INNER JOIN total_orders t ON a.customer_id = t.customer_id ORDER BY t.spend DESC;", initial: "-- Nivel 83: Encadena 2 CTEs\nWITH active_subs AS (\n  SELECT customer_id, monthly_cost FROM subscriptions WHERE status = 'active'\n),\ntotal_orders AS (\n  SELECT customer_id, SUM(total_amount) AS spend FROM orders GROUP BY customer_id\n)\nSELECT a.customer_id, a.monthly_cost, t.spend \nFROM active_subs a \nINNER JOIN total_orders t ON a.customer_id = t.customer_id \nORDER BY t.spend DESC;", tbls: ['subscriptions', 'orders'] },
-    { title: 'Resumen Categórico en CTE', prompt: 'Calcula ingresos por SKU en CTE y selecciona el Top 5 con LIMIT 5.', expected: 'WITH sku_rev AS (SELECT product_id, SUM(quantity * unit_price) AS rev FROM order_items GROUP BY product_id) SELECT p.name, sr.rev FROM products p INNER JOIN sku_rev sr ON p.product_id = sr.product_id ORDER BY sr.rev DESC LIMIT 5;', initial: '-- Nivel 84: Agregación en CTE y unión final\nWITH sku_rev AS (\n  SELECT product_id, SUM(quantity * unit_price) AS rev \n  FROM order_items \n  GROUP BY product_id\n)\nSELECT p.name, sr.rev \nFROM products p \nINNER JOIN sku_rev sr ON p.product_id = sr.product_id \nORDER BY sr.rev DESC \nLIMIT 5;', tbls: ['order_items', 'products'] },
-    { title: 'Ranking con ROW_NUMBER', prompt: 'Numera órdenes de mayor a menor gasto: ROW_NUMBER() OVER (ORDER BY total_amount DESC) AS spend_rank.', expected: 'SELECT order_id, total_amount, ROW_NUMBER() OVER (ORDER BY total_amount DESC) AS spend_rank FROM orders ORDER BY spend_rank ASC;', initial: '-- Nivel 85: Función Ventana ROW_NUMBER()\nSELECT order_id, total_amount, \n  ROW_NUMBER() OVER (ORDER BY total_amount DESC) AS spend_rank \nFROM orders \nORDER BY spend_rank ASC;', tbls: ['orders'] },
-    { title: 'Partición por Cliente (PARTITION BY)', prompt: 'Numera pedidos dentro de cada cliente: ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY total_amount DESC) AS customer_rank.', expected: 'SELECT order_id, customer_id, total_amount, ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY total_amount DESC) AS customer_rank FROM orders ORDER BY customer_id ASC, customer_rank ASC;', initial: '-- Nivel 86: Agrega PARTITION BY a la ventana\nSELECT order_id, customer_id, total_amount, \n  ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY total_amount DESC) AS customer_rank \nFROM orders \nORDER BY customer_id ASC, customer_rank ASC;', tbls: ['orders'] },
-    { title: 'Desempates con RANK', prompt: 'Rankea productos por precio con RANK(): RANK() OVER (ORDER BY price DESC) AS price_rank.', expected: 'SELECT product_id, name, price, RANK() OVER (ORDER BY price DESC) AS price_rank FROM products ORDER BY price_rank ASC;', initial: '-- Nivel 87: Función Ventana RANK()\nSELECT product_id, name, price, \n  RANK() OVER (ORDER BY price DESC) AS price_rank \nFROM products \nORDER BY price_rank ASC;', tbls: ['products'] },
-    { title: 'Rankings Densos con DENSE_RANK', prompt: 'Rankea densamente por categoría: DENSE_RANK() OVER (PARTITION BY category_id ORDER BY price DESC) AS category_price_rank.', expected: 'SELECT product_id, category_id, price, DENSE_RANK() OVER (PARTITION BY category_id ORDER BY price DESC) AS category_price_rank FROM products ORDER BY category_id ASC, category_price_rank ASC;', initial: '-- Nivel 88: Función Ventana DENSE_RANK()\nSELECT product_id, category_id, price, \n  DENSE_RANK() OVER (PARTITION BY category_id ORDER BY price DESC) AS category_price_rank \nFROM products \nORDER BY category_id ASC, category_price_rank ASC;', tbls: ['products'] },
-    { title: 'Paso Temporal con LAG', prompt: 'Obtén el monto de la orden anterior: LAG(total_amount, 1) OVER (ORDER BY order_id ASC) AS previous_order_amount.', expected: 'SELECT order_id, total_amount, LAG(total_amount, 1) OVER (ORDER BY order_id ASC) AS previous_order_amount FROM orders ORDER BY order_id ASC;', initial: '-- Nivel 89: Mira la fila anterior con LAG()\nSELECT order_id, total_amount, \n  LAG(total_amount, 1) OVER (ORDER BY order_id ASC) AS previous_order_amount \nFROM orders \nORDER BY order_id ASC;', tbls: ['orders'] },
-    { title: 'Mirada al Futuro con LEAD', prompt: 'Obtén el monto de la siguiente orden: LEAD(total_amount, 1) OVER (ORDER BY order_id ASC) AS next_order_amount.', expected: 'SELECT order_id, total_amount, LEAD(total_amount, 1) OVER (ORDER BY order_id ASC) AS next_order_amount FROM orders ORDER BY order_id ASC;', initial: '-- Nivel 90: Mira la fila siguiente con LEAD()\nSELECT order_id, total_amount, \n  LEAD(total_amount, 1) OVER (ORDER BY order_id ASC) AS next_order_amount \nFROM orders \nORDER BY order_id ASC;', tbls: ['orders'] },
-    { title: 'Suma Acumulada Móvil (Running Total)', prompt: 'Calcula el gasto acumulado en el tiempo: SUM(total_amount) OVER (PARTITION BY customer_id ORDER BY order_id ASC) AS running_customer_spend.', expected: 'SELECT order_id, customer_id, total_amount, SUM(total_amount) OVER (PARTITION BY customer_id ORDER BY order_id ASC) AS running_customer_spend FROM orders ORDER BY customer_id ASC, order_id ASC;', initial: '-- Nivel 91: Suma móvil acumulada con ventana\nSELECT order_id, customer_id, total_amount, \n  SUM(total_amount) OVER (PARTITION BY customer_id ORDER BY order_id ASC) AS running_customer_spend \nFROM orders \nORDER BY customer_id ASC, order_id ASC;', tbls: ['orders'] },
-    { title: 'Primer Valor en Ventana (FIRST_VALUE)', prompt: 'Obtén el monto de la primera orden de cada cliente: FIRST_VALUE(total_amount) OVER (PARTITION BY customer_id ORDER BY order_date ASC) AS first_order_amount.', expected: 'SELECT order_id, customer_id, total_amount, FIRST_VALUE(total_amount) OVER (PARTITION BY customer_id ORDER BY order_date ASC) AS first_order_amount FROM orders ORDER BY customer_id ASC, order_id ASC;', initial: '-- Nivel 92: Obtén el valor inicial con FIRST_VALUE()\nSELECT order_id, customer_id, total_amount, \n  FIRST_VALUE(total_amount) OVER (PARTITION BY customer_id ORDER BY order_date ASC) AS first_order_amount \nFROM orders \nORDER BY customer_id ASC, order_id ASC;', tbls: ['orders'] },
-    { title: 'Ranking de Precios por Departamento', prompt: 'Rankea productos en cada departamento: ROW_NUMBER() OVER (PARTITION BY c.department ORDER BY p.price DESC) AS dept_rank.', expected: 'SELECT c.department, p.name, p.price, ROW_NUMBER() OVER (PARTITION BY c.department ORDER BY p.price DESC) AS dept_rank FROM categories c INNER JOIN products p ON c.category_id = p.category_id ORDER BY c.department ASC, dept_rank ASC;', initial: '-- Nivel 93: Ventana sobre tablas unidas\nSELECT c.department, p.name, p.price, \n  ROW_NUMBER() OVER (PARTITION BY c.department ORDER BY p.price DESC) AS dept_rank \nFROM categories c \nINNER JOIN products p ON c.category_id = p.category_id \nORDER BY c.department ASC, dept_rank ASC;', tbls: ['categories', 'products'] },
-    { title: 'Artículo #1 por Cada Departamento', prompt: 'Filtra el producto top de cada departamento con CTE y WHERE rnk = 1.', expected: 'WITH ranked AS (SELECT c.department, p.name, p.price, ROW_NUMBER() OVER (PARTITION BY c.department ORDER BY p.price DESC) AS rnk FROM categories c INNER JOIN products p ON c.category_id = p.category_id) SELECT department, name, price FROM ranked WHERE rnk = 1 ORDER BY price DESC;', initial: '-- Nivel 94: Filtra el ranking 1 dentro de un CTE\nWITH ranked AS (\n  SELECT c.department, p.name, p.price, \n    ROW_NUMBER() OVER (PARTITION BY c.department ORDER BY p.price DESC) AS rnk \n  FROM categories c \n  INNER JOIN products p ON c.category_id = p.category_id\n)\nSELECT department, name, price \nFROM ranked \nWHERE rnk = 1 \nORDER BY price DESC;', tbls: ['categories', 'products'] },
-    { title: 'Diferencial de Crecimiento MoM', prompt: 'Calcula el cambio de valor frente a la orden previa: ROUND(total_amount - LAG(total_amount, 1, total_amount) OVER (ORDER BY order_id ASC), 2) AS spend_delta.', expected: 'SELECT order_id, total_amount, ROUND(total_amount - LAG(total_amount, 1, total_amount) OVER (ORDER BY order_id ASC), 2) AS spend_delta FROM orders ORDER BY order_id ASC;', initial: '-- Nivel 95: Resta la orden actual con LAG()\nSELECT order_id, total_amount, \n  ROUND(total_amount - LAG(total_amount, 1, total_amount) OVER (ORDER BY order_id ASC), 2) AS spend_delta \nFROM orders \nORDER BY order_id ASC;', tbls: ['orders'] },
-    { title: 'Top 3 Gastadores con Ventana', prompt: 'Filtra el podio de clientes con mayor gasto usando DENSE_RANK() dentro de un CTE: WHERE spender_rank <= 3.', expected: 'WITH ranked_cust AS (SELECT customer_id, SUM(total_amount) AS spent, DENSE_RANK() OVER (ORDER BY SUM(total_amount) DESC) AS spender_rank FROM orders GROUP BY customer_id) SELECT customer_id, spent, spender_rank FROM ranked_cust WHERE spender_rank <= 3;', initial: '-- Nivel 96: Top 3 clientes gastadores con CTE y DENSE_RANK\nWITH ranked_cust AS (\n  SELECT customer_id, SUM(total_amount) AS spent, \n    DENSE_RANK() OVER (ORDER BY SUM(total_amount) DESC) AS spender_rank \n  FROM orders \n  GROUP BY customer_id\n)\nSELECT customer_id, spent, spender_rank \nFROM ranked_cust \nWHERE spender_rank <= 3;', tbls: ['orders'] },
-    { title: 'Participación Global de Ventas (%)', prompt: 'Calcula el porcentaje de ventas que representa cada departamento con un CTE.', expected: 'WITH dept_sales AS (SELECT c.department, SUM(oi.quantity * oi.unit_price) AS sales FROM categories c INNER JOIN products p ON c.category_id = p.category_id INNER JOIN order_items oi ON p.product_id = oi.product_id GROUP BY c.department) SELECT department, sales, ROUND(sales * 100.0 / (SELECT SUM(sales) FROM dept_sales), 2) AS pct_share FROM dept_sales ORDER BY sales DESC;', initial: '-- Nivel 97: Calcula el porcentaje de ventas de cada departamento\nWITH dept_sales AS (\n  SELECT c.department, SUM(oi.quantity * oi.unit_price) AS sales \n  FROM categories c \n  INNER JOIN products p ON c.category_id = p.category_id \n  INNER JOIN order_items oi ON p.product_id = oi.product_id \n  GROUP BY c.department\n)\nSELECT department, sales, \n  ROUND(sales * 100.0 / (SELECT SUM(sales) FROM dept_sales), 2) AS pct_share \nFROM dept_sales \nORDER BY sales DESC;', tbls: ['categories', 'products', 'order_items'] },
-    { title: 'Métricas de Confiabilidad de Pagos', prompt: 'Rankea métodos de pago aprobados por volumen con CTE: DENSE_RANK() OVER (ORDER BY vol DESC) AS vol_rank.', expected: "WITH p_stats AS (SELECT payment_method, COUNT(*) AS txs, SUM(amount) AS vol FROM payments WHERE status = 'approved' GROUP BY payment_method) SELECT payment_method, txs, vol, DENSE_RANK() OVER (ORDER BY vol DESC) AS vol_rank FROM p_stats;", initial: "-- Nivel 98: Filtra status = 'approved' en CTE y rankea volumen\nWITH p_stats AS (\n  SELECT payment_method, COUNT(*) AS txs, SUM(amount) AS vol \n  FROM payments \n  WHERE status = 'approved' \n  GROUP BY payment_method\n)\nSELECT payment_method, txs, vol, \n  DENSE_RANK() OVER (ORDER BY vol DESC) AS vol_rank \nFROM p_stats;", tbls: ['payments'] },
-    { title: 'La Puerta ante el Dragón', prompt: 'Calcula ventas mensuales y compara con el mes previo usando LAG en un CTE: LAG(monthly_revenue, 1) OVER (ORDER BY month ASC) AS prev_month_rev.', expected: 'WITH monthly_kpi AS (SELECT SUBSTR(order_date, 1, 7) AS month, COUNT(*) AS total_orders, SUM(total_amount) AS monthly_revenue FROM orders GROUP BY month) SELECT month, total_orders, monthly_revenue, LAG(monthly_revenue, 1) OVER (ORDER BY month ASC) AS prev_month_rev FROM monthly_kpi ORDER BY month ASC;', initial: '-- Nivel 99: Crecimiento mensual con LAG()\nWITH monthly_kpi AS (\n  SELECT SUBSTR(order_date, 1, 7) AS month, COUNT(*) AS total_orders, SUM(total_amount) AS monthly_revenue \n  FROM orders \n  GROUP BY month\n)\nSELECT month, total_orders, monthly_revenue, \n  LAG(monthly_revenue, 1) OVER (ORDER BY month ASC) AS prev_month_rev \nFROM monthly_kpi \nORDER BY month ASC;', tbls: ['orders'] },
-    { title: 'Ciudadela de Bowser: Gran Jefe Final', prompt: '👑 Jefe Supremo #100: Calcula el KPI de cliente (LTV, total de órdenes y rango) y selecciona el Top 5 con DENSE_RANK() en un CTE.', expected: 'WITH customer_kpi AS (SELECT c.customer_id, c.first_name, c.country, COUNT(o.order_id) AS total_orders, SUM(o.total_amount) AS lifetime_value, DENSE_RANK() OVER (ORDER BY SUM(o.total_amount) DESC) AS ltv_rank FROM customers c INNER JOIN orders o ON c.customer_id = o.customer_id GROUP BY c.customer_id, c.first_name, c.country) SELECT customer_id, first_name, country, total_orders, lifetime_value, ltv_rank FROM customer_kpi WHERE ltv_rank <= 5 ORDER BY ltv_rank ASC;', initial: '-- Nivel 100 GRAN JEFE: Pipeline completo de LTV por cliente\nWITH customer_kpi AS (\n  SELECT c.customer_id, c.first_name, c.country, \n    COUNT(o.order_id) AS total_orders, \n    SUM(o.total_amount) AS lifetime_value, \n    DENSE_RANK() OVER (ORDER BY SUM(o.total_amount) DESC) AS ltv_rank \n  FROM customers c \n  INNER JOIN orders o ON c.customer_id = o.customer_id \n  GROUP BY c.customer_id, c.first_name, c.country\n)\nSELECT customer_id, first_name, country, total_orders, lifetime_value, ltv_rank \nFROM customer_kpi \nWHERE ltv_rank <= 5 \nORDER BY ltv_rank ASC;', tbls: ['customers', 'orders'] }
+  const w5Config = [
+    {
+      lvl: 57, title: 'Terminal Portuaria (Primer CTE)',
+      prompt: 'Escribe un CTE con WITH high_orders AS (SELECT * FROM orders WHERE total_amount > 500) SELECT order_id, total_amount FROM high_orders ORDER BY total_amount DESC;',
+      expected: 'WITH high_orders AS (SELECT * FROM orders WHERE total_amount > 500) SELECT order_id, total_amount FROM high_orders ORDER BY total_amount DESC;',
+      initial: '-- Nivel 57: Declara tu primer CTE con WITH\nWITH high_orders AS (\n  SELECT * FROM orders WHERE total_amount > 500\n)\nSELECT order_id, total_amount \nFROM high_orders \nORDER BY total_amount DESC;',
+      tbls: ['orders'], pos: { x: 15.0, y: 77.0 }
+    },
+    {
+      lvl: 58, title: 'Optimización de Inventario Global',
+      prompt: 'Usa un CTE con stock_critico AS (SELECT product_id, name, stock_quantity FROM products WHERE stock_quantity < 20) SELECT * FROM stock_critico ORDER BY stock_quantity ASC;',
+      expected: 'WITH stock_critico AS (SELECT product_id, name, stock_quantity FROM products WHERE stock_quantity < 20) SELECT * FROM stock_critico ORDER BY stock_quantity ASC;',
+      initial: '-- Nivel 58: CTE para aislar inventario crítico\nWITH stock_critico AS (\n  SELECT product_id, name, stock_quantity FROM products WHERE stock_quantity < 20\n)\nSELECT * FROM stock_critico ORDER BY stock_quantity ASC;',
+      tbls: ['products'], pos: { x: 24.0, y: 68.0 }
+    },
+    {
+      lvl: 59, title: 'Enrutamiento de Pedidos Transfronterizos',
+      prompt: "Conecta un CTE de países con clientes: WITH foreign_customers AS (SELECT customer_id, first_name, country FROM customers WHERE country != 'USA') SELECT fc.first_name, fc.country, o.order_id, o.total_amount FROM foreign_customers fc INNER JOIN orders o ON fc.customer_id = o.customer_id ORDER BY o.total_amount DESC;",
+      expected: "WITH foreign_customers AS (SELECT customer_id, first_name, country FROM customers WHERE country != 'USA') SELECT fc.first_name, fc.country, o.order_id, o.total_amount FROM foreign_customers fc INNER JOIN orders o ON fc.customer_id = o.customer_id ORDER BY o.total_amount DESC;",
+      initial: "-- Nivel 59: Cruza un CTE con una tabla real mediante JOIN\nWITH foreign_customers AS (\n  SELECT customer_id, first_name, country FROM customers WHERE country != 'USA'\n)\nSELECT fc.first_name, fc.country, o.order_id, o.total_amount \nFROM foreign_customers fc \nINNER JOIN orders o ON fc.customer_id = o.customer_id \nORDER BY o.total_amount DESC;",
+      tbls: ['customers', 'orders'], pos: { x: 34.0, y: 74.0 }
+    },
+    {
+      lvl: 60, title: 'Autopista Intermodal (Doble CTE)',
+      prompt: 'Encadena dos CTEs: WITH sum_orders AS (SELECT customer_id, SUM(total_amount) AS gross_spend FROM orders GROUP BY customer_id), top_customers AS (SELECT customer_id, gross_spend FROM sum_orders WHERE gross_spend > 800) SELECT c.first_name, tc.gross_spend FROM top_customers tc INNER JOIN customers c ON tc.customer_id = c.customer_id ORDER BY tc.gross_spend DESC;',
+      expected: 'WITH sum_orders AS (SELECT customer_id, SUM(total_amount) AS gross_spend FROM orders GROUP BY customer_id), top_customers AS (SELECT customer_id, gross_spend FROM sum_orders WHERE gross_spend > 800) SELECT c.first_name, tc.gross_spend FROM top_customers tc INNER JOIN customers c ON tc.customer_id = c.customer_id ORDER BY tc.gross_spend DESC;',
+      initial: '-- Nivel 60: Dos CTEs encadenados separados por coma\nWITH sum_orders AS (\n  SELECT customer_id, SUM(total_amount) AS gross_spend FROM orders GROUP BY customer_id\n),\ntop_customers AS (\n  SELECT customer_id, gross_spend FROM sum_orders WHERE gross_spend > 800\n)\nSELECT c.first_name, tc.gross_spend \nFROM top_customers tc \nINNER JOIN customers c ON tc.customer_id = c.customer_id \nORDER BY tc.gross_spend DESC;',
+      tbls: ['orders', 'customers'], pos: { x: 44.0, y: 84.0 }
+    },
+    {
+      lvl: 61, title: 'Análisis de Demanda Regional',
+      prompt: 'Calcula ingresos por país con CTE: WITH country_sales AS (SELECT c.country, SUM(o.total_amount) AS sales FROM customers c INNER JOIN orders o ON c.customer_id = o.customer_id GROUP BY c.country) SELECT country, sales FROM country_sales WHERE sales > 1000 ORDER BY sales DESC;',
+      expected: 'WITH country_sales AS (SELECT c.country, SUM(o.total_amount) AS sales FROM customers c INNER JOIN orders o ON c.customer_id = o.customer_id GROUP BY c.country) SELECT country, sales FROM country_sales WHERE sales > 1000 ORDER BY sales DESC;',
+      initial: '-- Nivel 61: Demanda regional aislada con CTE\nWITH country_sales AS (\n  SELECT c.country, SUM(o.total_amount) AS sales \n  FROM customers c INNER JOIN orders o ON c.customer_id = o.customer_id \n  GROUP BY c.country\n)\nSELECT country, sales FROM country_sales WHERE sales > 1000 ORDER BY sales DESC;',
+      tbls: ['customers', 'orders'], pos: { x: 55.0, y: 88.0 }
+    },
+    {
+      lvl: 62, title: 'Tasa de Cumplimiento de Pedidos',
+      prompt: "Calcula el porcentaje de cumplimiento: WITH order_stats AS (SELECT COUNT(*) AS total_orders, SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END) AS completed_orders FROM orders) SELECT total_orders, completed_orders, ROUND((completed_orders * 100.0) / total_orders, 2) AS fulfillment_rate FROM order_stats;",
+      expected: "WITH order_stats AS (SELECT COUNT(*) AS total_orders, SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END) AS completed_orders FROM orders) SELECT total_orders, completed_orders, ROUND((completed_orders * 100.0) / total_orders, 2) AS fulfillment_rate FROM order_stats;",
+      initial: "-- Nivel 62: Tasa porcentual calculada en un CTE\nWITH order_stats AS (\n  SELECT COUNT(*) AS total_orders, \n         SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END) AS completed_orders \n  FROM orders\n)\nSELECT total_orders, completed_orders, ROUND((completed_orders * 100.0) / total_orders, 2) AS fulfillment_rate \nFROM order_stats;",
+      tbls: ['orders'], pos: { x: 64.0, y: 77.0 }
+    },
+    {
+      lvl: 63, title: 'Integración de API de Terceros',
+      prompt: "Aisla pagos pasados por PayPal: WITH paypal_tx AS (SELECT * FROM payments WHERE payment_method = 'paypal') SELECT p.payment_id, p.amount, o.customer_id FROM paypal_tx p INNER JOIN orders o ON p.order_id = o.order_id ORDER BY p.amount DESC;",
+      expected: "WITH paypal_tx AS (SELECT * FROM payments WHERE payment_method = 'paypal') SELECT p.payment_id, p.amount, o.customer_id FROM paypal_tx p INNER JOIN orders o ON p.order_id = o.order_id ORDER BY p.amount DESC;",
+      initial: "-- Nivel 63: Pasarela de pagos en CTE\nWITH paypal_tx AS (\n  SELECT * FROM payments WHERE payment_method = 'paypal'\n)\nSELECT p.payment_id, p.amount, o.customer_id \nFROM paypal_tx p \nINNER JOIN orders o ON p.order_id = o.order_id \nORDER BY p.amount DESC;",
+      tbls: ['payments', 'orders'], pos: { x: 62.0, y: 62.0 }
+    },
+    {
+      lvl: 64, title: 'Análisis de Cohortes de Clientes',
+      prompt: "Agrupa clientes por año de registro: WITH cohorts AS (SELECT STRFTIME('%Y', signup_date) AS signup_year, customer_id FROM customers) SELECT signup_year, COUNT(customer_id) AS customers_count FROM cohorts GROUP BY signup_year ORDER BY signup_year ASC;",
+      expected: "WITH cohorts AS (SELECT STRFTIME('%Y', signup_date) AS signup_year, customer_id FROM customers) SELECT signup_year, COUNT(customer_id) AS customers_count FROM cohorts GROUP BY signup_year ORDER BY signup_year ASC;",
+      initial: "-- Nivel 64: Cohortes de registro con STRFTIME y CTE\nWITH cohorts AS (\n  SELECT STRFTIME('%Y', signup_date) AS signup_year, customer_id FROM customers\n)\nSELECT signup_year, COUNT(customer_id) AS customers_count \nFROM cohorts \nGROUP BY signup_year \nORDER BY signup_year ASC;",
+      tbls: ['customers'], pos: { x: 75.0, y: 59.0 }
+    },
+    {
+      lvl: 65, title: 'Customer Lifetime Value (LTV)',
+      prompt: 'Calcula el LTV histórico por cliente: WITH customer_ltv AS (SELECT customer_id, SUM(total_amount) AS lifetime_spent, COUNT(order_id) AS orders_count FROM orders GROUP BY customer_id) SELECT c.first_name, cltv.lifetime_spent, cltv.orders_count FROM customer_ltv cltv INNER JOIN customers c ON cltv.customer_id = c.customer_id ORDER BY cltv.lifetime_spent DESC LIMIT 5;',
+      expected: 'WITH customer_ltv AS (SELECT customer_id, SUM(total_amount) AS lifetime_spent, COUNT(order_id) AS orders_count FROM orders GROUP BY customer_id) SELECT c.first_name, cltv.lifetime_spent, cltv.orders_count FROM customer_ltv cltv INNER JOIN customers c ON cltv.customer_id = c.customer_id ORDER BY cltv.lifetime_spent DESC LIMIT 5;',
+      initial: '-- Nivel 65: LTV y volumen por cliente\nWITH customer_ltv AS (\n  SELECT customer_id, SUM(total_amount) AS lifetime_spent, COUNT(order_id) AS orders_count \n  FROM orders GROUP BY customer_id\n)\nSELECT c.first_name, cltv.lifetime_spent, cltv.orders_count \nFROM customer_ltv cltv \nINNER JOIN customers c ON cltv.customer_id = c.customer_id \nORDER BY cltv.lifetime_spent DESC LIMIT 5;',
+      tbls: ['orders', 'customers'], pos: { x: 86.0, y: 50.0 }
+    },
+    {
+      lvl: 66, title: 'Carritos Abandonados',
+      prompt: 'Detecta carritos que no llegaron a pagarse uniendo órdenes con payments en un CTE.',
+      expected: 'WITH unpaid_orders AS (SELECT o.order_id, o.customer_id, o.total_amount FROM orders o LEFT JOIN payments p ON o.order_id = p.order_id WHERE p.payment_id IS NULL) SELECT c.first_name, uo.order_id, uo.total_amount FROM unpaid_orders uo INNER JOIN customers c ON uo.customer_id = c.customer_id ORDER BY uo.total_amount DESC;',
+      initial: '-- Nivel 66: Identifica órdenes sin liquidación con CTE\nWITH unpaid_orders AS (\n  SELECT o.order_id, o.customer_id, o.total_amount \n  FROM orders o \n  LEFT JOIN payments p ON o.order_id = p.order_id \n  WHERE p.payment_id IS NULL\n)\nSELECT c.first_name, uo.order_id, uo.total_amount \nFROM unpaid_orders uo \nINNER JOIN customers c ON uo.customer_id = c.customer_id \nORDER BY uo.total_amount DESC;',
+      tbls: ['orders', 'payments', 'customers'], pos: { x: 91.0, y: 38.0 }
+    },
+    {
+      lvl: 67, title: 'Optimización de Rutas de Envío',
+      prompt: 'Filtra productos con ventas activas y stock saludable: WITH active_sales AS (SELECT DISTINCT product_id FROM order_items) SELECT p.name, p.stock_quantity FROM products p WHERE p.product_id IN (SELECT product_id FROM active_sales) AND p.stock_quantity > 30 ORDER BY p.stock_quantity DESC;',
+      expected: 'WITH active_sales AS (SELECT DISTINCT product_id FROM order_items) SELECT p.name, p.stock_quantity FROM products p WHERE p.product_id IN (SELECT product_id FROM active_sales) AND p.stock_quantity > 30 ORDER BY p.stock_quantity DESC;',
+      initial: '-- Nivel 67: Despachos con inventario óptimo\nWITH active_sales AS (\n  SELECT DISTINCT product_id FROM order_items\n)\nSELECT p.name, p.stock_quantity \nFROM products p \nWHERE p.product_id IN (SELECT product_id FROM active_sales) AND p.stock_quantity > 30 \nORDER BY p.stock_quantity DESC;',
+      tbls: ['order_items', 'products'], pos: { x: 81.0, y: 28.0 }
+    },
+    {
+      lvl: 68, title: 'Torre de Control Aéreo (KPIs Globales)',
+      prompt: 'Calcula ticket promedio por país: WITH country_aov AS (SELECT c.country, AVG(o.total_amount) AS aov, COUNT(o.order_id) AS orders_count FROM customers c INNER JOIN orders o ON c.customer_id = o.customer_id GROUP BY c.country) SELECT country, ROUND(aov, 2) AS avg_ticket, orders_count FROM country_aov ORDER BY avg_ticket DESC;',
+      expected: 'WITH country_aov AS (SELECT c.country, AVG(o.total_amount) AS aov, COUNT(o.order_id) AS orders_count FROM customers c INNER JOIN orders o ON c.customer_id = o.customer_id GROUP BY c.country) SELECT country, ROUND(aov, 2) AS avg_ticket, orders_count FROM country_aov ORDER BY avg_ticket DESC;',
+      initial: '-- Nivel 68: AOV por territorio con CTE\nWITH country_aov AS (\n  SELECT c.country, AVG(o.total_amount) AS aov, COUNT(o.order_id) AS orders_count \n  FROM customers c INNER JOIN orders o ON c.customer_id = o.customer_id \n  GROUP BY c.country\n)\nSELECT country, ROUND(aov, 2) AS avg_ticket, orders_count FROM country_aov ORDER BY avg_ticket DESC;',
+      tbls: ['customers', 'orders'], pos: { x: 67.0, y: 21.0 }
+    },
+    {
+      lvl: 69, title: 'Pista Internacional de Carga',
+      prompt: 'Calcula productos de alto rendimiento: WITH prod_perf AS (SELECT product_id, SUM(quantity * unit_price) AS rev FROM order_items GROUP BY product_id) SELECT p.name, pp.rev FROM prod_perf pp INNER JOIN products p ON pp.product_id = p.product_id ORDER BY pp.rev DESC LIMIT 5;',
+      expected: 'WITH prod_perf AS (SELECT product_id, SUM(quantity * unit_price) AS rev FROM order_items GROUP BY product_id) SELECT p.name, pp.rev FROM prod_perf pp INNER JOIN products p ON pp.product_id = p.product_id ORDER BY pp.rev DESC LIMIT 5;',
+      initial: '-- Nivel 69: Rendimiento de SKUs con CTE\nWITH prod_perf AS (\n  SELECT product_id, SUM(quantity * unit_price) AS rev FROM order_items GROUP BY product_id\n)\nSELECT p.name, pp.rev \nFROM prod_perf pp \nINNER JOIN products p ON pp.product_id = p.product_id \nORDER BY pp.rev DESC LIMIT 5;',
+      tbls: ['order_items', 'products'], pos: { x: 51.0, y: 27.0 }
+    },
+    {
+      lvl: 70, title: 'Centro Global de Logística',
+      prompt: '👑 ¡JEFE DE ERA V! Encadena CTEs para calcular el gasto total y la suscripción activa de los mejores compradores globales.',
+      expected: "WITH client_sales AS (SELECT customer_id, SUM(total_amount) AS spend FROM orders GROUP BY customer_id HAVING spend > 1000), active_subs AS (SELECT customer_id, plan FROM subscriptions WHERE status = 'active') SELECT c.first_name, cs.spend, COALESCE(asub.plan, 'None') AS plan FROM client_sales cs INNER JOIN customers c ON cs.customer_id = c.customer_id LEFT JOIN active_subs asub ON cs.customer_id = asub.customer_id ORDER BY cs.spend DESC;",
+      initial: "-- Nivel 70 JEFE: Múltiples CTEs y COALESCE\nWITH client_sales AS (\n  SELECT customer_id, SUM(total_amount) AS spend FROM orders GROUP BY customer_id HAVING spend > 1000\n),\nactive_subs AS (\n  SELECT customer_id, plan FROM subscriptions WHERE status = 'active'\n)\nSELECT c.first_name, cs.spend, COALESCE(asub.plan, 'None') AS plan \nFROM client_sales cs \nINNER JOIN customers c ON cs.customer_id = c.customer_id \nLEFT JOIN active_subs asub ON cs.customer_id = asub.customer_id \nORDER BY cs.spend DESC;",
+      tbls: ['orders', 'subscriptions', 'customers'], pos: { x: 79.0, y: 44.0 }
+    }
   ];
 
-  w5Titles.forEach((item, idx) => {
-    const lvlNum = 81 + idx;
-    const isBoss = lvlNum === 100;
-    const isMystery = lvlNum === 88 || lvlNum === 95;
+  w5Config.forEach((cfg) => {
+    const isBoss = cfg.lvl === 70;
     levels.push({
-      levelNumber: lvlNum,
+      levelNumber: cfg.lvl,
       worldNumber: 5,
-      worldName: 'Volcán de Bowser',
-      biome: 'volcano',
-      title: item.title,
-      type: isBoss ? 'boss_fortress' : isMystery ? 'mystery_block' : 'standard',
+      worldName: 'Era V: Hub de la Globalización Conectada',
+      biome: 'plains',
+      title: cfg.title,
+      type: isBoss ? 'boss_fortress' : cfg.lvl === 65 ? 'mystery_block' : 'standard',
       difficulty: isBoss ? 'Master Boss' : 'Expert',
-      targetTables: item.tbls,
-      prompt: item.prompt,
-      initialQuery: item.initial,
-      expectedQuery: item.expected,
-      hints: [
-        'Define el CTE con: WITH nombre_cte AS (...) SELECT ...',
-        `Tablas del objetivo: ${item.tbls.join(', ')}.`,
-        `Consulta de referencia: ${item.expected}`
-      ],
-      xpReward: isBoss ? 500 : 80 + idx * 4,
-      coinReward: isBoss ? 150 : 30,
-      pedagogicalNote: `¡Nivel ${lvlNum} conquistado! Las funciones analíticas calculan métricas avanzadas preservando el detalle individual de cada transacción.`,
-      position: calculateWindingPath(idx)
+      targetTables: cfg.tbls,
+      prompt: cfg.prompt,
+      initialQuery: cfg.initial,
+      expectedQuery: cfg.expected,
+      hints: ['Los CTEs se declaran con WITH y permiten modularizar consultas complejas en pasos limpios.', `Consulta esperada: ${cfg.expected}`],
+      xpReward: isBoss ? 400 : 70 + (cfg.lvl - 56) * 3,
+      coinReward: isBoss ? 130 : 30,
+      pedagogicalNote: `¡Nivel ${cfg.lvl} completado! Los CTEs (WITH) son la herramienta estándar en ingeniería de datos para construir pipelines limpios y legibles.`,
+      position: cfg.pos
+    });
+  });
+
+  // =========================================================================
+  // MUNDO 6: LA METRÓPOLIS DE LA INTELIGENCIA ARTIFICIAL (Niveles 71 al 84)
+  // Carretera Magnética Neón -> Parque Solar -> Centro de Servidores -> Monolito AI
+  // Conceptos: Window Functions (OVER, PARTITION BY, ROW_NUMBER, RANK, Running Total, LAG/LEAD)
+  // =========================================================================
+  const w6Config = [
+    {
+      lvl: 71, title: 'Ranking con ROW_NUMBER',
+      prompt: 'Enumera pedidos ordenados por total_amount descendente con ROW_NUMBER() OVER (ORDER BY total_amount DESC) AS row_num.',
+      expected: 'SELECT order_id, customer_id, total_amount, ROW_NUMBER() OVER (ORDER BY total_amount DESC) AS row_num FROM orders;',
+      initial: '-- Nivel 71: Enumeración con ROW_NUMBER()\nSELECT order_id, customer_id, total_amount, \n  ROW_NUMBER() OVER (ORDER BY total_amount DESC) AS row_num \nFROM orders;',
+      tbls: ['orders'], pos: { x: 12.0, y: 54.0 }
+    },
+    {
+      lvl: 72, title: 'Empates con RANK y DENSE_RANK',
+      prompt: 'Calcula ranking de precios de productos: RANK() OVER (ORDER BY price DESC) AS price_rank, DENSE_RANK() OVER (ORDER BY price DESC) AS dense_price_rank.',
+      expected: 'SELECT name, price, RANK() OVER (ORDER BY price DESC) AS price_rank, DENSE_RANK() OVER (ORDER BY price DESC) AS dense_price_rank FROM products;',
+      initial: '-- Nivel 72: RANK vs DENSE_RANK\nSELECT name, price, \n  RANK() OVER (ORDER BY price DESC) AS price_rank, \n  DENSE_RANK() OVER (ORDER BY price DESC) AS dense_price_rank \nFROM products;',
+      tbls: ['products'], pos: { x: 14.0, y: 74.0 }
+    },
+    {
+      lvl: 73, title: 'Partición por Cliente (PARTITION BY)',
+      prompt: 'Enumera pedidos de cada cliente independientemente: ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY order_date ASC) AS customer_order_seq.',
+      expected: 'SELECT order_id, customer_id, order_date, ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY order_date ASC) AS customer_order_seq FROM orders;',
+      initial: '-- Nivel 73: Reinicia el contador por cada cliente con PARTITION BY\nSELECT order_id, customer_id, order_date, \n  ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY order_date ASC) AS customer_order_seq \nFROM orders;',
+      tbls: ['orders'], pos: { x: 25.0, y: 82.0 }
+    },
+    {
+      lvl: 74, title: 'Primer Pedido de Cada Cliente',
+      prompt: 'Filtra el primer pedido de cada cliente envolviendo ROW_NUMBER en un CTE.',
+      expected: 'WITH ranked_orders AS (SELECT order_id, customer_id, total_amount, ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY order_date ASC) AS seq FROM orders) SELECT order_id, customer_id, total_amount FROM ranked_orders WHERE seq = 1;',
+      initial: '-- Nivel 74: Filtro de seq = 1 con CTE\nWITH ranked_orders AS (\n  SELECT order_id, customer_id, total_amount, \n         ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY order_date ASC) AS seq \n  FROM orders\n)\nSELECT order_id, customer_id, total_amount FROM ranked_orders WHERE seq = 1;',
+      tbls: ['orders'], pos: { x: 37.0, y: 91.0 }
+    },
+    {
+      lvl: 75, title: 'Suma Acumulada Móvil (Running Total)',
+      prompt: 'Calcula la suma acumulada de ingresos: SUM(total_amount) OVER (ORDER BY order_date ASC ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS running_total.',
+      expected: 'SELECT order_id, order_date, total_amount, SUM(total_amount) OVER (ORDER BY order_date ASC ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS running_total FROM orders;',
+      initial: '-- Nivel 75: Running Total progresivo con SUM OVER\nSELECT order_id, order_date, total_amount, \n  SUM(total_amount) OVER (ORDER BY order_date ASC ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS running_total \nFROM orders;',
+      tbls: ['orders'], pos: { x: 51.0, y: 80.0 }
+    },
+    {
+      lvl: 76, title: 'Promedio Móvil de Ventas',
+      prompt: 'Calcula el promedio móvil de 3 órdenes: ROUND(AVG(total_amount) OVER (ORDER BY order_id ASC ROWS BETWEEN 2 PRECEDING AND CURRENT ROW), 2) AS moving_avg.',
+      expected: 'SELECT order_id, total_amount, ROUND(AVG(total_amount) OVER (ORDER BY order_id ASC ROWS BETWEEN 2 PRECEDING AND CURRENT ROW), 2) AS moving_avg FROM orders;',
+      initial: '-- Nivel 76: Media móvil con ROWS BETWEEN 2 PRECEDING\nSELECT order_id, total_amount, \n  ROUND(AVG(total_amount) OVER (ORDER BY order_id ASC ROWS BETWEEN 2 PRECEDING AND CURRENT ROW), 2) AS moving_avg \nFROM orders;',
+      tbls: ['orders'], pos: { x: 70.0, y: 87.0 }
+    },
+    {
+      lvl: 77, title: 'Comparativa MoM (LAG)',
+      prompt: 'Obtén el monto de la orden anterior con LAG(total_amount, 1) OVER (ORDER BY order_date ASC) AS prev_amount de orders.',
+      expected: 'SELECT order_id, order_date, total_amount, LAG(total_amount, 1) OVER (ORDER BY order_date ASC) AS prev_amount FROM orders;',
+      initial: '-- Nivel 77: Consulta la fila precedente con LAG\nSELECT order_id, order_date, total_amount, \n  LAG(total_amount, 1) OVER (ORDER BY order_date ASC) AS prev_amount \nFROM orders;',
+      tbls: ['orders'], pos: { x: 30.0, y: 36.0 }
+    },
+    {
+      lvl: 78, title: 'Proyección Futura (LEAD)',
+      prompt: 'Consulta el monto de la siguiente orden con LEAD(total_amount, 1) OVER (ORDER BY order_date ASC) AS next_amount de orders.',
+      expected: 'SELECT order_id, order_date, total_amount, LEAD(total_amount, 1) OVER (ORDER BY order_date ASC) AS next_amount FROM orders;',
+      initial: '-- Nivel 78: Anticipa la siguiente fila con LEAD\nSELECT order_id, order_date, total_amount, \n  LEAD(total_amount, 1) OVER (ORDER BY order_date ASC) AS next_amount \nFROM orders;',
+      tbls: ['orders'], pos: { x: 45.0, y: 46.0 }
+    },
+    {
+      lvl: 79, title: 'Primer Valor en Ventana (FIRST_VALUE)',
+      prompt: 'Obtén el precio más caro de cada categoría preservando cada fila: FIRST_VALUE(price) OVER (PARTITION BY category_id ORDER BY price DESC) AS highest_cat_price.',
+      expected: 'SELECT product_id, category_id, name, price, FIRST_VALUE(price) OVER (PARTITION BY category_id ORDER BY price DESC) AS highest_cat_price FROM products;',
+      initial: '-- Nivel 79: Extrae el extremo superior con FIRST_VALUE\nSELECT product_id, category_id, name, price, \n  FIRST_VALUE(price) OVER (PARTITION BY category_id ORDER BY price DESC) AS highest_cat_price \nFROM products;',
+      tbls: ['products'], pos: { x: 50.0, y: 59.0 }
+    },
+    {
+      lvl: 80, title: 'Segmentación en Cuartiles (NTILE)',
+      prompt: 'Divide los productos en 4 cuartiles de precio: NTILE(4) OVER (ORDER BY price ASC) AS price_quartile de products.',
+      expected: 'SELECT name, price, NTILE(4) OVER (ORDER BY price ASC) AS price_quartile FROM products ORDER BY price ASC;',
+      initial: '-- Nivel 80: Segmenta en cuartiles con NTILE(4)\nSELECT name, price, \n  NTILE(4) OVER (ORDER BY price ASC) AS price_quartile \nFROM products \nORDER BY price ASC;',
+      tbls: ['products'], pos: { x: 74.0, y: 61.0 }
+    },
+    {
+      lvl: 81, title: 'Diferencia Respecto a la Media',
+      prompt: 'Calcula cuánto se desvía cada producto de la media de su categoría con ROUND(price - AVG(price) OVER (PARTITION BY category_id), 2) AS diff_from_cat_avg.',
+      expected: 'SELECT product_id, category_id, name, price, ROUND(price - AVG(price) OVER (PARTITION BY category_id), 2) AS diff_from_cat_avg FROM products;',
+      initial: '-- Nivel 81: Desviación respecto al promedio del grupo\nSELECT product_id, category_id, name, price, \n  ROUND(price - AVG(price) OVER (PARTITION BY category_id), 2) AS diff_from_cat_avg \nFROM products;',
+      tbls: ['products'], pos: { x: 84.0, y: 45.0 }
+    },
+    {
+      lvl: 82, title: 'Diferencia de Crecimiento MoM',
+      prompt: 'Calcula la variación absoluta respecto a la orden anterior: total_amount - LAG(total_amount, 1, total_amount) OVER (ORDER BY order_date ASC) AS delta_amount.',
+      expected: 'SELECT order_id, order_date, total_amount, (total_amount - LAG(total_amount, 1, total_amount) OVER (ORDER BY order_date ASC)) AS delta_amount FROM orders;',
+      initial: '-- Nivel 82: Delta de variación con LAG\nSELECT order_id, order_date, total_amount, \n  (total_amount - LAG(total_amount, 1, total_amount) OVER (ORDER BY order_date ASC)) AS delta_amount \nFROM orders;',
+      tbls: ['orders'], pos: { x: 88.0, y: 30.0 }
+    },
+    {
+      lvl: 83, title: 'Top 2 Productos por Categoría',
+      prompt: 'Encuentra los 2 productos más caros de cada categoría usando DENSE_RANK() dentro de un CTE.',
+      expected: 'WITH ranked_prods AS (SELECT category_id, name, price, DENSE_RANK() OVER (PARTITION BY category_id ORDER BY price DESC) AS rnk FROM products) SELECT category_id, name, price FROM ranked_prods WHERE rnk <= 2 ORDER BY category_id ASC, price DESC;',
+      initial: '-- Nivel 83: Top N por partición con DENSE_RANK y CTE\nWITH ranked_prods AS (\n  SELECT category_id, name, price, \n         DENSE_RANK() OVER (PARTITION BY category_id ORDER BY price DESC) AS rnk \n  FROM products\n)\nSELECT category_id, name, price FROM ranked_prods WHERE rnk <= 2 ORDER BY category_id ASC, price DESC;',
+      tbls: ['products'], pos: { x: 64.0, y: 30.0 }
+    },
+    {
+      lvl: 84, title: 'La Metrópolis de la Inteligencia Artificial',
+      prompt: '👑 ¡JEFE FINAL DE ERA VI! Calcula para cada cliente su gasto acumulado progresivo (Running Total) y numera cada compra con ROW_NUMBER(), ordenado por customer_id y order_date.',
+      expected: 'SELECT customer_id, order_id, order_date, total_amount, ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY order_date ASC) AS purchase_number, SUM(total_amount) OVER (PARTITION BY customer_id ORDER BY order_date ASC ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS cumulative_spend FROM orders ORDER BY customer_id ASC, order_date ASC;',
+      initial: '-- Nivel 84 JEFE FINAL: PARTITION BY dual con ROW_NUMBER y Running Total\nSELECT customer_id, order_id, order_date, total_amount, \n  ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY order_date ASC) AS purchase_number, \n  SUM(total_amount) OVER (PARTITION BY customer_id ORDER BY order_date ASC ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS cumulative_spend \nFROM orders \nORDER BY customer_id ASC, order_date ASC;',
+      tbls: ['orders'], pos: { x: 63.0, y: 22.0 }
+    }
+  ];
+
+  w6Config.forEach((cfg) => {
+    const isBoss = cfg.lvl === 84;
+    levels.push({
+      levelNumber: cfg.lvl,
+      worldNumber: 6,
+      worldName: 'Era VI: Metrópolis de la Inteligencia Artificial',
+      biome: 'volcano',
+      title: cfg.title,
+      type: isBoss ? 'boss_fortress' : cfg.lvl === 77 ? 'mystery_block' : 'standard',
+      difficulty: isBoss ? 'Master Boss' : 'Expert',
+      targetTables: cfg.tbls,
+      prompt: cfg.prompt,
+      initialQuery: cfg.initial,
+      expectedQuery: cfg.expected,
+      hints: ['Las funciones de ventana OVER (...) conservan la granularidad de cada fila a diferencia de GROUP BY.', `Consulta esperada: ${cfg.expected}`],
+      xpReward: isBoss ? 500 : 85 + (cfg.lvl - 70) * 4,
+      coinReward: isBoss ? 150 : 35,
+      pedagogicalNote: `¡Nivel ${cfg.lvl} conquistado! Las Window Functions calculan métricas analíticas avanzadas sin colapsar el detalle de las transacciones.`,
+      position: cfg.pos
     });
   });
 
   return levels;
 }
 
-export const ALL_100_LEVELS = build100Levels();
+export const ALL_100_LEVELS = build84Levels();
