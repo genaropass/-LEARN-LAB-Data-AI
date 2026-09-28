@@ -108,7 +108,7 @@ export function build100Levels(): GameLevel[] {
       expected: 'SELECT * FROM cuevas;',
       initial: "-- Nivel 1: Escribe el asterisco (*) para traer todas las columnas\nSELECT \nFROM cuevas;",
       tbls: ['cuevas'], hint: "En SQL usamos el asterisco (*) para traer todas las columnas: SELECT * FROM cuevas;",
-      pos: { x: 10.5, y: 72.5 }, prereqs: []
+      pos: { x: 8.0, y: 92.0 }, prereqs: []
     },
     {
       lvl: 2, title: 'Las Manadas del Valle',
@@ -121,7 +121,7 @@ export function build100Levels(): GameLevel[] {
       expected: 'SELECT apodo, manada FROM mamuts;',
       initial: "-- Nivel 2: Escribe 'apodo, manada' después de SELECT\nSELECT \nFROM mamuts;",
       tbls: ['mamuts'], hint: "Separa los nombres de las columnas con una coma: SELECT apodo, manada FROM mamuts;",
-      pos: { x: 10.5, y: 53.0 }, prereqs: [1]
+      pos: { x: 17.0, y: 85.0 }, prereqs: [1]
     },
     {
       lvl: 3, title: 'El Filtro de la Supervivencia',
@@ -134,7 +134,7 @@ export function build100Levels(): GameLevel[] {
       expected: 'SELECT nombre, region FROM cuevas WHERE habitada = 1;',
       initial: "-- Nivel 3: Completa la condición WHERE habitada = 1\nSELECT nombre, region \nFROM cuevas \nWHERE ;",
       tbls: ['cuevas'], hint: "Usa la cláusula WHERE: SELECT nombre, region FROM cuevas WHERE habitada = 1;",
-      pos: { x: 23.5, y: 47.0 }, prereqs: [2]
+      pos: { x: 28.0, y: 78.0 }, prereqs: [2]
     },
     {
       lvl: 4, title: 'Bestias Imponentes',
@@ -147,7 +147,7 @@ export function build100Levels(): GameLevel[] {
       expected: 'SELECT apodo, peso_toneladas FROM mamuts WHERE peso_toneladas > 4.0;',
       initial: "-- Nivel 4: Filtra mamuts con peso_toneladas > 4.0\nSELECT apodo, peso_toneladas \nFROM mamuts \nWHERE peso_toneladas > ;",
       tbls: ['mamuts'], hint: "Escribe: SELECT apodo, peso_toneladas FROM mamuts WHERE peso_toneladas > 4.0;",
-      pos: { x: 37.0, y: 56.0 }, prereqs: [3]
+      pos: { x: 35.0, y: 73.0 }, prereqs: [3]
     },
     {
       lvl: 5, title: 'Inventario de Sílex y Madera',
@@ -160,7 +160,7 @@ export function build100Levels(): GameLevel[] {
       expected: 'SELECT recurso, cantidad FROM recursos_tribu WHERE cantidad < 15;',
       initial: "-- Nivel 5: Filtra los recursos con cantidad < 15\nSELECT recurso, cantidad \nFROM recursos_tribu \nWHERE cantidad < ;",
       tbls: ['recursos_tribu'], hint: "Usa el operador menor que (<): WHERE cantidad < 15;",
-      pos: { x: 46.5, y: 55.0 }, prereqs: [4]
+      pos: { x: 44.0, y: 69.0 }, prereqs: [4]
     },
     {
       lvl: 6, title: 'Cazadores Veteranos',
@@ -173,7 +173,7 @@ export function build100Levels(): GameLevel[] {
       expected: "SELECT nombre, presas_cobradas FROM cazadores WHERE rango = 'Veterano';",
       initial: "-- Nivel 6: Filtra cazadores con rango 'Veterano'\nSELECT nombre, presas_cobradas \nFROM cazadores \nWHERE rango = ;",
       tbls: ['cazadores'], hint: "Los textos van entre comillas simples: WHERE rango = 'Veterano';",
-      pos: { x: 52.0, y: 48.0 }, prereqs: [5]
+      pos: { x: 54.0, y: 69.0 }, prereqs: [5]
     },
     {
       lvl: 7, title: 'Prioridad de Refugio',
@@ -186,7 +186,7 @@ export function build100Levels(): GameLevel[] {
       expected: 'SELECT nombre, capacidad FROM cuevas ORDER BY capacidad DESC;',
       initial: "-- Nivel 7: Ordena por capacidad en orden descendente\nSELECT nombre, capacidad \nFROM cuevas \nORDER BY ;",
       tbls: ['cuevas'], hint: "Usa ORDER BY columna DESC: SELECT nombre, capacidad FROM cuevas ORDER BY capacidad DESC;",
-      pos: { x: 60.5, y: 48.0 }, prereqs: [6]
+      pos: { x: 67.0, y: 75.0 }, prereqs: [6]
     },
     {
       lvl: 8, title: 'Los Más Diestros (Top 3)',
@@ -199,7 +199,7 @@ export function build100Levels(): GameLevel[] {
       expected: 'SELECT nombre, presas_cobradas FROM cazadores ORDER BY presas_cobradas DESC LIMIT 3;',
       initial: "-- Nivel 8: Top 3 cazadores con ORDER BY y LIMIT 3\nSELECT nombre, presas_cobradas \nFROM cazadores \nORDER BY presas_cobradas DESC \nLIMIT ;",
       tbls: ['cazadores'], hint: "Escribe: SELECT nombre, presas_cobradas FROM cazadores ORDER BY presas_cobradas DESC LIMIT 3;",
-      pos: { x: 68.5, y: 79.0 }, prereqs: [7]
+      pos: { x: 76.0, y: 78.0 }, prereqs: [7]
     },
     {
       lvl: 9, title: 'El Gran Filtro Compuesto',
@@ -212,7 +212,7 @@ export function build100Levels(): GameLevel[] {
       expected: "SELECT apodo, peso_toneladas FROM mamuts WHERE manada = 'Valle Norte' AND peligrosidad = 'Alta';",
       initial: "-- Nivel 9: Combina filtros con AND\nSELECT apodo, peso_toneladas \nFROM mamuts \nWHERE manada = 'Valle Norte'  peligrosidad = 'Alta';",
       tbls: ['mamuts'], hint: "Usa el operador AND: WHERE manada = 'Valle Norte' AND peligrosidad = 'Alta';",
-      pos: { x: 82.5, y: 77.0 }, prereqs: [8]
+      pos: { x: 83.0, y: 67.0 }, prereqs: [8]
     },
     {
       lvl: 10, title: 'Jefe de Era: La Primera Aldea',
@@ -225,95 +225,91 @@ export function build100Levels(): GameLevel[] {
       expected: "SELECT recurso, tipo, cantidad FROM recursos_tribu WHERE cantidad > 10 AND tipo = 'Combustible' ORDER BY cantidad DESC;",
       initial: "-- Nivel 10: Derrota al Glitch completando el filtro y el orden\nSELECT recurso, tipo, cantidad \nFROM recursos_tribu \nWHERE cantidad > 10 AND tipo = \nORDER BY ;",
       tbls: ['recursos_tribu'], hint: "Combina WHERE con AND y finaliza con ORDER BY cantidad DESC.",
-      pos: { x: 86.5, y: 57.0 }, prereqs: [9]
+      pos: { x: 76.0, y: 57.0 }, prereqs: [9]
     },
 
-    // BIFURCACIÓN IZQUIERDA: RUTA VERDE (Fácil / Pradera)
+    // BIFURCACIÓN IZQUIERDA: RUTA CAVERNA (11-14)
     {
-      lvl: 11, title: 'Ruta Verde: Alternativas (OR)',
-      prompt: "[Ruta Verde] Selecciona todas las columnas de 'orders' donde status = 'completed' OR status = 'shipped'.",
-      expected: "SELECT * FROM orders WHERE status = 'completed' OR status = 'shipped';",
-      initial: "-- Ruta Verde 11: Usa OR para incluir ambos estados\nSELECT * \nFROM orders \nWHERE status = 'completed' OR ;",
-      tbls: ['orders'], hint: "Escribe: SELECT * FROM orders WHERE status = 'completed' OR status = 'shipped';",
-      pos: { x: 28, y: 58 }, prereqs: [10], branch: 'easy' as const, branchLabel: '🟢 Ruta Verde (Fácil)'
+      lvl: 11, title: 'Ruta Caverna: Alternativas (OR)',
+      prompt: "[Ruta Caverna] Selecciona todas las columnas de 'cuevas' donde region = 'Valle Norte' OR region = 'Ribera Este'.",
+      expected: "SELECT * FROM cuevas WHERE region = 'Valle Norte' OR region = 'Ribera Este';",
+      initial: "-- Ruta Caverna 11: Usa OR para incluir ambas regiones\nSELECT * \nFROM cuevas \nWHERE region = 'Valle Norte' OR ;",
+      tbls: ['cuevas'], hint: "Escribe: SELECT * FROM cuevas WHERE region = 'Valle Norte' OR region = 'Ribera Este';",
+      pos: { x: 71.0, y: 52.0 }, prereqs: [10], branch: 'easy' as const, branchLabel: '🟢 Caverna'
     },
     {
-      lvl: 12, title: 'Ruta Verde: Rango (BETWEEN)',
-      prompt: "[Ruta Verde] Selecciona 'name' y 'price' de 'products' donde price esté BETWEEN 100 AND 500.",
-      expected: 'SELECT name, price FROM products WHERE price BETWEEN 100 AND 500;',
-      initial: "-- Ruta Verde 12: Completa con BETWEEN 100 AND 500\nSELECT name, price \nFROM products \nWHERE price BETWEEN ;",
-      tbls: ['products'], hint: "BETWEEN incluye los extremos: WHERE price BETWEEN 100 AND 500;",
-      pos: { x: 20, y: 65 }, prereqs: [11], branch: 'easy' as const, branchLabel: '🟢 Ruta Verde (Fácil)'
+      lvl: 12, title: 'Ruta Caverna: Capacidad (BETWEEN)',
+      prompt: "[Ruta Caverna] Selecciona 'nombre' y 'capacidad' de 'cuevas' donde capacidad esté BETWEEN 10 AND 25.",
+      expected: 'SELECT nombre, capacidad FROM cuevas WHERE capacidad BETWEEN 10 AND 25;',
+      initial: "-- Ruta Caverna 12: Completa con BETWEEN 10 AND 25\nSELECT nombre, capacidad \nFROM cuevas \nWHERE capacidad BETWEEN ;",
+      tbls: ['cuevas'], hint: "BETWEEN incluye los extremos: WHERE capacidad BETWEEN 10 AND 25;",
+      pos: { x: 74.0, y: 47.0 }, prereqs: [11], branch: 'easy' as const, branchLabel: '🟢 Caverna'
     },
     {
-      lvl: 13, title: 'Ruta Verde: Lista de Países (IN)',
-      prompt: "[Ruta Verde] Selecciona 'first_name' y 'country' de 'customers' donde country esté IN ('Germany', 'France', 'Japan').",
-      expected: "SELECT first_name, country FROM customers WHERE country IN ('Germany', 'France', 'Japan');",
-      initial: "-- Ruta Verde 13: Usa el operador IN con la lista de países\nSELECT first_name, country \nFROM customers \nWHERE country IN ;",
-      tbls: ['customers'], hint: "Usa: WHERE country IN ('Germany', 'France', 'Japan');",
-      pos: { x: 24, y: 72 }, prereqs: [12], branch: 'easy' as const, branchLabel: '🟢 Ruta Verde (Fácil)'
+      lvl: 13, title: 'Ruta Caverna: Regiones (IN)',
+      prompt: "[Ruta Caverna] Selecciona 'nombre' y 'region' de 'cuevas' donde region esté IN ('Valle Norte', 'Picos Altos').",
+      expected: "SELECT nombre, region FROM cuevas WHERE region IN ('Valle Norte', 'Picos Altos');",
+      initial: "-- Ruta Caverna 13: Usa el operador IN\nSELECT nombre, region \nFROM cuevas \nWHERE region IN ;",
+      tbls: ['cuevas'], hint: "Usa: WHERE region IN ('Valle Norte', 'Picos Altos');",
+      pos: { x: 78.0, y: 44.0 }, prereqs: [12], branch: 'easy' as const, branchLabel: '🟢 Caverna'
     },
     {
-      lvl: 14, title: 'Ruta Verde: Orden Ascendente',
-      prompt: "[Ruta Verde] Selecciona 'name' y 'price' de 'products' ordenados por price de menor a mayor (ORDER BY price ASC).",
-      expected: 'SELECT name, price FROM products ORDER BY price ASC;',
-      initial: "-- Ruta Verde 14: Ordena de menor a mayor\nSELECT name, price \nFROM products \nORDER BY ;",
-      tbls: ['products'], hint: "Añade: ORDER BY price ASC;",
-      pos: { x: 34, y: 79 }, prereqs: [13], branch: 'easy' as const, branchLabel: '🟢 Ruta Verde (Fácil)'
-    },
-
-    // BIFURCACIÓN DERECHA: RUTA ROJA (Desafío / Cañón Rocoso - Doble Recompensa)
-    {
-      lvl: 15, title: 'Ruta Desafío: Prioridad (DESC)',
-      prompt: "🔥 [Ruta Desafío] ¡Mayor dificultad y más monedas! Selecciona 'order_id' y 'total_amount' de 'orders' ordenados de mayor a menor (ORDER BY total_amount DESC).",
-      expected: 'SELECT order_id, total_amount FROM orders ORDER BY total_amount DESC;',
-      initial: "-- Ruta Desafío 15: Ordena de mayor a menor con DESC\nSELECT order_id, total_amount \nFROM orders \nORDER BY ;",
-      tbls: ['orders'], hint: "Usa: ORDER BY total_amount DESC;",
-      pos: { x: 72, y: 58 }, prereqs: [10], branch: 'hard' as const, branchLabel: '🔴 Ruta Desafío (+Monedas)'
-    },
-    {
-      lvl: 16, title: 'Ruta Desafío: Top 3 Artículos',
-      prompt: "🔥 [Ruta Desafío] Selecciona 'name' y 'price' de 'products' ordenados por price DESC con límite de 3 (LIMIT 3).",
-      expected: 'SELECT name, price FROM products ORDER BY price DESC LIMIT 3;',
-      initial: "-- Ruta Desafío 16: Combina ORDER BY con LIMIT 3\nSELECT name, price \nFROM products \nORDER BY \nLIMIT ;",
-      tbls: ['products'], hint: "Escribe: ORDER BY price DESC LIMIT 3;",
-      pos: { x: 80, y: 65 }, prereqs: [15], branch: 'hard' as const, branchLabel: '🔴 Ruta Desafío (+Monedas)'
-    },
-    {
-      lvl: 17, title: 'Ruta Desafío: Países sin Duplicados',
-      prompt: "🔥 [Ruta Desafío] Selecciona valores únicos con DISTINCT country de 'customers' ordenados alfabéticamente (ORDER BY country ASC).",
-      expected: 'SELECT DISTINCT country FROM customers ORDER BY country ASC;',
-      initial: "-- Ruta Desafío 17: Usa DISTINCT para eliminar duplicados\nSELECT DISTINCT \nFROM customers \nORDER BY country ASC;",
-      tbls: ['customers'], hint: "Escribe: SELECT DISTINCT country FROM customers ORDER BY country ASC;",
-      pos: { x: 76, y: 72 }, prereqs: [16], branch: 'hard' as const, branchLabel: '🔴 Ruta Desafío (+Monedas)'
-    },
-    {
-      lvl: 18, title: 'Ruta Desafío: Paginación (OFFSET)',
-      prompt: "🔥 [Ruta Desafío] Selecciona 'name' y 'price' de 'products' ORDER BY price ASC LIMIT 3 OFFSET 3;",
-      expected: 'SELECT name, price FROM products ORDER BY price ASC LIMIT 3 OFFSET 3;',
-      initial: "-- Ruta Desafío 18: Aplica LIMIT 3 y salta las primeras con OFFSET 3\nSELECT name, price \nFROM products \nORDER BY price ASC \nLIMIT 3 OFFSET ;",
-      tbls: ['products'], hint: "Usa: LIMIT 3 OFFSET 3;",
-      pos: { x: 66, y: 79 }, prereqs: [17], branch: 'hard' as const, branchLabel: '🔴 Ruta Desafío (+Monedas)'
+      lvl: 14, title: 'Ruta Caverna: Portal de la Gruta',
+      prompt: "[Ruta Caverna] Selecciona 'nombre' y 'capacidad' de 'cuevas' ordenados por capacidad de menor a mayor (ORDER BY capacidad ASC).",
+      expected: 'SELECT nombre, capacidad FROM cuevas ORDER BY capacidad ASC;',
+      initial: "-- Ruta Caverna 14: Ordena de menor a mayor\nSELECT nombre, capacidad \nFROM cuevas \nORDER BY ;",
+      tbls: ['cuevas'], hint: "Añade: ORDER BY capacidad ASC;",
+      pos: { x: 83.0, y: 41.0 }, prereqs: [13], branch: 'easy' as const, branchLabel: '🟢 Caverna'
     },
 
-    // REUNIFICACIÓN ANTE LA PUERTA (Nivel 19)
+    // BIFURCACIÓN DERECHA: RUTA MAMUT GLACIAR (15-20)
     {
-      lvl: 19, title: 'Puerta de Reunificación (IS NULL)',
-      prompt: "¡Las rutas se unen ante el puente del castillo! Selecciona todas las columnas de 'subscriptions' donde cancel_date IS NULL.",
-      expected: 'SELECT * FROM subscriptions WHERE cancel_date IS NULL;',
-      initial: "-- Nivel 19: Compara valores nulos con IS NULL\nSELECT * \nFROM subscriptions \nWHERE cancel_date ;",
-      tbls: ['subscriptions'], hint: "Los valores nulos se comparan con IS NULL: WHERE cancel_date IS NULL;",
-      pos: { x: 50, y: 86 }, prereqs: [14, 18], branch: 'main' as const, branchLabel: '🚪 Puerta de Reunificación'
+      lvl: 15, title: 'Ruta Mamut: Gigantes del Hielo',
+      prompt: "🔥 [Ruta Mamut] Selecciona 'apodo' y 'peso_toneladas' de 'mamuts' ordenados de mayor a menor peso (ORDER BY peso_toneladas DESC).",
+      expected: 'SELECT apodo, peso_toneladas FROM mamuts ORDER BY peso_toneladas DESC;',
+      initial: "-- Ruta Mamut 15: Ordena por peso_toneladas DESC\nSELECT apodo, peso_toneladas \nFROM mamuts \nORDER BY ;",
+      tbls: ['mamuts'], hint: "Usa: ORDER BY peso_toneladas DESC;",
+      pos: { x: 22.0, y: 56.0 }, prereqs: [10], branch: 'hard' as const, branchLabel: '🔴 Mamut Glaciar'
     },
-
-    // CASTILLO DEL JEFE (Nivel 20)
     {
-      lvl: 20, title: 'Castillo del Jefe Mundo 1',
-      prompt: "👑 ¡JEFE FINAL DEL MUNDO 1! Selecciona 'customer_id' y 'total_amount' de 'orders' donde status = 'completed' y total_amount > 500, ordenado por total_amount DESC LIMIT 5;",
-      expected: "SELECT customer_id, total_amount FROM orders WHERE status = 'completed' AND total_amount > 500 ORDER BY total_amount DESC LIMIT 5;",
-      initial: "-- Nivel 20 JEFE: Combina WHERE con AND, ORDER BY y LIMIT 5\nSELECT customer_id, total_amount \nFROM orders \nWHERE status = 'completed' AND \nORDER BY \nLIMIT ;",
-      tbls: ['orders'], hint: "Filtra con: WHERE status = 'completed' AND total_amount > 500 ORDER BY total_amount DESC LIMIT 5;",
-      pos: { x: 50, y: 94 }, prereqs: [19], branch: 'main' as const
+      lvl: 16, title: 'Ruta Mamut: Top 2 Colosos',
+      prompt: "🔥 [Ruta Mamut] Selecciona 'apodo' y 'peso_toneladas' de 'mamuts' ORDER BY peso_toneladas DESC LIMIT 2.",
+      expected: 'SELECT apodo, peso_toneladas FROM mamuts ORDER BY peso_toneladas DESC LIMIT 2;',
+      initial: "-- Ruta Mamut 16: Top 2 colosos\nSELECT apodo, peso_toneladas \nFROM mamuts \nORDER BY \nLIMIT ;",
+      tbls: ['mamuts'], hint: "Escribe: ORDER BY peso_toneladas DESC LIMIT 2;",
+      pos: { x: 27.0, y: 53.0 }, prereqs: [15], branch: 'hard' as const, branchLabel: '🔴 Mamut Glaciar'
+    },
+    {
+      lvl: 17, title: 'Ruta Mamut: Manadas Únicas',
+      prompt: "🔥 [Ruta Mamut] Selecciona valores únicos con DISTINCT manada de 'mamuts' ordenados alfabéticamente (ORDER BY manada ASC).",
+      expected: 'SELECT DISTINCT manada FROM mamuts ORDER BY manada ASC;',
+      initial: "-- Ruta Mamut 17: DISTINCT manada\nSELECT DISTINCT \nFROM mamuts \nORDER BY manada ASC;",
+      tbls: ['mamuts'], hint: "Escribe: SELECT DISTINCT manada FROM mamuts ORDER BY manada ASC;",
+      pos: { x: 35.0, y: 49.0 }, prereqs: [16], branch: 'hard' as const, branchLabel: '🔴 Mamut Glaciar'
+    },
+    {
+      lvl: 18, title: 'Ruta Mamut: Paginación Glaciar',
+      prompt: "🔥 [Ruta Mamut] Selecciona 'apodo' y 'peso_toneladas' de 'mamuts' ORDER BY peso_toneladas ASC LIMIT 2 OFFSET 2;",
+      expected: 'SELECT apodo, peso_toneladas FROM mamuts ORDER BY peso_toneladas ASC LIMIT 2 OFFSET 2;',
+      initial: "-- Ruta Mamut 18: LIMIT 2 OFFSET 2\nSELECT apodo, peso_toneladas \nFROM mamuts \nORDER BY peso_toneladas ASC \nLIMIT 2 OFFSET ;",
+      tbls: ['mamuts'], hint: "Usa: LIMIT 2 OFFSET 2;",
+      pos: { x: 38.0, y: 44.0 }, prereqs: [17], branch: 'hard' as const, branchLabel: '🔴 Mamut Glaciar'
+    },
+    {
+      lvl: 19, title: 'Ruta Mamut: Aproximación al Coloso',
+      prompt: "¡Ante el santuario del Mamut! Selecciona 'apodo' y 'peligrosidad' de 'mamuts' donde peligrosidad = 'Extrema'.",
+      expected: "SELECT apodo, peligrosidad FROM mamuts WHERE peligrosidad = 'Extrema';",
+      initial: "-- Nivel 19: Filtra peligrosidad 'Extrema'\nSELECT apodo, peligrosidad \nFROM mamuts \nWHERE peligrosidad = ;",
+      tbls: ['mamuts'], hint: "Escribe: WHERE peligrosidad = 'Extrema';",
+      pos: { x: 31.0, y: 36.0 }, prereqs: [14, 18], branch: 'main' as const
+    },
+    {
+      lvl: 20, title: 'Tótem Ancestral del Mamut',
+      prompt: "👑 ¡JEFE DE ERA I! Selecciona 'recurso', 'tipo' y 'cantidad' de 'recursos_tribu' donde tipo = 'Armas' AND cantidad >= 14 ORDER BY cantidad DESC;",
+      expected: "SELECT recurso, tipo, cantidad FROM recursos_tribu WHERE tipo = 'Armas' AND cantidad >= 14 ORDER BY cantidad DESC;",
+      initial: "-- Nivel 20 JEFE: Combina WHERE con AND y ORDER BY\nSELECT recurso, tipo, cantidad \nFROM recursos_tribu \nWHERE tipo = 'Armas' AND \nORDER BY ;",
+      tbls: ['recursos_tribu'], hint: "Usa: WHERE tipo = 'Armas' AND cantidad >= 14 ORDER BY cantidad DESC;",
+      pos: { x: 22.0, y: 36.0 }, prereqs: [19], branch: 'main' as const
     }
   ];
 

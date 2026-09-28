@@ -37,7 +37,7 @@ interface PathSegment {
 }
 
 const WORLD_1_SEGMENTS: PathSegment[] = [
-  // Tronco Principal de la Edad de Piedra 1 a 10
+  // Tronco Principal de la Edad de Piedra 1 a 10 (Sendero del Valle Sur)
   { fromLevel: 1, toLevel: 2 },
   { fromLevel: 2, toLevel: 3 },
   { fromLevel: 3, toLevel: 4 },
@@ -47,20 +47,17 @@ const WORLD_1_SEGMENTS: PathSegment[] = [
   { fromLevel: 7, toLevel: 8 },
   { fromLevel: 8, toLevel: 9 },
   { fromLevel: 9, toLevel: 10 },
-  // Bifurcación Izquierda: Ruta Verde (11-14)
+  // Bifurcación A: Hacia la Gran Caverna (11-14)
   { fromLevel: 10, toLevel: 11, color: '#10b981' },
   { fromLevel: 11, toLevel: 12, color: '#10b981' },
   { fromLevel: 12, toLevel: 13, color: '#10b981' },
   { fromLevel: 13, toLevel: 14, color: '#10b981' },
-  // Bifurcación Derecha: Ruta Roja (15-18)
+  // Bifurcación B: Hacia el Mamut del Glaciar (15-20)
   { fromLevel: 10, toLevel: 15, color: '#f59e0b' },
   { fromLevel: 15, toLevel: 16, color: '#f59e0b' },
   { fromLevel: 16, toLevel: 17, color: '#f59e0b' },
   { fromLevel: 17, toLevel: 18, color: '#f59e0b' },
-  // Reunificación hacia 19
-  { fromLevel: 14, toLevel: 19, color: '#10b981' },
   { fromLevel: 18, toLevel: 19, color: '#f59e0b' },
-  // Hacia el Gran Desafío de Era
   { fromLevel: 19, toLevel: 20, color: '#ef4444' }
 ];
 
@@ -239,19 +236,23 @@ export const WorldMap: React.FC = () => {
           </div>
         </div>
 
-        {/* TABLERO DE AVENTURA EN PANTALLA COMPLETA */}
-        <div className="relative w-full rounded-3xl border-4 border-amber-400/60 overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.7)]">
+        {/* TABLERO DE AVENTURA EN PANTALLA COMPLETA - ASPECT RATIO EXACTO 16:9 */}
+        <div className="relative w-full overflow-x-auto rounded-3xl border-4 border-amber-400/60 shadow-[0_20px_50px_rgba(0,0,0,0.7)] bg-slate-950">
           
-          {/* Imagen de fondo viva y brillante a pantalla completa */}
-          <div 
-            className="absolute inset-0 bg-cover bg-center transition-all duration-700 opacity-100"
-            style={{ backgroundImage: `url(${currentWorld.bgImage})` }}
-          />
-
-          {/* Lienzo del Camino Serpenteante a lo ancho de toda la pantalla */}
-          <div className="relative w-full h-[1800px]">
+          {/* Contenedor con Aspect Ratio Proporcional Idéntico a la Ilustración (1376x768) */}
+          <div className="relative w-full aspect-[1376/768] min-w-[1000px] select-none">
             
-            {/* SVG del Camino de Adoquines conectando los niveles */}
+            {/* Imagen de fondo viva y sin deformaciones */}
+            <Image 
+              src={currentWorld.bgImage}
+              alt={worldInfoEs.name}
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover pointer-events-none select-none transition-all duration-700"
+            />
+
+            {/* SVG del Camino conectando los niveles exactamente sobre la carretera */}
             <svg className="absolute inset-0 h-full w-full pointer-events-none" xmlns="http://www.w3.org/2000/svg">
               {pathSegmentsToDraw.map((seg, idx) => {
                 const lvl1 = ALL_100_LEVELS.find(l => l.levelNumber === seg.fromLevel);
@@ -270,16 +271,16 @@ export const WorldMap: React.FC = () => {
 
                 return (
                   <g key={`${seg.fromLevel}-${seg.toLevel}-${idx}`}>
-                    {/* Sombra gruesa del camino de tierra/piedra */}
+                    {/* Sombra del camino */}
                     <path
                       d={pathData}
                       fill="none"
                       stroke="#0f172a"
-                      strokeWidth="24"
-                      strokeOpacity="0.85"
+                      strokeWidth="12"
+                      strokeOpacity="0.8"
                       strokeLinecap="round"
                     />
-                    {/* Sendero base */}
+                    {/* Sendero activo */}
                     <path
                       d={pathData}
                       fill="none"
@@ -290,43 +291,24 @@ export const WorldMap: React.FC = () => {
                           ? seg.color || '#fbbf24'
                           : '#475569'
                       }
-                      strokeWidth="14"
+                      strokeWidth="8"
                       strokeOpacity="0.9"
                       strokeLinecap="round"
                     />
-                    {/* Línea punteada de adoquines de Mario */}
+                    {/* Línea punteada de adoquines */}
                     <path
                       d={pathData}
                       fill="none"
                       stroke="#ffffff"
-                      strokeWidth="3.5"
-                      strokeDasharray="6,8"
-                      strokeOpacity={isUnlocked ? 0.7 : 0.25}
+                      strokeWidth="2.5"
+                      strokeDasharray="5,6"
+                      strokeOpacity={isUnlocked ? 0.75 : 0.25}
                       strokeLinecap="round"
                     />
                   </g>
                 );
               })}
             </svg>
-
-            {/* Cartel de Madera con Bifurcación en Mundo 1 */}
-            {selectedWorldNumber === 1 && (
-              <div className="absolute left-1/2 top-[53.5%] -translate-x-1/2 -translate-y-1/2 z-25 flex flex-col items-center pointer-events-none">
-                <div className="flex items-center gap-2 rounded-2xl border-3 border-amber-500 bg-slate-900/95 p-2 shadow-[0_6px_0_#b45309,0_10px_25px_rgba(0,0,0,0.7)] backdrop-blur-md">
-                  <div className="flex items-center gap-1.5 rounded-xl bg-emerald-950/90 px-3 py-1.5 border border-emerald-400">
-                    <span className="text-xs">⬅️</span>
-                    <span className="font-mono text-[11px] font-black text-emerald-300 uppercase">Ruta Verde (Fácil)</span>
-                  </div>
-                  <div className="h-5 w-px bg-slate-600" />
-                  <div className="flex items-center gap-1.5 rounded-xl bg-amber-950/90 px-3 py-1.5 border border-amber-400">
-                    <span className="font-mono text-[11px] font-black text-amber-300 uppercase">Ruta Desafío (+🪙)</span>
-                    <span className="text-xs">➡️</span>
-                  </div>
-                </div>
-                {/* Poste de madera */}
-                <div className="w-3.5 h-6 bg-amber-800 border-x-2 border-amber-950 shadow-inner" />
-              </div>
-            )}
 
             {/* Fichas y Piedras de Camino (Stepping Stones) */}
             {worldLevels.map((lvl) => {
@@ -350,34 +332,34 @@ export const WorldMap: React.FC = () => {
                     
                     {/* MASCOTA ANIMADA PROTAGONISTA NOVA (GRANDE Y SIN FONDO) sobre el nivel activo */}
                     {isCurrent && (
-                      <div className="absolute -top-36 flex flex-col items-center animate-bounce z-40 pointer-events-none">
+                      <div className="absolute -top-28 sm:-top-32 flex flex-col items-center animate-bounce z-40 pointer-events-none">
                         
-                        {/* Bocadillo de Diálogo estilo Comic / Aventura con puntero hacia Nova */}
-                        <div className="relative rounded-2xl border-3 border-amber-400 bg-white/95 backdrop-blur-xs px-4 py-2 text-xs font-black text-slate-950 shadow-[0_6px_0_#b45309,0_12px_25px_rgba(0,0,0,0.5)] whitespace-nowrap mb-1 flex items-center gap-1.5 max-w-[260px] truncate">
+                        {/* Bocadillo de Diálogo estilo Comic con puntero hacia Nova */}
+                        <div className="relative rounded-2xl border-2 border-amber-400 bg-white/95 backdrop-blur-xs px-3 py-1.5 text-[11px] font-black text-slate-950 shadow-[0_4px_0_#b45309,0_8px_16px_rgba(0,0,0,0.5)] whitespace-nowrap mb-1 flex items-center gap-1 max-w-[220px] truncate">
                           <span>
                             {lvl.characterDialogue?.text 
-                              ? (lvl.characterDialogue.text.length > 42 
-                                  ? lvl.characterDialogue.text.slice(0, 40) + '...' 
+                              ? (lvl.characterDialogue.text.length > 36 
+                                  ? lvl.characterDialogue.text.slice(0, 34) + '...' 
                                   : lvl.characterDialogue.text)
                               : '¡Avanza en la historia! 🚀'}
                           </span>
-                          <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 border-solid border-t-amber-400 border-t-8 border-x-transparent border-x-8 border-b-0" />
+                          <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 border-solid border-t-amber-400 border-t-6 border-x-transparent border-x-6 border-b-0" />
                         </div>
 
-                        {/* Personaje Nova en Gran Tamaño (128px) recortado transparente */}
-                        <div className="relative h-28 w-28 sm:h-32 sm:w-32 drop-shadow-[0_14px_24px_rgba(0,0,0,0.6)]">
+                        {/* Personaje Nova recortado transparente */}
+                        <div className="relative h-20 w-20 sm:h-24 sm:w-24 drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)]">
                           <Image
                             src="/mascot.png"
                             alt="Nova la Exploradora"
-                            width={128}
-                            height={128}
+                            width={96}
+                            height={96}
                             className="object-contain filter drop-shadow-md select-none"
                             priority
                           />
                         </div>
 
                         {/* Pedestal de Brillo 3D bajo sus pies */}
-                        <div className="w-20 h-3.5 rounded-full bg-amber-400/50 blur-xs -mt-1 border border-amber-300 shadow-[0_0_20px_rgba(250,204,21,0.9)]" />
+                        <div className="w-16 h-3 rounded-full bg-amber-400/50 blur-xs -mt-1 border border-amber-300 shadow-[0_0_15px_rgba(250,204,21,0.9)]" />
                       </div>
                     )}
 
@@ -385,32 +367,32 @@ export const WorldMap: React.FC = () => {
                     <div
                       className={`relative flex items-center justify-center transition-all ${
                         lvl.type === 'boss_fortress'
-                          ? 'h-22 w-22 rounded-3xl border-4'
+                          ? 'h-14 w-14 sm:h-16 sm:w-16 rounded-3xl border-3'
                           : lvl.type === 'mystery_block'
-                          ? 'h-16 w-16 rounded-2xl border-4 rotate-3'
-                          : 'h-16 w-16 rounded-full border-4'
+                          ? 'h-11 w-11 sm:h-12 sm:w-12 rounded-2xl border-3 rotate-3'
+                          : 'h-11 w-11 sm:h-12 sm:w-12 rounded-full border-3'
                       } ${
                         isCompleted
-                          ? 'border-yellow-200 bg-emerald-500 text-white shadow-[0_7px_0_#15803d,0_12px_20px_rgba(0,0,0,0.4)]'
+                          ? 'border-yellow-200 bg-emerald-500 text-white shadow-[0_5px_0_#15803d,0_8px_16px_rgba(0,0,0,0.4)]'
                           : isCurrent
-                          ? 'border-yellow-200 bg-amber-400 text-slate-950 shadow-[0_8px_0_#b45309,0_15px_30px_rgba(245,158,11,0.7)] animate-pulse scale-110'
+                          ? 'border-yellow-200 bg-amber-400 text-slate-950 shadow-[0_6px_0_#b45309,0_10px_20px_rgba(245,158,11,0.7)] animate-pulse scale-110'
                           : isUnlocked
                           ? lvl.branch === 'hard'
-                            ? 'border-red-400 bg-red-600 text-white shadow-[0_6px_0_#991b1b]'
-                            : 'border-yellow-300 bg-amber-500 text-slate-950 shadow-[0_6px_0_#b45309]'
-                          : 'border-slate-500 bg-slate-700 text-slate-400 shadow-[0_5px_0_#334155]'
+                            ? 'border-red-400 bg-red-600 text-white shadow-[0_5px_0_#991b1b]'
+                            : 'border-yellow-300 bg-amber-500 text-slate-950 shadow-[0_5px_0_#b45309]'
+                          : 'border-slate-500 bg-slate-700 text-slate-400 shadow-[0_4px_0_#334155]'
                       }`}
                     >
                       {isCompleted ? (
-                        <Check className="h-8 w-8 stroke-[3.5]" />
+                        <Check className="h-6 w-6 stroke-[3.5]" />
                       ) : !isUnlocked ? (
-                        <Lock className="h-6 w-6 text-slate-300" />
+                        <Lock className="h-4 w-4 text-slate-300" />
                       ) : lvl.type === 'boss_fortress' ? (
-                        <Castle className="h-10 w-10 text-slate-950" />
+                        <Castle className="h-7 w-7 text-slate-950" />
                       ) : lvl.type === 'mystery_block' ? (
-                        <span className="font-mono text-2xl font-black text-slate-950">?</span>
+                        <span className="font-mono text-lg font-black text-slate-950">?</span>
                       ) : (
-                        <span className="font-mono text-xl font-black">{lvl.levelNumber}</span>
+                        <span className="font-mono text-sm sm:text-base font-black">{lvl.levelNumber}</span>
                       )}
                     </div>
 
