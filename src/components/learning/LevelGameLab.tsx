@@ -21,11 +21,9 @@ import {
   CheckCircle2, 
   AlertTriangle, 
   Coins, 
-  Award, 
   ChevronRight, 
-  HelpCircle,
   Database,
-  Code2
+  Play
 } from 'lucide-react';
 
 interface LevelGameLabProps {
@@ -88,7 +86,6 @@ export const LevelGameLab: React.FC<LevelGameLabProps> = ({
         sfx.playSuccess();
         setHasPassed(true);
 
-        // Compute Stars earned (3 stars: 0 hints; 2 stars: 1 hint; 1 star: solution/many hints)
         let starsAwarded = 3;
         if (showSolution) starsAwarded = 1;
         else if (revealedHints > 1) starsAwarded = 1;
@@ -99,8 +96,8 @@ export const LevelGameLab: React.FC<LevelGameLabProps> = ({
 
         try {
           confetti({
-            particleCount: 90,
-            spread: 70,
+            particleCount: 110,
+            spread: 80,
             origin: { y: 0.6 }
           });
         } catch {
@@ -117,7 +114,6 @@ export const LevelGameLab: React.FC<LevelGameLabProps> = ({
     }
   };
 
-  // Use Scroll of Wisdom
   const handleUseScroll = () => {
     if ((inventory.hint_scroll || 0) <= 0) {
       setIsShopOpen(true);
@@ -130,7 +126,6 @@ export const LevelGameLab: React.FC<LevelGameLabProps> = ({
     }
   };
 
-  // Use Syntax Blueprint
   const handleUseBlueprint = () => {
     if ((inventory.sql_blueprint || 0) <= 0) {
       setIsShopOpen(true);
@@ -138,14 +133,12 @@ export const LevelGameLab: React.FC<LevelGameLabProps> = ({
     }
     const used = usePowerUp('sql_blueprint');
     if (used) {
-      // Extract target tables and create blueprint
-      const blueprint = `-- Syntax Blueprint Injected:\nSELECT \nFROM ${level.targetTables[0] || 'customers'}\nWHERE ;\n`;
+      const blueprint = `-- Plantilla de Sintaxis Inyectada:\nSELECT \nFROM ${level.targetTables[0] || 'customers'}\nWHERE ;\n`;
       setQuery(blueprint);
       sfx.playSuccess();
     }
   };
 
-  // Use Master Key
   const handleUseMasterKey = () => {
     if ((inventory.master_key || 0) <= 0) {
       setIsShopOpen(true);
@@ -159,213 +152,211 @@ export const LevelGameLab: React.FC<LevelGameLabProps> = ({
     }
   };
 
-  const difficultyColor =
+  const difficultyEs =
     level.difficulty === 'Master Boss'
-      ? 'border-red-500 bg-red-950/40 text-red-400'
+      ? 'Gran Jefe'
       : level.difficulty === 'Expert'
-      ? 'border-purple-500 bg-purple-950/40 text-purple-300'
+      ? 'Experto'
       : level.difficulty === 'Hard'
-      ? 'border-amber-500 bg-amber-950/40 text-amber-300'
-      : 'border-emerald-500 bg-emerald-950/40 text-emerald-300';
+      ? 'Difícil'
+      : 'Fácil';
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col bg-[#070A11] text-slate-100 overflow-hidden">
+    <div className="fixed inset-0 z-50 flex flex-col bg-[#0b172a] text-slate-100 overflow-hidden font-sans">
       
-      {/* Mario Level Top HUD */}
-      <div className="flex h-16 items-center justify-between border-b-2 border-slate-800 bg-[#0B0F19] px-4 sm:px-6">
+      {/* HUD Superior del Nivel */}
+      <div className="flex h-18 items-center justify-between border-b-4 border-amber-500/40 bg-[#0e1d38] px-4 sm:px-6 shadow-xl">
         
-        {/* Left: Back & Level Designation */}
-        <div className="flex items-center space-x-4">
+        {/* Botón Volver y Número de Nivel */}
+        <div className="flex items-center space-x-3">
           <button
             onClick={onClose}
-            className="flex items-center space-x-1.5 rounded-xl border border-slate-700 bg-slate-900 px-3 py-1.5 text-xs font-bold text-slate-300 hover:border-amber-400 hover:text-white transition-all shadow-sm"
+            className="flex items-center space-x-1.5 rounded-2xl border-2 border-slate-600 bg-slate-800 px-3.5 py-2 text-xs font-black text-slate-200 hover:border-amber-400 hover:text-white transition-all shadow-[0_2px_0_#334155] active:translate-y-1"
           >
             <ArrowLeft className="h-4 w-4" />
-            <span className="hidden sm:inline">World Map</span>
+            <span className="hidden sm:inline">Mapa</span>
           </button>
 
-          <div className="h-5 w-px bg-slate-800" />
-
           <div className="flex items-center space-x-2.5">
-            <div className="flex h-10 items-center justify-center rounded-xl border-2 border-amber-400 bg-amber-500/20 px-3 font-mono text-sm font-black text-amber-300 shadow-sm">
-              LEVEL {String(level.levelNumber).padStart(2, '0')}
+            <div className="flex h-11 items-center justify-center rounded-2xl border-2 border-yellow-300 bg-amber-400 px-3.5 font-mono text-sm font-black text-slate-950 shadow-[0_3px_0_#b45309]">
+              NIVEL {String(level.levelNumber).padStart(2, '0')}
             </div>
             <div>
               <div className="flex items-center space-x-2">
-                <span className="font-mono text-[10px] font-extrabold uppercase tracking-widest text-amber-400">
+                <span className="font-extrabold text-xs text-amber-400">
                   {level.worldName}
                 </span>
-                <span className={`rounded-full border px-2 py-0.2 font-mono text-[9px] font-bold ${difficultyColor}`}>
-                  {level.difficulty}
+                <span className="rounded-full bg-slate-800 border border-slate-700 px-2 py-0.2 text-[10px] font-black text-amber-300">
+                  {difficultyEs}
                 </span>
               </div>
-              <h1 className="text-sm font-black text-white tracking-tight leading-none mt-0.5">
+              <h1 className="text-sm sm:text-base font-black text-white tracking-tight leading-none mt-0.5">
                 {level.title}
               </h1>
             </div>
           </div>
         </div>
 
-        {/* Center: Stars Rating */}
-        <div className="hidden md:flex items-center space-x-1">
+        {/* Estrellas */}
+        <div className="hidden md:flex items-center space-x-1 rounded-2xl border-2 border-amber-400/30 bg-amber-400/10 px-3 py-1">
           {[1, 2, 3].map((starIdx) => (
             <Star
               key={starIdx}
               className={`h-5 w-5 transition-all ${
                 starIdx <= (earnedStars || stars[level.levelNumber] || 0)
-                  ? 'fill-amber-400 text-amber-400 drop-shadow-[0_0_8px_rgba(245,158,11,0.6)]'
-                  : 'text-slate-700'
+                  ? 'fill-yellow-400 text-yellow-400 drop-shadow-[0_0_8px_rgba(250,204,21,0.7)]'
+                  : 'text-slate-600'
               }`}
             />
           ))}
         </div>
 
-        {/* Right: Coins Balance & Shop Button */}
+        {/* Monedas y Tienda */}
         <div className="flex items-center space-x-3">
           <div 
             onClick={() => setIsShopOpen(true)}
-            className="cursor-pointer flex items-center space-x-1.5 rounded-xl border-2 border-yellow-400/40 bg-yellow-500/10 px-3 py-1 text-xs font-black text-yellow-300 hover:border-yellow-400 transition-all shadow-sm"
+            className="cursor-pointer flex items-center space-x-1.5 rounded-2xl border-2 border-yellow-400/60 bg-yellow-400/20 px-3.5 py-1.5 text-xs font-black text-yellow-300 hover:scale-105 transition-transform shadow-[0_2px_0_#ca8a04]"
           >
             <Coins className="h-4 w-4 fill-yellow-400 text-yellow-400 animate-pulse" />
-            <span className="font-mono">{profile.coins}</span>
-            <span className="text-[10px] text-yellow-500 hidden sm:inline">COINS</span>
+            <span className="font-mono text-sm">{profile.coins}</span>
+            <span className="text-[10px] text-yellow-200 hidden sm:inline">MONEDAS</span>
           </div>
 
           <button
             onClick={() => setIsShopOpen(true)}
-            className="flex items-center space-x-1.5 rounded-xl border border-amber-500/40 bg-gradient-to-r from-amber-500 to-amber-600 px-3 py-1.5 text-xs font-black text-slate-950 hover:from-amber-400 hover:to-amber-500 transition-all shadow-md"
+            className="flex items-center space-x-1.5 rounded-2xl border-2 border-emerald-400 bg-emerald-500 px-3.5 py-1.5 text-xs font-black text-white hover:bg-emerald-400 shadow-[0_3px_0_#15803d] active:translate-y-1 active:shadow-none transition-all"
           >
             <ShoppingBag className="h-4 w-4" />
-            <span className="hidden sm:inline">POWER-UP SHOP</span>
+            <span className="hidden sm:inline">TIENDA</span>
           </button>
         </div>
 
       </div>
 
-      {/* Main Workspace (Left: Mission & Power-Ups, Right: Code Editor & Execution) */}
+      {/* Área de Juego Principal (Izquierda: Misión y Ayudas, Derecha: Editor y Resultados) */}
       <div className="flex flex-1 flex-col lg:flex-row overflow-hidden">
         
-        {/* Left: Mission & Tactical Helps */}
-        <div className="w-full lg:w-[45%] flex flex-col border-r-2 border-slate-800 bg-[#090D17] p-5 overflow-y-auto space-y-4">
+        {/* Panel Izquierdo: Misión y Poderes Canjeables */}
+        <div className="w-full lg:w-[45%] flex flex-col border-r-4 border-slate-800 bg-[#0c182c] p-5 overflow-y-auto space-y-4">
           
-          {/* Mission Objective Box */}
-          <div className="rounded-2xl border-2 border-amber-500/30 bg-gradient-to-br from-amber-500/10 via-slate-950 to-slate-950 p-5 shadow-sm">
+          {/* Tarjeta de Objetivo */}
+          <div className="rounded-3xl border-3 border-amber-400/40 bg-gradient-to-br from-amber-400/10 via-slate-900 to-slate-900 p-5 shadow-lg">
             <div className="flex items-center justify-between mb-2">
-              <span className="font-mono text-[10px] font-black uppercase tracking-widest text-amber-400">
-                LEVEL OBJECTIVE
+              <span className="rounded-full bg-amber-400 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider text-slate-950">
+                OBJETIVO DEL NIVEL
               </span>
-              <span className="font-mono text-xs font-bold text-amber-300">
-                +{level.xpReward} XP • +{level.coinReward} 🪙
+              <span className="font-mono text-xs font-black text-yellow-300">
+                +{level.xpReward} XP • +{level.coinReward} 🪙 Monedas
               </span>
             </div>
-            <p className="text-sm font-bold text-white leading-relaxed font-sans">
+            
+            <p className="text-sm font-bold text-white leading-relaxed mt-2">
               {level.prompt}
             </p>
 
-            <div className="mt-4 flex flex-wrap gap-2 pt-3 border-t border-slate-800/80">
-              <span className="text-[11px] font-mono text-slate-400">Tables:</span>
+            <div className="mt-4 flex flex-wrap gap-2 pt-3 border-t border-slate-700/80">
+              <span className="text-xs font-bold text-amber-300">Tablas Disponibles:</span>
               {level.targetTables.map(t => (
                 <span
                   key={t}
-                  onClick={() => setActiveTab('schema')}
-                  className="cursor-pointer flex items-center space-x-1 rounded-lg border border-cyan-500/40 bg-cyan-950/30 px-2 py-0.5 font-mono text-xs font-bold text-cyan-300 hover:border-cyan-400"
+                  className="flex items-center space-x-1 rounded-xl border border-sky-400/50 bg-sky-950/60 px-2.5 py-1 font-mono text-xs font-bold text-sky-200"
                 >
-                  <Database className="h-3 w-3 text-cyan-400" />
+                  <Database className="h-3 w-3 text-sky-400" />
                   <span>{t}</span>
                 </span>
               ))}
             </div>
           </div>
 
-          {/* In-Game Power-Up Quick Usage Bar (Canjeable con monedas) */}
-          <div className="rounded-2xl border-2 border-slate-800 bg-slate-950/70 p-4">
-            <div className="flex items-center justify-between mb-2">
-              <span className="font-mono text-[10px] font-black uppercase tracking-wider text-amber-400 flex items-center space-x-1.5">
-                <ShoppingBag className="h-3.5 w-3.5" />
-                <span>IN-GAME POWER-UPS (CANJEABLES)</span>
+          {/* Barra de Poderes Canjeables (Item Shop Integrada) */}
+          <div className="rounded-3xl border-3 border-slate-700/80 bg-slate-900/90 p-4 shadow-md">
+            <div className="flex items-center justify-between mb-2.5">
+              <span className="text-xs font-black uppercase tracking-wide text-amber-400 flex items-center space-x-1.5">
+                <ShoppingBag className="h-4 w-4" />
+                <span>AYUDAS &amp; PODERES CANJEABLES</span>
               </span>
               <button
                 onClick={() => setIsShopOpen(true)}
-                className="text-[10px] text-amber-400 hover:underline font-bold"
+                className="text-xs text-yellow-300 hover:underline font-bold"
               >
-                + Get More
+                + Comprar más
               </button>
             </div>
 
-            <div className="grid grid-cols-3 gap-2">
-              {/* 1. Scroll of Wisdom */}
+            <div className="grid grid-cols-3 gap-2.5">
+              {/* Pergamino de Pista */}
               <button
                 onClick={handleUseScroll}
-                className="flex flex-col items-center justify-center rounded-xl border border-slate-800 bg-slate-900/80 p-2.5 hover:border-amber-400 hover:bg-slate-800 transition-all text-center group"
+                className="flex flex-col items-center justify-center rounded-2xl border-2 border-amber-500/50 bg-amber-500/10 p-3 hover:bg-amber-500/20 transition-all text-center shadow-sm group active:scale-95"
               >
-                <Lightbulb className="h-5 w-5 text-amber-400 group-hover:scale-110 transition-transform" />
-                <span className="font-bold text-[10px] text-slate-200 mt-1">Hint Scroll</span>
-                <span className="font-mono text-[9px] text-amber-300 font-extrabold">
-                  Qty: {inventory.hint_scroll || 0}
+                <Lightbulb className="h-6 w-6 text-amber-400 group-hover:scale-110 transition-transform" />
+                <span className="font-black text-xs text-white mt-1">Pista</span>
+                <span className="rounded-full bg-amber-400/20 px-2 py-0.2 font-mono text-[10px] text-amber-300 font-black mt-0.5">
+                  Tienes: {inventory.hint_scroll || 0}
                 </span>
               </button>
 
-              {/* 2. Syntax Blueprint */}
+              {/* Plantilla de Código */}
               <button
                 onClick={handleUseBlueprint}
-                className="flex flex-col items-center justify-center rounded-xl border border-slate-800 bg-slate-900/80 p-2.5 hover:border-cyan-400 hover:bg-slate-800 transition-all text-center group"
+                className="flex flex-col items-center justify-center rounded-2xl border-2 border-sky-500/50 bg-sky-500/10 p-3 hover:bg-sky-500/20 transition-all text-center shadow-sm group active:scale-95"
               >
-                <FileCode className="h-5 w-5 text-cyan-400 group-hover:scale-110 transition-transform" />
-                <span className="font-bold text-[10px] text-slate-200 mt-1">Blueprint</span>
-                <span className="font-mono text-[9px] text-cyan-300 font-extrabold">
-                  Qty: {inventory.sql_blueprint || 0}
+                <FileCode className="h-6 w-6 text-sky-400 group-hover:scale-110 transition-transform" />
+                <span className="font-black text-xs text-white mt-1">Plantilla</span>
+                <span className="rounded-full bg-sky-400/20 px-2 py-0.2 font-mono text-[10px] text-sky-300 font-black mt-0.5">
+                  Tienes: {inventory.sql_blueprint || 0}
                 </span>
               </button>
 
-              {/* 3. Master Key */}
+              {/* Llave Maestra */}
               <button
                 onClick={handleUseMasterKey}
-                className="flex flex-col items-center justify-center rounded-xl border border-slate-800 bg-slate-900/80 p-2.5 hover:border-yellow-400 hover:bg-slate-800 transition-all text-center group"
+                className="flex flex-col items-center justify-center rounded-2xl border-2 border-yellow-500/50 bg-yellow-500/10 p-3 hover:bg-yellow-500/20 transition-all text-center shadow-sm group active:scale-95"
               >
-                <Key className="h-5 w-5 text-yellow-400 group-hover:scale-110 transition-transform" />
-                <span className="font-bold text-[10px] text-slate-200 mt-1">Master Key</span>
-                <span className="font-mono text-[9px] text-yellow-300 font-extrabold">
-                  Qty: {inventory.master_key || 0}
+                <Key className="h-6 w-6 text-yellow-400 group-hover:scale-110 transition-transform" />
+                <span className="font-black text-xs text-white mt-1">Llave Solución</span>
+                <span className="rounded-full bg-yellow-400/20 px-2 py-0.2 font-mono text-[10px] text-yellow-300 font-black mt-0.5">
+                  Tienes: {inventory.master_key || 0}
                 </span>
               </button>
             </div>
           </div>
 
-          {/* Progressive Hints & Revealed Content */}
+          {/* Pistas Desbloqueadas */}
           <div className="space-y-2">
             {level.hints.slice(0, revealedHints).map((hint, idx) => (
               <div
                 key={idx}
-                className="rounded-xl border border-amber-500/30 bg-amber-950/20 p-3 text-xs text-amber-200 leading-relaxed font-sans"
+                className="rounded-2xl border-2 border-amber-400/40 bg-amber-950/40 p-3.5 text-xs sm:text-sm text-amber-200 leading-relaxed font-sans shadow-sm"
               >
-                <span className="font-bold font-mono text-amber-400 mr-1.5">
-                  Hint {idx + 1}:
+                <span className="font-black text-amber-400 mr-1.5">
+                  Pista {idx + 1}:
                 </span>
                 {hint}
               </div>
             ))}
 
             {showSolution && (
-              <div className="rounded-xl border-2 border-yellow-400/50 bg-slate-950 p-4">
-                <span className="font-mono text-[10px] font-black text-yellow-400 uppercase tracking-widest block mb-1">
-                  Master Key Solution Revealed
+              <div className="rounded-2xl border-3 border-yellow-400 bg-slate-950 p-4 shadow-lg">
+                <span className="rounded-full bg-yellow-400 px-2.5 py-0.5 text-[10px] font-black text-slate-950 uppercase block w-fit mb-2">
+                  CONSULTA DE REFERENCIA DESBLOQUEADA
                 </span>
-                <pre className="font-mono text-xs text-yellow-200 whitespace-pre-wrap">
+                <pre className="font-mono text-xs text-yellow-300 whitespace-pre-wrap">
                   {level.expectedQuery}
                 </pre>
               </div>
             )}
           </div>
 
-          {/* Schema Explorer */}
+          {/* Explorador de Esquema */}
           <div className="pt-2">
             <SchemaViewer relevantTables={level.targetTables} />
           </div>
 
         </div>
 
-        {/* Right: Code Editor & Execution Results */}
-        <div className="w-full lg:w-[55%] flex flex-col p-4 space-y-4 overflow-y-auto bg-[#05070D]">
+        {/* Panel Derecho: Editor y Resultados */}
+        <div className="w-full lg:w-[55%] flex flex-col p-4 sm:p-5 space-y-4 overflow-y-auto bg-[#081224]">
           <SqlEditor
             value={query}
             onChange={setQuery}
@@ -374,25 +365,25 @@ export const LevelGameLab: React.FC<LevelGameLabProps> = ({
             isRunning={isRunning}
           />
 
-          {/* Victory / Feedback Banner */}
+          {/* Banner de Feedback y Victoria */}
           {validation && (
             <div
-              className={`rounded-2xl border-2 p-5 transition-all ${
+              className={`rounded-3xl border-3 p-5 transition-all shadow-xl ${
                 validation.isValid
-                  ? 'border-emerald-400 bg-emerald-950/30 shadow-[0_0_30px_rgba(16,185,129,0.2)]'
-                  : 'border-red-500/50 bg-red-950/20'
+                  ? 'border-emerald-400 bg-emerald-950/60 shadow-[0_0_35px_rgba(16,185,129,0.3)]'
+                  : 'border-red-400 bg-red-950/50'
               }`}
             >
-              <div className="flex items-start space-x-3">
+              <div className="flex items-start space-x-3.5">
                 {validation.isValid ? (
-                  <CheckCircle2 className="h-6 w-6 text-emerald-400 flex-shrink-0 mt-0.5" />
+                  <CheckCircle2 className="h-7 w-7 text-emerald-400 flex-shrink-0 mt-0.5" />
                 ) : (
-                  <AlertTriangle className="h-6 w-6 text-red-400 flex-shrink-0 mt-0.5" />
+                  <AlertTriangle className="h-7 w-7 text-red-400 flex-shrink-0 mt-0.5" />
                 )}
                 <div className="flex-1">
                   <div className="flex items-center justify-between">
-                    <h3 className={`text-base font-black ${validation.isValid ? 'text-emerald-300' : 'text-red-300'}`}>
-                      {validation.isValid ? 'LEVEL CLEARED!' : 'Not Quite Right'}
+                    <h3 className={`text-lg font-black ${validation.isValid ? 'text-emerald-300' : 'text-red-300'}`}>
+                      {validation.isValid ? '¡NIVEL SUPERADO! 🎉' : 'Aún no coincide'}
                     </h3>
                     {validation.isValid && (
                       <div className="flex items-center space-x-1">
@@ -401,8 +392,8 @@ export const LevelGameLab: React.FC<LevelGameLabProps> = ({
                             key={st}
                             className={`h-5 w-5 ${
                               st <= earnedStars
-                                ? 'fill-amber-400 text-amber-400'
-                                : 'text-slate-700'
+                                ? 'fill-yellow-400 text-yellow-400 drop-shadow-[0_0_8px_rgba(250,204,21,0.8)]'
+                                : 'text-slate-600'
                             }`}
                           />
                         ))}
@@ -410,30 +401,30 @@ export const LevelGameLab: React.FC<LevelGameLabProps> = ({
                     )}
                   </div>
 
-                  <p className="mt-1 text-xs text-slate-300 leading-relaxed font-sans">
+                  <p className="mt-1 text-xs sm:text-sm text-slate-200 leading-relaxed font-sans font-medium">
                     {validation.pedagogicalFeedback || validation.message}
                   </p>
 
                   {validation.differences?.details && (
-                    <p className="mt-2 font-mono text-xs text-red-300 bg-slate-950 p-2 rounded-lg border border-red-900/40">
+                    <p className="mt-2 font-mono text-xs text-red-200 bg-slate-950/80 p-2.5 rounded-xl border border-red-900/50">
                       {validation.differences.details}
                     </p>
                   )}
 
                   {validation.isValid && (
-                    <div className="mt-4 flex items-center justify-between pt-3 border-t border-emerald-500/20">
-                      <div className="flex items-center space-x-3 font-mono text-xs font-bold">
-                        <span className="text-emerald-400">+{level.xpReward} XP</span>
-                        <span className="text-yellow-400">+{level.coinReward} 🪙 Coins</span>
+                    <div className="mt-4 flex items-center justify-between pt-3 border-t border-emerald-500/30">
+                      <div className="flex items-center space-x-3 text-xs font-black">
+                        <span className="text-emerald-300">+{level.xpReward} XP</span>
+                        <span className="text-yellow-300">+{level.coinReward} 🪙 Monedas</span>
                       </div>
 
                       {onNextLevel && (
                         <button
                           onClick={onNextLevel}
-                          className="flex items-center space-x-2 rounded-xl bg-gradient-to-r from-emerald-400 to-emerald-500 px-4 py-2 font-black text-slate-950 hover:from-emerald-300 hover:to-emerald-400 transition-all shadow-md text-xs"
+                          className="flex items-center space-x-2 rounded-2xl border-2 border-emerald-300 bg-emerald-500 px-5 py-2.5 font-black text-slate-950 hover:bg-emerald-400 transition-all shadow-[0_4px_0_#15803d] active:translate-y-1 active:shadow-none text-xs sm:text-sm"
                         >
-                          <span>NEXT LEVEL</span>
-                          <ChevronRight className="h-4 w-4" />
+                          <span>SIGUIENTE NIVEL</span>
+                          <ChevronRight className="h-5 w-5" />
                         </button>
                       )}
                     </div>
@@ -443,10 +434,10 @@ export const LevelGameLab: React.FC<LevelGameLabProps> = ({
             </div>
           )}
 
-          {/* Live Result Table */}
+          {/* Tabla de Resultados en Vivo */}
           <div className="flex-1 flex flex-col">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">
-              SQLITE WASM LIVE RESULT TABLE
+            <span className="text-xs font-black uppercase tracking-wider text-amber-300 mb-2">
+              RESULTADO EN VIVO (SQLITE WASM)
             </span>
             <ResultTable result={result} />
           </div>
@@ -455,7 +446,7 @@ export const LevelGameLab: React.FC<LevelGameLabProps> = ({
 
       </div>
 
-      {/* Shop Modal */}
+      {/* Modal de Tienda */}
       {isShopOpen && (
         <PowerUpShopModal onClose={() => setIsShopOpen(false)} />
       )}

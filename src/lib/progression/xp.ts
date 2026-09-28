@@ -24,12 +24,12 @@ export function calculateLevel(xp: number): LevelInfo {
   const progressInLevel = Math.max(0, xp - currentBaseXp);
   const progressPercent = Math.min(100, Math.round((progressInLevel / range) * 100));
 
-  let title = 'SQL Novice';
-  if (level >= 10) title = 'Master of Relational Logic';
-  else if (level >= 8) title = 'Analytics Specialist';
-  else if (level >= 6) title = 'SQL Explorer';
-  else if (level >= 4) title = 'Data Operator';
-  else if (level >= 2) title = 'Query Apprentice';
+  let title = 'Novato SQL';
+  if (level >= 10) title = 'Maestro de la Lógica Relacional';
+  else if (level >= 8) title = 'Especialista en Analítica';
+  else if (level >= 6) title = 'Explorador SQL';
+  else if (level >= 4) title = 'Operador de Datos';
+  else if (level >= 2) title = 'Aprendiz de Consultas';
 
   return {
     level,

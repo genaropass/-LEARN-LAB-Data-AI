@@ -4,8 +4,8 @@ export function getDailyQuests(completedCount = 0): DailyQuest[] {
   return [
     {
       id: 'quest_1',
-      title: 'Active Ingestion',
-      description: 'Complete at least 1 SQL level or concept challenge today.',
+      title: 'Ingesta Activa',
+      description: 'Supera al menos 1 nivel o desafío SQL hoy.',
       category: 'lesson',
       target: 1,
       current: Math.min(1, completedCount),
@@ -15,8 +15,8 @@ export function getDailyQuests(completedCount = 0): DailyQuest[] {
     },
     {
       id: 'quest_2',
-      title: 'Mario Pathway Dash',
-      description: 'Solve 3 hands-on SQL query levels.',
+      title: 'Carrera por el Reino',
+      description: 'Resuelve 3 consultas SQL interactivas con éxito.',
       category: 'exercises',
       target: 3,
       current: Math.min(3, completedCount),
@@ -26,8 +26,8 @@ export function getDailyQuests(completedCount = 0): DailyQuest[] {
     },
     {
       id: 'quest_3',
-      title: 'Deep Focus & Boss Defense',
-      description: 'Conquer a Fortress Boss level or maintain your 3-star streak.',
+      title: 'Foco y Defensa contra el Jefe',
+      description: 'Conquista un Castillo de Jefe o mantén tu racha de 3 estrellas.',
       category: 'mastery',
       target: 1,
       current: completedCount > 0 ? 1 : 0,

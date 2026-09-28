@@ -20,98 +20,98 @@ interface WorldModule {
 const WORLD_MODULES: WorldModule[] = [
   {
     id: 'sql',
-    name: 'SQL World',
-    category: 'Data & AI',
-    description: 'Relational algebra, projection, multi-table joins, CTEs, and window functions.',
+    name: 'Reino SQL Interactivo',
+    category: 'Data & IA',
+    description: 'Álgebra relacional, proyecciones, multi-JOINs, CTEs y funciones ventana analíticas.',
     isAvailable: true,
     icon: Database,
-    tags: ['Active Track', 'Browser SQLite Engine', 'Boss Arenas']
+    tags: ['100 Niveles', 'Motor SQLite WASM', 'Castillos de Jefes', 'Monedas y Poderes']
   },
   {
     id: 'databases',
-    name: 'Database Architecture',
-    category: 'Data & AI',
-    description: 'B-Trees, indexing strategies, ACID guarantees, transaction isolation, and query execution plans.',
+    name: 'Arquitectura de Bases de Datos',
+    category: 'Data & IA',
+    description: 'Árboles B-Tree, estrategias de índices, transacciones ACID y planes de ejecución.',
     isAvailable: false,
     icon: Terminal,
-    tags: ['Coming Soon', 'LSM Trees', 'PostgreSQL Internals']
+    tags: ['Próximamente', 'LSM Trees', 'PostgreSQL Internals']
   },
   {
     id: 'power_bi',
-    name: 'BI & Analytical Modeling',
-    category: 'Data & AI',
-    description: 'DAX modeling, star schemas, dimensional cubes, and executive KPI design.',
+    name: 'BI y Modelado Analítico',
+    category: 'Data & IA',
+    description: 'Modelado DAX, esquemas estrella, cubos dimensionales y métricas ejecutivas.',
     isAvailable: false,
     icon: BarChart3,
-    tags: ['Coming Soon', 'DAX Logic', 'Executive BI']
+    tags: ['Próximamente', 'Lógica DAX', 'KPIs']
   },
   {
     id: 'python_data',
-    name: 'Python for Data Engineering',
-    category: 'Data & AI',
-    description: 'Vectorized computing with Polars, Arrow memory layouts, and ETL pipelines.',
+    name: 'Python para Ingeniería de Datos',
+    category: 'Data & IA',
+    description: 'Cómputo vectorizado con Polars, memoria Arrow y pipelines ETL robustos.',
     isAvailable: false,
     icon: Code2,
-    tags: ['Coming Soon', 'Polars', 'Arrow']
+    tags: ['Próximamente', 'Polars', 'Pipelines ETL']
   },
   {
     id: 'statistics',
-    name: 'Probability & Statistics',
-    category: 'Data & AI',
-    description: 'Hypothesis testing, Bayesian inference, A/B experiment design, and distributions.',
+    name: 'Probabilidad y Estadística',
+    category: 'Data & IA',
+    description: 'Pruebas de hipótesis, inferencia bayesiana y diseño de experimentos A/B.',
     isAvailable: false,
     icon: LineChart,
-    tags: ['Coming Soon', 'A/B Testing', 'Inference']
+    tags: ['Próximamente', 'A/B Testing', 'Inferencia']
   },
   {
     id: 'machine_learning',
-    name: 'Machine Learning Lab',
-    category: 'Data & AI',
-    description: 'Supervised learning, gradient descent algorithms, loss landscapes, and model evaluation.',
+    name: 'Laboratorio de Machine Learning',
+    category: 'Data & IA',
+    description: 'Modelos predictivos, descenso de gradiente, regularización y métricas de evaluación.',
     isAvailable: false,
     icon: Cpu,
-    tags: ['Coming Soon', 'Algorithms', 'Evaluation']
+    tags: ['Próximamente', 'Algoritmos', 'Evaluación']
   }
 ];
 
 export const RealmSelector: React.FC<RealmSelectorProps> = ({ onClose }) => {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-      <div className="relative w-full max-w-2xl rounded-2xl border border-slate-800 bg-[#0B0F17] p-6 shadow-2xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4 animate-in fade-in duration-200">
+      <div className="relative w-full max-w-2xl rounded-3xl border-4 border-amber-400 bg-slate-900 p-6 sm:p-7 shadow-2xl">
         
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-slate-800/80 pb-4">
+        <div className="flex items-center justify-between border-b-2 border-slate-700/80 pb-4">
           <div>
             <div className="flex items-center space-x-2">
-              <span className="font-mono text-xs uppercase tracking-wider text-cyan-400 font-semibold">
-                Learn-Lab Ecosystem
+              <span className="font-mono text-xs uppercase tracking-wider text-amber-400 font-bold">
+                Ecosistema Learn-Lab
               </span>
-              <span className="text-slate-600">•</span>
-              <span className="text-xs text-slate-400">Data &amp; AI Realm</span>
+              <span className="text-slate-500">•</span>
+              <span className="text-xs text-slate-300 font-bold">Mundos de Aprendizaje</span>
             </div>
-            <h2 className="mt-1 text-xl font-bold text-white tracking-tight">
-              Select Learning World
+            <h2 className="mt-1 text-2xl font-black text-white tracking-tight">
+              🗺️ Seleccionar Mundo
             </h2>
           </div>
           <button
             onClick={onClose}
-            className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-800 hover:text-white transition-all"
+            className="rounded-xl p-2 text-slate-400 hover:bg-slate-800 hover:text-white transition-all font-black"
           >
-            <X className="h-5 w-5" />
+            <X className="h-6 w-6" />
           </button>
         </div>
 
         {/* Modules Grid */}
-        <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 max-h-[60vh] overflow-y-auto pr-1">
+        <div className="mt-6 grid grid-cols-1 gap-3.5 sm:grid-cols-2 max-h-[60vh] overflow-y-auto pr-1">
           {WORLD_MODULES.map((module) => {
             const Icon = module.icon;
             return (
               <div
                 key={module.id}
-                className={`relative flex flex-col justify-between rounded-xl border p-4 transition-all ${
+                className={`relative flex flex-col justify-between rounded-2xl border-2 p-4 transition-all ${
                   module.isAvailable
-                    ? 'border-amber-500/40 bg-gradient-to-br from-amber-500/10 to-slate-900/60 shadow-[0_0_15px_rgba(245,158,11,0.08)] cursor-pointer'
-                    : 'border-slate-800/80 bg-slate-950/40 opacity-70'
+                    ? 'border-emerald-400 bg-emerald-950/40 shadow-lg hover:scale-[1.02] cursor-pointer'
+                    : 'border-slate-800 bg-slate-950/50 opacity-60'
                 }`}
                 onClick={() => {
                   if (module.isAvailable) onClose();
@@ -119,39 +119,39 @@ export const RealmSelector: React.FC<RealmSelectorProps> = ({ onClose }) => {
               >
                 <div>
                   <div className="flex items-start justify-between">
-                    <div className={`flex h-10 w-10 items-center justify-center rounded-lg border ${
+                    <div className={`flex h-11 w-11 items-center justify-center rounded-xl border-2 ${
                       module.isAvailable
-                        ? 'border-amber-500/30 bg-amber-500/15 text-amber-400'
-                        : 'border-slate-800 bg-slate-900 text-slate-500'
+                        ? 'border-emerald-400 bg-emerald-500/20 text-emerald-300 shadow-sm'
+                        : 'border-slate-700 bg-slate-800 text-slate-500'
                     }`}>
-                      <Icon className="h-5 w-5" />
+                      <Icon className="h-6 w-6" />
                     </div>
                     {module.isAvailable ? (
-                      <span className="inline-flex items-center space-x-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 text-[10px] font-bold text-emerald-400">
-                        <CheckCircle2 className="h-3 w-3" />
-                        <span>ACTIVE WORLD</span>
+                      <span className="inline-flex items-center space-x-1 rounded-full border border-emerald-400 bg-emerald-500/30 px-2.5 py-0.5 text-xs font-black text-emerald-300">
+                        <CheckCircle2 className="h-3.5 w-3.5" />
+                        <span>DISPONIBLE</span>
                       </span>
                     ) : (
-                      <span className="inline-flex items-center space-x-1 rounded-full border border-slate-800 bg-slate-900 px-2 py-0.5 text-[10px] font-semibold text-slate-400">
+                      <span className="inline-flex items-center space-x-1 rounded-full border border-slate-700 bg-slate-800 px-2.5 py-0.5 text-xs font-bold text-slate-400">
                         <Lock className="h-3 w-3" />
-                        <span>LOCKED</span>
+                        <span>BLOQUEADO</span>
                       </span>
                     )}
                   </div>
 
-                  <h3 className="mt-3 font-semibold text-white text-sm">
+                  <h3 className="mt-3 font-black text-white text-base">
                     {module.name}
                   </h3>
-                  <p className="mt-1 text-xs text-slate-400 leading-relaxed">
+                  <p className="mt-1 text-xs text-slate-300 leading-relaxed font-medium">
                     {module.description}
                   </p>
                 </div>
 
-                <div className="mt-4 flex flex-wrap gap-1.5 pt-2 border-t border-slate-800/40">
+                <div className="mt-4 flex flex-wrap gap-1.5 pt-2 border-t border-slate-800">
                   {module.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="rounded bg-slate-900/80 px-1.5 py-0.5 font-mono text-[9px] text-slate-400 border border-slate-800"
+                      className="rounded-lg bg-slate-800/90 px-2 py-0.5 text-[10px] font-bold text-slate-300 border border-slate-700"
                     >
                       {tag}
                     </span>
@@ -163,13 +163,13 @@ export const RealmSelector: React.FC<RealmSelectorProps> = ({ onClose }) => {
         </div>
 
         {/* Footer info */}
-        <div className="mt-6 flex items-center justify-between border-t border-slate-800/80 pt-4 text-xs text-slate-500">
-          <span>Current active curriculum: SQL Foundations to Capstone</span>
+        <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-3 border-t-2 border-slate-700/80 pt-4 text-xs text-slate-400">
+          <span className="font-medium">Plan activo: 100 Niveles de SQL interactivo con SQLite real en el navegador</span>
           <button
             onClick={onClose}
-            className="rounded-lg bg-amber-500/10 px-3 py-1.5 font-semibold text-amber-400 border border-amber-500/30 hover:bg-amber-500/20 transition-all"
+            className="btn-mario text-xs px-4 py-2 font-black uppercase tracking-wide"
           >
-            Enter SQL World
+            Entrar al Reino SQL
           </button>
         </div>
 

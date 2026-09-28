@@ -7,14 +7,14 @@ export interface SkillCategoryDef {
 }
 
 export const SKILL_CATEGORIES: SkillCategoryDef[] = [
-  { id: 'foundations', name: 'SELECT & Filtering', weight: 1.0 },
-  { id: 'aggregation', name: 'GROUP BY & Aggregates', weight: 1.0 },
-  { id: 'joins', name: 'Relational JOINs', weight: 1.2 },
-  { id: 'logic', name: 'CASE & Conditional Logic', weight: 1.0 },
-  { id: 'manipulation', name: 'Date & String Transformation', weight: 1.0 },
-  { id: 'subqueries', name: 'Subqueries & EXISTS', weight: 1.2 },
-  { id: 'ctes', name: 'CTEs & Pipeline Architecture', weight: 1.3 },
-  { id: 'windows', name: 'Window Analytical Functions', weight: 1.5 }
+  { id: 'foundations', name: 'SELECT y Filtrado', weight: 1.0 },
+  { id: 'aggregation', name: 'GROUP BY y Agregaciones', weight: 1.0 },
+  { id: 'joins', name: 'JOINs Relacionales', weight: 1.2 },
+  { id: 'logic', name: 'CASE WHEN y Lógica Condicional', weight: 1.0 },
+  { id: 'manipulation', name: 'Transformación de Fechas y Textos', weight: 1.0 },
+  { id: 'subqueries', name: 'Subconsultas y EXISTS', weight: 1.2 },
+  { id: 'ctes', name: 'CTEs y Pipelines con WITH', weight: 1.3 },
+  { id: 'windows', name: 'Funciones Ventana Analíticas', weight: 1.5 }
 ];
 
 export function computeMasteryStatus(percentage: number): SkillMastery['levelStatus'] {

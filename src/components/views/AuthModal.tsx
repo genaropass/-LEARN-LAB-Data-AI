@@ -29,8 +29,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
     if (!supabase) {
       // Local Guest profile update
       profile.username = username;
-      localStorage.setItem('learnlab_profile_v1', JSON.stringify(profile));
-      setMessage('Guest profile updated! Connect Supabase credentials in .env.local for cloud syncing.');
+      localStorage.setItem('learnlab_profile_v2', JSON.stringify(profile));
+      setMessage('¡Nombre de explorador actualizado! Tu progreso se guarda automáticamente en tu navegador.');
       setIsLoading(false);
       setTimeout(() => {
         onClose();
@@ -48,14 +48,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
           }
         });
         if (error) throw error;
-        setMessage('Registration successful! Please check your email inbox to confirm your account.');
+        setMessage('¡Registro completado! Revisa tu bandeja de entrada para verificar tu cuenta.');
       } else {
         const { error } = await supabase.auth.signInWithPassword({
           email,
           password
         });
         if (error) throw error;
-        setMessage('Login successful! Syncing cloud progress...');
+        setMessage('¡Sesión iniciada con éxito! Sincronizando progreso en la nube...');
         setTimeout(() => {
           onClose();
         }, 1000);
@@ -69,54 +69,54 @@ export const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-      <div className="relative w-full max-w-md rounded-2xl border border-slate-800 bg-[#0B0F17] p-6 shadow-2xl text-slate-100">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
+      <div className="relative w-full max-w-md rounded-3xl border-4 border-amber-400 bg-slate-900 p-6 shadow-2xl text-slate-100">
         
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 rounded-lg p-1.5 text-slate-400 hover:bg-slate-800 hover:text-white transition-all"
+          className="absolute top-4 right-4 rounded-xl p-1.5 text-slate-400 hover:bg-slate-800 hover:text-white transition-all font-black"
         >
-          <X className="h-5 w-5" />
+          <X className="h-6 w-6" />
         </button>
 
         {/* Header */}
-        <div className="flex items-center space-x-2.5 mb-1">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-cyan-500/30 bg-cyan-500/10 text-cyan-400">
-            <Shield className="h-4 w-4" />
+        <div className="flex items-center space-x-2.5 mb-2">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl border-2 border-amber-400 bg-amber-400/20 text-amber-300">
+            <Shield className="h-5 w-5" />
           </div>
           <div>
-            <h3 className="font-extrabold text-base text-white">
+            <h3 className="font-black text-lg text-white">
               {isSupabaseConfigured
-                ? mode === 'login' ? 'Sign In to Learn-Lab' : 'Create Cloud Profile'
-                : 'Player Profile & Cloud Setup'}
+                ? mode === 'login' ? 'Iniciar Sesión en Learn-Lab' : 'Crear Perfil en la Nube'
+                : 'Perfil de Jugador & Ajustes'}
             </h3>
           </div>
         </div>
 
         {/* Cloud Config Notice */}
         {!isSupabaseConfigured && (
-          <div className="mt-3 rounded-xl border border-amber-500/30 bg-amber-950/20 p-3 text-xs text-amber-200 leading-relaxed font-sans">
-            <span className="font-bold font-mono text-amber-400 block mb-0.5">
-              OFFLINE / GUEST MODE ACTIVE
+          <div className="mt-3 rounded-2xl border-2 border-amber-400/40 bg-amber-950/20 p-3.5 text-xs text-amber-200 leading-relaxed font-sans font-medium">
+            <span className="font-black font-mono text-amber-300 block mb-0.5">
+              🎮 MODO AVENTURA LOCAL ACTIVO
             </span>
-            All XP, levels, streak, and curriculum progress persist automatically in your browser storage. To enable multi-device sync, connect your Supabase project keys in <code className="bg-slate-900 px-1 py-0.5 rounded text-amber-300">.env.local</code>.
+            Tus 100 niveles, monedas ganadas, poderes y racha se guardan de forma segura y permanente en tu navegador local.
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="mt-5 space-y-4">
           <div>
-            <label className="text-[11px] font-mono text-slate-400 uppercase tracking-wider block mb-1">
-              Explorer Codename
+            <label className="text-xs font-mono text-slate-300 uppercase tracking-wider block mb-1 font-bold">
+              Nombre del Explorador
             </label>
             <div className="relative">
-              <User className="absolute left-3 top-2.5 h-4 w-4 text-slate-500" />
+              <User className="absolute left-3.5 top-3 h-4 w-4 text-slate-400" />
               <input
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
-                className="w-full rounded-xl border border-slate-800 bg-slate-950 py-2 pl-9 pr-3 text-xs text-white placeholder-slate-500 focus:border-amber-400 focus:outline-none"
+                className="w-full rounded-2xl border-2 border-slate-700 bg-slate-950 py-2.5 pl-10 pr-3 text-sm text-white placeholder-slate-500 focus:border-amber-400 focus:outline-none font-bold"
                 placeholder="Genaro"
               />
             </div>
@@ -125,34 +125,34 @@ export const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
           {isSupabaseConfigured && (
             <>
               <div>
-                <label className="text-[11px] font-mono text-slate-400 uppercase tracking-wider block mb-1">
-                  Email Address
+                <label className="text-xs font-mono text-slate-300 uppercase tracking-wider block mb-1 font-bold">
+                  Correo Electrónico
                 </label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-2.5 h-4 w-4 text-slate-500" />
+                  <Mail className="absolute left-3.5 top-3 h-4 w-4 text-slate-400" />
                   <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    className="w-full rounded-xl border border-slate-800 bg-slate-950 py-2 pl-9 pr-3 text-xs text-white placeholder-slate-500 focus:border-amber-400 focus:outline-none"
-                    placeholder="explorer@data.io"
+                    className="w-full rounded-2xl border-2 border-slate-700 bg-slate-950 py-2.5 pl-10 pr-3 text-sm text-white placeholder-slate-500 focus:border-amber-400 focus:outline-none"
+                    placeholder="explorador@data.io"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="text-[11px] font-mono text-slate-400 uppercase tracking-wider block mb-1">
-                  Password
+                <label className="text-xs font-mono text-slate-300 uppercase tracking-wider block mb-1 font-bold">
+                  Contraseña
                 </label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-2.5 h-4 w-4 text-slate-500" />
+                  <Lock className="absolute left-3.5 top-3 h-4 w-4 text-slate-400" />
                   <input
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    className="w-full rounded-xl border border-slate-800 bg-slate-950 py-2 pl-9 pr-3 text-xs text-white placeholder-slate-500 focus:border-amber-400 focus:outline-none"
+                    className="w-full rounded-2xl border-2 border-slate-700 bg-slate-950 py-2.5 pl-10 pr-3 text-sm text-white placeholder-slate-500 focus:border-amber-400 focus:outline-none"
                     placeholder="••••••••"
                   />
                 </div>
@@ -161,7 +161,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
           )}
 
           {message && (
-            <div className="rounded-lg bg-slate-900 border border-slate-800 p-2.5 text-xs text-cyan-300">
+            <div className="rounded-xl bg-slate-950 border-2 border-amber-400/50 p-3 text-xs text-amber-200 font-bold">
               {message}
             </div>
           )}
@@ -169,9 +169,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full flex items-center justify-center space-x-2 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 py-2.5 text-xs font-bold text-slate-950 hover:from-amber-300 hover:to-amber-400 transition-all shadow-md active:scale-95 disabled:opacity-50"
+            className="btn-mario w-full flex items-center justify-center space-x-2 py-3 text-sm font-black disabled:opacity-50"
           >
-            <span>{isSupabaseConfigured ? (mode === 'login' ? 'Sign In' : 'Register Account') : 'Save Profile Name'}</span>
+            <span>{isSupabaseConfigured ? (mode === 'login' ? 'Iniciar Sesión' : 'Registrar Cuenta') : 'Guardar Nombre'}</span>
             <ArrowRight className="h-4 w-4" />
           </button>
         </form>
@@ -180,9 +180,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
           <div className="mt-4 text-center">
             <button
               onClick={() => setMode(m => m === 'login' ? 'register' : 'login')}
-              className="text-xs text-slate-400 hover:text-amber-400 transition-colors"
+              className="text-xs text-slate-400 hover:text-amber-400 transition-colors font-bold"
             >
-              {mode === 'login' ? "Don't have an account? Sign up" : 'Already have an account? Sign in'}
+              {mode === 'login' ? '¿No tienes cuenta? Regístrate aquí' : '¿Ya tienes cuenta? Inicia sesión'}
             </button>
           </div>
         )}

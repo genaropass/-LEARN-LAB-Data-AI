@@ -22,11 +22,11 @@ export function getSmartNextStep(
     if (isUnlocked) {
       return {
         type: 'capstone',
-        title: 'Capstone Mission Ready',
-        reason: 'You have cleared all preceding challenges. Synthesize your relational skills in the Final Analytics Project.',
+        title: 'Misión Final Lista',
+        reason: 'Has superado todos los desafíos previos. Aplica tus habilidades relacionales en el Proyecto Analítico Final.',
         targetNodeId: projectNode.id,
         targetNodeTitle: projectNode.title,
-        actionLabel: 'Launch Final Project'
+        actionLabel: 'Iniciar Proyecto Final'
       };
     }
   }
@@ -39,11 +39,11 @@ export function getSmartNextStep(
   if (pendingBoss) {
     return {
       type: 'boss_battle',
-      title: 'Arena Gate Open',
-      reason: `You have cleared the prerequisite curriculum. Test your analytical endurance against ${pendingBoss.title}.`,
+      title: 'Puerta del Castillo Abierta',
+      reason: `Has superado los niveles previos. Pon a prueba tu destreza analítica contra ${pendingBoss.title}.`,
       targetNodeId: pendingBoss.id,
       targetNodeTitle: pendingBoss.title,
-      actionLabel: 'Enter Boss Arena'
+      actionLabel: 'Entrar a la Fortaleza del Jefe'
     };
   }
 
@@ -59,11 +59,11 @@ export function getSmartNextStep(
     if (uncompletedPracticeInSkill) {
       return {
         type: 'drill_weakness',
-        title: `Reinforce ${developingSkill.name}`,
-        reason: `Your ${developingSkill.name} mastery is currently at ${developingSkill.percentage}%. Cementing this foundation will prevent bottlenecks ahead.`,
+        title: `Reforzar ${developingSkill.name}`,
+        reason: `Tu dominio en ${developingSkill.name} está al ${developingSkill.percentage}%. Reforzar esta base te garantizará el éxito en los mundos siguientes.`,
         targetNodeId: uncompletedPracticeInSkill.id,
         targetNodeTitle: uncompletedPracticeInSkill.title,
-        actionLabel: 'Practice Weakest Skill'
+        actionLabel: 'Practicar Habilidad'
       };
     }
   }
@@ -76,11 +76,11 @@ export function getSmartNextStep(
   if (nextUnlocked) {
     return {
       type: 'next_node',
-      title: 'Continue Adventure',
-      reason: `Advance along your learning path into ${nextUnlocked.title}.`,
+      title: 'Continuar Aventura',
+      reason: `Avanza en tu camino hacia ${nextUnlocked.title}.`,
       targetNodeId: nextUnlocked.id,
       targetNodeTitle: nextUnlocked.title,
-      actionLabel: `Start ${nextUnlocked.title}`
+      actionLabel: `Iniciar ${nextUnlocked.title}`
     };
   }
 
@@ -88,10 +88,10 @@ export function getSmartNextStep(
   const firstNode = allNodes[0];
   return {
     type: 'next_node',
-    title: 'Curriculum Mastered',
-    reason: 'You have conquered the entire SQL World! Review any node to keep your analytical reflexes sharp.',
+    title: 'Plan Conquistado',
+    reason: '¡Has conquistado todo el Reino SQL! Repasa cualquier nivel para mantener tus reflejos analíticos al máximo.',
     targetNodeId: firstNode ? firstNode.id : '',
-    targetNodeTitle: 'World Complete',
-    actionLabel: 'Replay Curriculum'
+    targetNodeTitle: 'Mundo Completado',
+    actionLabel: 'Volver a Jugar'
   };
 }
